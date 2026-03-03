@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raccourcis ACE — SAMU 96</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">
+      <img src="assets/logo-samu96.png" alt="Logo SAMU 96" class="logo-img">
+      <span class="logo-name"><span>96</span> · SUPPORT</span>
+    </a>
+  </div>
+  <nav class="topbar-nav"></nav>
+  <div class="topbar-right">
+    <span class="topbar-clock"></span>
+    <button class="hamburger">☰</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"></aside>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="breadcrumb">/ <span>ÉQUIPEMENTS / RACCOURCIS ACE</span></div>
+      <h1 class="page-title">Raccourcis & Interactions ACE <span>— Guide rapide</span></h1>
+      <p class="page-subtitle">Synthèse des touches, workflow intervention SAMU et erreurs critiques en RP.</p>
+    </div>
+
+    <div class="section-title">Raccourcis clavier essentiels</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Touche</th><th>Action</th><th>Usage RP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="badge badge-dim">H</span></td><td>Ouvrir menu soin ACE (sur soi ou autre joueur)</td><td>Accès principal au traitement</td></tr>
+        <tr><td><span class="badge badge-dim">Ctrl+H</span></td><td>Autosoin rapide</td><td>Stabilisation d'urgence personnelle</td></tr>
+        <tr><td><span class="badge badge-dim">Molette</span></td><td>Menu ACE contextuel (interactions)</td><td>Actions ciblées sur patient/objet</td></tr>
+        <tr><td><span class="badge badge-dim">Alt+H</span></td><td>État médical rapide</td><td>Check vital immédiat</td></tr>
+        <tr><td><span class="badge badge-dim">P</span></td><td>Ouvrir inventaire médical KAT (si configuré)</td><td>Accès rapide consommables</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Workflow intervention SAMU complet</div>
+    <div class="panel">
+      <div class="panel-header">Timeline d'action</div>
+      <div class="panel-body">
+        <table class="data-table" style="margin-bottom:0;">
+          <thead>
+            <tr><th>Ordre</th><th>Étape</th><th>Interaction principale</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">1</td><td>ARRIVÉE SUR SCÈNE</td><td>Prise de sécurité</td></tr>
+            <tr><td class="mono">2</td><td><span class="mono">[H]</span> sur victime → évaluer état général</td><td>ACE medical menu</td></tr>
+            <tr><td class="mono">3</td><td>Vérifier airway → insérer guédel si inconscient</td><td>Molette/ACE interact</td></tr>
+            <tr><td class="mono">4</td><td>Contrôler hémorragies → CAT si membre, packing sinon</td><td><span class="mono">[H]</span> sur zone</td></tr>
+            <tr><td class="mono">5</td><td>Poser SpO2 + PNI → noter valeurs</td><td>Molette ACE/KAT</td></tr>
+            <tr><td class="mono">6</td><td>VVP ou IO → remplissage si PA basse</td><td>KAT interact</td></tr>
+            <tr><td class="mono">7</td><td>Médicaments selon protocole</td><td><span class="mono">[H]</span> → injections</td></tr>
+            <tr><td class="mono">8</td><td>Monitoring ECG si disponible</td><td>KAT menu</td></tr>
+            <tr><td class="mono">9</td><td>Conditionnement → brancardage → VSAV</td><td>Actions logistiques RP</td></tr>
+            <tr><td class="mono">10</td><td>Transmission bilan au médecin régulateur (radio)</td><td>Comms RP</td></tr>
+            <tr><td class="mono">11</td><td>Transport → hôpital ou chirurgie sur place</td><td>Décision médicale RP</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-title">Erreurs fréquentes en RP</div>
+    <div class="panel" style="border-color:rgba(220,38,38,0.34);">
+      <div class="panel-header" style="color:#991b1b;background:rgba(220,38,38,0.1);border-bottom-color:rgba(220,38,38,0.24);">Panel rouge</div>
+      <div class="panel-body">
+        <div class="alert alert-red">
+          <strong>À ÉVITER</strong>
+          <ul style="margin:0;padding-left:18px;">
+            <li>Cumuler morphine + diazépam → dépression respiratoire fatale</li>
+            <li>Oublier de retirer le CAT après &gt;2h → nécrose membre</li>
+            <li>IOT sans laryngoscope → échec systématique</li>
+            <li>Remplissage massif sans contrôle hémorragie → aggravation</li>
+            <li>Défibriller sur rythme non choquable (asystolie) → inefficace</li>
+            <li>Naloxone sans surveiller → re-sédation possible après 30 min</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Interactions ACE rapides (cheat sheet)</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Action</th><th>Touche</th><th>Condition requise</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Examiner blessure</td><td><span class="badge badge-dim">H</span></td><td>Sur joueur</td></tr>
+        <tr><td>Poser bandage</td><td><span class="badge badge-dim">H → membre</span></td><td>Bandage en inventaire</td></tr>
+        <tr><td>Injecter médicament</td><td><span class="badge badge-dim">H → médicaments</span></td><td>Seringue en inventaire</td></tr>
+        <tr><td>Poser monitoring</td><td><span class="badge badge-dim">Molette sur joueur</span></td><td>Item monitoring en inventaire</td></tr>
+        <tr><td>Intubation</td><td><span class="badge badge-dim">Molette → KAT</span></td><td>Laryngoscope + ETT en inventaire</td></tr>
+        <tr><td>IO</td><td><span class="badge badge-dim">Molette → KAT</span></td><td>IO kit en inventaire</td></tr>
+        <tr><td>Thoracotomie</td><td><span class="badge badge-dim">Molette → KAT</span></td><td>Surgical kit en inventaire</td></tr>
+        <tr><td>Défibrillation</td><td><span class="badge badge-dim">Molette → ACE</span></td><td>AED ou défi manuel en inventaire</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <span>SAMU 96 · Portail Support · Usage interne uniquement</span>
+  <span class="topbar-clock"></span>
+</footer>
+
+<script src="nav.js"></script>
+<script src="main.js"></script>
+<script>renderNav('equipements.html');</script>
+</body>
+</html>

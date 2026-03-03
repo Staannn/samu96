@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Médicaments & Drogues — SAMU 96</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">
+      <img src="assets/logo-samu96.png" alt="Logo SAMU 96" class="logo-img">
+      <span class="logo-name"><span>96</span> · SUPPORT</span>
+    </a>
+  </div>
+  <nav class="topbar-nav"></nav>
+  <div class="topbar-right">
+    <span class="topbar-clock"></span>
+    <button class="hamburger">☰</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"></aside>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="breadcrumb">/ <span>ÉQUIPEMENTS / MÉDICAMENTS</span></div>
+      <h1 class="page-title">Médicaments & Drogues <span>— ACE3 + KAT</span></h1>
+      <p class="page-subtitle">Administration RP via ACE menu (H) et protocole médical SAMU en intervention.</p>
+    </div>
+
+    <div class="cards-grid" style="margin-bottom:18px;">
+      <a href="#analgesiques" class="card">
+        <span class="card-icon">💊</span>
+        <div class="card-title">ANALGÉSIQUES</div>
+        <div class="card-desc">Douleur, sédation légère, contrôle des effets secondaires.</div>
+      </a>
+      <a href="#reanimation" class="card">
+        <span class="card-icon">⚡</span>
+        <div class="card-title">RÉANIMATION</div>
+        <div class="card-desc">Arythmies, ACR, antidotes et support vital avancé.</div>
+      </a>
+      <a href="#perfusions" class="card">
+        <span class="card-icon">🩸</span>
+        <div class="card-title">PERFUSIONS IV/IO</div>
+        <div class="card-desc">Remplissage, transfusion et correction hémodynamique.</div>
+      </a>
+    </div>
+
+    <div id="analgesiques" class="section-title">ANALGÉSIQUES</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Item</th><th>Mod</th><th>Effet</th><th>Dose max</th><th>Surdosage</th><th>Interaction</th><th>Quand utiliser</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="text-bright">Morphine</td><td class="mono">ACE+KAT</td><td>Antalgie forte, sédation légère</td><td class="mono">3 seringues</td><td>Dépression respi, bradycardie</td><td>Ne pas cumuler avec diazépam</td><td>Douleur intense, fractures</td></tr>
+        <tr><td class="text-bright">Ketamine</td><td class="mono">KAT</td><td>Analgésie dissociative, maintien PA</td><td class="mono">2 doses</td><td>Hallucinations, tachycardie</td><td>Compatible morphine faible dose</td><td>Trauma avec hypotension, extraction difficile</td></tr>
+        <tr><td class="text-bright">Paracetamol</td><td class="mono">KAT</td><td>Antalgie légère</td><td class="mono">4 comprimés</td><td>Hépatotoxicité si surdose</td><td>Aucune notable</td><td>Douleur légère à modérée</td></tr>
+      </tbody>
+    </table>
+
+    <div id="reanimation" class="section-title">RÉANIMATION</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Item</th><th>Mod</th><th>Effet</th><th>Dose max</th><th>Surdosage</th><th>Interaction</th><th>Quand utiliser</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="text-bright">Adenosine</td><td class="mono">KAT</td><td>Ralentit FC, stoppe TSV</td><td class="mono">1 dose</td><td>Bradycardie, BAV</td><td>Ne pas répéter sans monitoring</td><td>Tachycardie supraventriculaire</td></tr>
+        <tr><td class="text-bright">Epinephrine</td><td class="mono">ACE+KAT</td><td>ACR, anaphylaxie, relance FC/PA</td><td class="mono">4 seringues</td><td>FV si surdose, HTA</td><td>Ne pas utiliser en TSV</td><td>ACR, choc anaphylactique</td></tr>
+        <tr><td class="text-bright">Atropine</td><td class="mono">ACE+KAT</td><td>Bradycardie, anticholinergique</td><td class="mono">3 seringues</td><td>Tachycardie, mydriase</td><td>Glaucome</td><td>Bradycardie symptomatique</td></tr>
+        <tr><td class="text-bright">Lidocaine</td><td class="mono">KAT</td><td>Anti-arythmique, anesthésie locale</td><td class="mono">2 doses</td><td>Convulsions si surdose</td><td>Ne pas cumuler amiodarone</td><td>TV, intubation</td></tr>
+        <tr><td class="text-bright">Amiodarone</td><td class="mono">KAT</td><td>Anti-arythmique FV/TV</td><td class="mono">1 dose IV</td><td>Bradycardie, hypotension</td><td>Ne pas cumuler lidocaine</td><td>FV réfractaire</td></tr>
+        <tr><td class="text-bright">Naloxone</td><td class="mono">KAT</td><td>Antagoniste opioïdes</td><td class="mono">2 seringues</td><td>Sevrage brutal</td><td>Aucune notable</td><td>Surdose morphine/opioïdes</td></tr>
+        <tr><td class="text-bright">Diazepam</td><td class="mono">KAT</td><td>Sédation, anticonvulsivant</td><td class="mono">2 seringues</td><td>Dépression respi</td><td>Ne pas cumuler morphine</td><td>Convulsions, agitation</td></tr>
+      </tbody>
+    </table>
+
+    <div id="perfusions" class="section-title">PERFUSIONS IV/IO</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Item</th><th>Mod</th><th>Indication</th><th>Volume</th><th>Voie</th><th>Effet en jeu</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="text-bright">NaCl 0.9%</td><td class="mono">KAT</td><td>Remplissage vasculaire, hypovolémie</td><td class="mono">500ml</td><td class="mono">IV/IO</td><td>Remonte PA, améliore état général</td></tr>
+        <tr><td class="text-bright">NaCl hypertonique</td><td class="mono">KAT</td><td>TC grave, HTIC</td><td class="mono">250ml</td><td class="mono">IV lent</td><td>Réduit HTIC, améliore GCS</td></tr>
+        <tr><td class="text-bright">Sang (packed RBC)</td><td class="mono">KAT</td><td>Choc hémorragique</td><td class="mono">1 unité</td><td class="mono">IV</td><td>Remonte Hb fictive, corrige choc</td></tr>
+        <tr><td class="text-bright">Plasma</td><td class="mono">KAT</td><td>Coagulopathie, brûlures</td><td class="mono">1 unité</td><td class="mono">IV</td><td>Stabilise PA</td></tr>
+        <tr><td class="text-bright">Ringer Lactate</td><td class="mono">KAT</td><td>Brûlures, remplissage polytraumatisé</td><td class="mono">500ml</td><td class="mono">IV</td><td>Remplissage isotonique</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <span>SAMU 96 · Portail Support · Usage interne uniquement</span>
+  <span class="topbar-clock"></span>
+</footer>
+
+<script src="nav.js"></script>
+<script src="main.js"></script>
+<script>renderNav('equipements.html');</script>
+</body>
+</html>

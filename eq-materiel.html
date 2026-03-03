@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matériel Médical — SAMU 96</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">
+      <img src="assets/logo-samu96.png" alt="Logo SAMU 96" class="logo-img">
+      <span class="logo-name"><span>96</span> · SUPPORT</span>
+    </a>
+  </div>
+  <nav class="topbar-nav"></nav>
+  <div class="topbar-right">
+    <span class="topbar-clock"></span>
+    <button class="hamburger">☰</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"></aside>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="breadcrumb">/ <span>ÉQUIPEMENTS / MATÉRIEL</span></div>
+      <h1 class="page-title">Matériel Médical <span>— ACE3 + KAT</span></h1>
+      <p class="page-subtitle">Référence des dispositifs gameplay RP avec interactions ACE molette et menu KAT.</p>
+    </div>
+
+    <div class="section-title">Airway management (KAT)</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Item</th><th>Indication</th><th>Prérequis</th><th>Interaction ACE</th><th>Notes RP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="text-bright">Guédel (OPA)</td><td>Inconscient GCS&lt;8, respiration maintenue</td><td>Aucun</td><td>ACE interact → insérer</td><td>Ne pas utiliser si réflexe nauséeux présent</td></tr>
+        <tr><td class="text-bright">NPA (Nasopharyngeal)</td><td>Semi-conscient, obstruction partielle</td><td>Aucun</td><td>ACE interact</td><td>Mieux toléré que guédel</td></tr>
+        <tr><td class="text-bright">Endotracheal Tube (IOT)</td><td>ACR, GCS≤7, protection VAS</td><td>Laryngoscope requis</td><td>ACE interact + KAT menu</td><td>Confirmer position par auscultation fictive</td></tr>
+        <tr><td class="text-bright">Cricothyrotomie</td><td>IOT impossible</td><td>Surgical kit + scalpel</td><td>KAT menu uniquement</td><td>Dernière option — airway définitif</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Monitoring (KAT exclusif)</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Item</th><th>Paramètre mesuré</th><th>Comment l'utiliser</th><th>Valeurs alerte</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="text-bright">Pulse Oximeter</td><td>SpO2 + FC</td><td>ACE interact → poser sur doigt</td><td>SpO2 &lt;90% = urgence, FC &lt;40 ou &gt;150</td></tr>
+        <tr><td class="text-bright">Sphygmomanometer (PNI)</td><td>PA systolique/diastolique</td><td>ACE interact → bras</td><td>PAS &lt;90 = choc, &gt;180 = urgence HTA</td></tr>
+        <tr><td class="text-bright">ECG (KAT)</td><td>Rythme cardiaque</td><td>KAT menu → poser électrodes</td><td>FV/TV = choc électrique, asystolie = adrénaline</td></tr>
+        <tr><td class="text-bright">Capnometer (EtCO2)</td><td>Ventilation/métabolisme</td><td>KAT menu → intubé seulement</td><td>EtCO2 &lt;10 = RCP inefficace, &gt;20 = ROSC</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Chirurgie & gestes avancés (KAT)</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Item</th><th>Utilisation</th><th>Condition</th><th>Interaction</th><th>Note RP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="text-bright">Surgical Kit</td><td>Suture plaies, thoracotomie</td><td>Personnel médical uniquement</td><td>KAT menu</td><td>Nécessite environnement stable</td></tr>
+        <tr><td class="text-bright">Chest Seal (vented)</td><td>Pneumothorax ouvert</td><td>Immédiat sur scène</td><td>ACE interact</td><td>Toujours vented en préhospitalier</td></tr>
+        <tr><td class="text-bright">Needle Decompression</td><td>Pneumothorax suffocant</td><td>2ème espace intercostal</td><td>KAT interact</td><td>Soulagement immédiat</td></tr>
+        <tr><td class="text-bright">IO Kit (EZ-IO)</td><td>VVP impossible, urgence vitale</td><td>Tibia proximal ou humérus</td><td>KAT interact</td><td>Aussi efficace que VVP</td></tr>
+      </tbody>
+    </table>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <span>SAMU 96 · Portail Support · Usage interne uniquement</span>
+  <span class="topbar-clock"></span>
+</footer>
+
+<script src="nav.js"></script>
+<script src="main.js"></script>
+<script>renderNav('equipements.html');</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formations — Ambulancier</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">
+      <img src="assets/logo-samu96.png" alt="Logo SAMU 96" class="logo-img">
+      <span class="logo-name"><span>96</span> · SUPPORT</span>
+    </a>
+    <div class="topbar-status">
+      <div class="status-dot"></div>
+      SYSTÈME EN LIGNE
+    </div>
+  </div>
+  <nav class="topbar-nav"></nav>
+  <div class="topbar-right">
+    <span class="topbar-clock"></span>
+    <span class="badge badge-yellow">PARCOURS AMBULANCIER</span>
+    <button class="hamburger">☰</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"></aside>
+  <main class="main">
+    <div class="page-header">
+      <div class="breadcrumb">/ <span>FORMATIONS</span> / <span>AMBULANCIER</span></div>
+      <h1 class="page-title">Parcours <span>Ambulancier</span></h1>
+      <p class="page-subtitle">Compétences de terrain prioritaires pour la prise en charge, le transport et la sécurité en urgence.</p>
+    </div>
+
+    <div class="section-title">Objectifs de formation</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Objectif</th><th>Niveau visé</th><th>Évaluation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Conduire un bilan primaire ABCDE rapide et hiérarchisé.</td><td>Intermédiaire</td><td>Mise en situation chronométrée</td></tr>
+        <tr><td>Réaliser les techniques d'immobilisation et de brancardage sans perte de sécurité.</td><td>Expert</td><td>Atelier pratique + validation manœuvres</td></tr>
+        <tr><td>Appliquer la conduite d'urgence et les communications radio.</td><td>Intermédiaire</td><td>Parcours simulation + debriefing radio</td></tr>
+        <tr><td>Mettre en œuvre les gestes de premiers secours vitaux.</td><td>Débutant</td><td>QCM + atelier pratique secourisme</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Modules / chapitres</div>
+    <div class="cards-grid">
+      <a href="#" class="card">
+        <span class="card-icon">01</span>
+        <div class="card-title">Bilan primaire ABCDE</div>
+        <div class="card-desc">Évaluation rapide, priorisation des menaces vitales et packaging initial du patient.</div>
+        <div class="card-meta"><span class="card-tag">Durée : 3h00</span><span class="badge badge-green">DISPONIBLE</span></div>
+      </a>
+      <a href="#" class="card">
+        <span class="card-icon">02</span>
+        <div class="card-title">Immobilisation et brancardage</div>
+        <div class="card-desc">Matelas coquille, plan dur, collier cervical et transferts sécurisés.</div>
+        <div class="card-meta"><span class="card-tag">Durée : 3h30</span><span class="badge badge-yellow">EN COURS</span></div>
+      </a>
+      <a href="#" class="card">
+        <span class="card-icon">03</span>
+        <div class="card-title">Conduite en situation d'urgence</div>
+        <div class="card-desc">Règles de priorité, anticipation des risques et communication radio opérationnelle.</div>
+        <div class="card-meta"><span class="card-tag">Durée : 2h30</span><span class="badge badge-green">DISPONIBLE</span></div>
+      </a>
+      <a href="#" class="card">
+        <span class="card-icon">04</span>
+        <div class="card-title">Gestes de premiers secours</div>
+        <div class="card-desc">PLS, obstruction des voies aériennes, compression et contrôle des hémorragies.</div>
+        <div class="card-meta"><span class="card-tag">Durée : 2h15</span><span class="badge badge-yellow">EN COURS</span></div>
+      </a>
+    </div>
+
+    <div class="section-title">Tableau des compétences visées</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Compétence</th><th>Domaine</th><th>Niveau</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Repérer et traiter les détresses vitales initiales</td><td>Évaluation clinique</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td></tr>
+        <tr><td>Installer un patient traumatique en sécurité</td><td>Traumatologie</td><td><span class="badge badge-red">EXPERT</span></td></tr>
+        <tr><td>Coordonner déplacement urgent et flux radio</td><td>Conduite / Transmission</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td></tr>
+        <tr><td>Réaliser les gestes secouristes de base</td><td>Secourisme</td><td><span class="badge badge-yellow">DÉBUTANT</span></td></tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+
+<footer class="footer">
+  <span>SAMU 96 · Portail Support · Usage interne uniquement</span>
+  <span class="topbar-clock"></span>
+</footer>
+
+<script src="nav.js"></script>
+<script src="main.js"></script>
+<script>renderNav('formations.html');</script>
+</body>
+</html>

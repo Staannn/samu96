@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bandages & Hémostase — SAMU 96</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">
+      <img src="assets/logo-samu96.png" alt="Logo SAMU 96" class="logo-img">
+      <span class="logo-name"><span>96</span> · SUPPORT</span>
+    </a>
+  </div>
+  <nav class="topbar-nav"></nav>
+  <div class="topbar-right">
+    <span class="topbar-clock"></span>
+    <button class="hamburger">☰</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"></aside>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="breadcrumb">/ <span>ÉQUIPEMENTS / BANDAGES</span></div>
+      <h1 class="page-title">Bandages & Hémostase <span>— ACE3 + KAT</span></h1>
+      <p class="page-subtitle">Utilisation RP des bandages via ACE menu (H) et interactions molette contextuelles.</p>
+    </div>
+
+    <div class="section-title">Tableau des bandages</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Item</th><th>Mod</th><th>Type blessure</th><th>Efficacité</th><th>Risque rouvrir</th><th>Utilisation RP</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-bright">Bandage (Basic)</td>
+          <td class="mono">ACE</td>
+          <td>Toutes</td>
+          <td>Faible</td>
+          <td>Élevé</td>
+          <td>Dépannage uniquement</td>
+        </tr>
+        <tr>
+          <td class="text-bright">Bandage (Elastic)</td>
+          <td class="mono">ACE</td>
+          <td>Toutes</td>
+          <td>Moyenne</td>
+          <td>Moyen</td>
+          <td>Usage courant</td>
+        </tr>
+        <tr>
+          <td class="text-bright">Bandage (Packing)</td>
+          <td class="mono">ACE</td>
+          <td>Blessures profondes</td>
+          <td>Bonne</td>
+          <td>Faible</td>
+          <td>Plaies profondes</td>
+        </tr>
+        <tr>
+          <td class="text-bright">QuikClot (Hemostatic)</td>
+          <td class="mono">ACE</td>
+          <td>Artérielle/veineuse</td>
+          <td>Très bonne</td>
+          <td>Très faible</td>
+          <td>Hémorragie grave</td>
+        </tr>
+        <tr>
+          <td class="text-bright">Tourniquet (CAT)</td>
+          <td class="mono">ACE+KAT</td>
+          <td>Membre</td>
+          <td>Totale</td>
+          <td>Aucun</td>
+          <td>Amputation/artère sectionnée — max 2h</td>
+        </tr>
+        <tr>
+          <td class="text-bright">Wound Packing</td>
+          <td class="mono">KAT</td>
+          <td>Cavitaire</td>
+          <td>Excellente</td>
+          <td>Très faible</td>
+          <td>Plaie ouverte thorax/abdo</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Procédure bandage ACE</div>
+    <div class="panel">
+      <div class="panel-header">Check-list visuelle</div>
+      <div class="panel-body">
+        <table class="data-table" style="margin-bottom:0;">
+          <thead>
+            <tr><th>Étape</th><th>Action gameplay RP</th><th>Interaction ACE/KAT</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">1</td>
+              <td>Évaluer type et localisation blessure</td>
+              <td>ACE examine → <span class="mono">H</span></td>
+            </tr>
+            <tr>
+              <td class="mono">2</td>
+              <td>Appliquer CAT si membre avec saignement artériel</td>
+              <td><span class="mono">H</span> → membre → Tourniquet (CAT)</td>
+            </tr>
+            <tr>
+              <td class="mono">3</td>
+              <td>Nettoyer plaie si possible</td>
+              <td>Packing bandage ou QuikClot selon profondeur</td>
+            </tr>
+            <tr>
+              <td class="mono">4</td>
+              <td>Suturer en hôpital</td>
+              <td>Surgical kit requis</td>
+            </tr>
+            <tr>
+              <td class="mono">5</td>
+              <td>Surveiller reopening et rebander</td>
+              <td>Contrôle périodique via ACE examine</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <span>SAMU 96 · Portail Support · Usage interne uniquement</span>
+  <span class="topbar-clock"></span>
+</footer>
+
+<script src="nav.js"></script>
+<script src="main.js"></script>
+<script>renderNav('equipements.html');</script>
+</body>
+</html>

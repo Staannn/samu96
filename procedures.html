@@ -29,165 +29,316 @@
     <div class="page-header">
       <div class="breadcrumb">/ <span>PROCÉDURES OPÉRATIONNELLES</span></div>
       <h1 class="page-title">Procédures <span>Opérationnelles</span></h1>
-      <p class="page-subtitle">Protocoles d'intervention, arbres décisionnels et conduites à tenir</p>
+      <p class="page-subtitle">Protocoles terrain, régulation médicale et conduite opérationnelle</p>
     </div>
 
-    <div class="alert alert-yellow">
-      <strong>📌 Rappel</strong>
-      Ces procédures sont applicables en contexte SAMU 96. Tout écart doit être signalé au médecin régulateur.
+    <div class="procedures-main-tabs" role="tablist" aria-label="Onglets procédures">
+      <button class="main-tab-btn active" data-main-tab-target="medical" role="tab" aria-selected="true">PROCÉDURES MÉDICALES</button>
+      <button class="main-tab-btn" data-main-tab-target="dispatch" role="tab" aria-selected="false">RÉGULATION &amp; DISPATCH</button>
     </div>
 
-    <div class="section-title">Procédures prioritaires</div>
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Code</th>
-          <th>Procédure</th>
-          <th>Catégorie</th>
-          <th>Version</th>
-          <th>Statut</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="mono text-red">P-001</td>
-          <td class="text-bright">Prise en charge arrêt cardiaque extra-hospitalier</td>
-          <td><span class="badge badge-red">VITAL</span></td>
-          <td class="mono text-dim">v4.1</td>
-          <td><span class="badge badge-green">ACTIF</span></td>
-        </tr>
-        <tr>
-          <td class="mono text-red">P-002</td>
-          <td class="text-bright">Régulation médicale — niveaux de priorité (P0 à P4)</td>
-          <td><span class="badge badge-yellow">RÉGUL.</span></td>
-          <td class="mono text-dim">v3.0</td>
-          <td><span class="badge badge-green">ACTIF</span></td>
-        </tr>
-        <tr>
-          <td class="mono text-red">P-003</td>
-          <td class="text-bright">Déclenchement SMUR — critères et délais</td>
-          <td><span class="badge badge-yellow">RÉGUL.</span></td>
-          <td class="mono text-dim">v2.2</td>
-          <td><span class="badge badge-green">ACTIF</span></td>
-        </tr>
-        <tr>
-          <td class="mono text-red">P-004</td>
-          <td class="text-bright">Triage NRBC — procédure de décontamination</td>
-          <td><span class="badge badge-red">CRISE</span></td>
-          <td class="mono text-dim">v3.2</td>
-          <td><span class="badge badge-yellow">MAJ EN COURS</span></td>
-        </tr>
-        <tr>
-          <td class="mono text-red">P-005</td>
-          <td class="text-bright">Plan ORSAN — activation et niveaux de réponse</td>
-          <td><span class="badge badge-red">CRISE</span></td>
-          <td class="mono text-dim">v2.0</td>
-          <td><span class="badge badge-green">ACTIF</span></td>
-        </tr>
-        <tr>
-          <td class="mono text-red">P-006</td>
-          <td class="text-bright">Intubation oro-trachéale — check-list pré-geste</td>
-          <td><span class="badge badge-dim">GESTE</span></td>
-          <td class="mono text-dim">v2.1</td>
-          <td><span class="badge badge-green">ACTIF</span></td>
-        </tr>
-        <tr>
-          <td class="mono text-red">P-007</td>
-          <td class="text-bright">Voie intra-osseuse — technique et contre-indications</td>
-          <td><span class="badge badge-dim">GESTE</span></td>
-          <td class="mono text-dim">v1.5</td>
-          <td><span class="badge badge-green">ACTIF</span></td>
-        </tr>
-        <tr>
-          <td class="mono text-red">P-008</td>
-          <td class="text-bright">Transfert inter-hospitalier médicalisé (TIHM)</td>
-          <td><span class="badge badge-yellow">TRANSPORT</span></td>
-          <td class="mono text-dim">v2.3</td>
-          <td><span class="badge badge-green">ACTIF</span></td>
-        </tr>
-        <tr>
-          <td class="mono text-red">P-009</td>
-          <td class="text-bright">Accouchement inopiné à domicile</td>
-          <td><span class="badge badge-dim">OBSTÉTR.</span></td>
-          <td class="mono text-dim">v1.8</td>
-          <td><span class="badge badge-green">ACTIF</span></td>
-        </tr>
-        <tr>
-          <td class="mono text-red">P-010</td>
-          <td class="text-bright">Patient psychiatrique — contention et cadre légal</td>
-          <td><span class="badge badge-dim">PSY</span></td>
-          <td class="mono text-dim">v1.2</td>
-          <td><span class="badge badge-yellow">RÉVISION 2025</span></td>
-        </tr>
-      </tbody>
-    </table>
+    <section id="tab-medical" class="main-tab-panel active" role="tabpanel">
+      <div class="medical-layout">
+        <aside class="medical-menu">
+          <button class="procedure-btn active" data-procedure-target="acr">Arrêt cardiaque</button>
+          <button class="procedure-btn" data-procedure-target="shock">Choc (hémorragique / cardiogénique / anaphylactique)</button>
+          <button class="procedure-btn" data-procedure-target="resp">Détresse respiratoire</button>
+          <button class="procedure-btn" data-procedure-target="trauma">Traumatisme grave</button>
+        </aside>
 
-    <div class="section-title">Arbre décisionnel — Régulation</div>
-    <div class="grid-2">
+        <div class="medical-content">
+          <article id="procedure-acr" class="procedure-panel active">
+            <div class="alert alert-red"><strong>Priorité :</strong> P0/P1 — engagement immédiat</div>
+            <div class="section-title">Check-list intervention — Arrêt cardiaque</div>
+            <div class="hud-steps">
+              <label class="hud-step"><input type="checkbox"><span class="step-number">01</span><span class="step-text">Confirmation ACR</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">02</span><span class="step-text">RCP 30:2</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">03</span><span class="step-text">Mise en place DSA</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">04</span><span class="step-text">Adrénaline 1 mg au cycle 2</span><span class="step-med">ADRÉNALINE 1mg</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">05</span><span class="step-text">Amiodarone 300 mg au cycle 3</span><span class="step-med">AMIODARONE 300mg</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">06</span><span class="step-text">Recherche causes réversibles (4H/4T)</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">07</span><span class="step-text">Vérification ROSC et stabilisation post-ROSC</span><span class="badge badge-green step-done">FAIT</span></label>
+            </div>
 
-      <div class="panel">
-        <div class="panel-header">📞 Arbre appel entrant</div>
-        <div class="panel-body" style="font-size:13px; line-height:1.8;">
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="background:var(--bg2);border:1px solid var(--border);padding:8px 12px;border-radius:3px;font-family:var(--mono);font-size:11px;">
-              <span class="text-red">01 ·</span> Identification appelant + motif
+            <div class="panel">
+              <div class="panel-header">Médicaments</div>
+              <div class="panel-body">
+                <table class="data-table">
+                  <thead><tr><th>Médicament</th><th>Dose</th><th>Voie</th><th>Timing</th></tr></thead>
+                  <tbody>
+                    <tr><td>Adrénaline</td><td class="mono">1 mg</td><td>IV</td><td>Cycle 2 puis toutes 3-5 min</td></tr>
+                    <tr><td>Amiodarone</td><td class="mono">300 mg</td><td>IV</td><td>Cycle 3</td></tr>
+                    <tr><td>Atropine (asystolie)</td><td class="mono">1 mg</td><td>IV</td><td>Selon protocole médical</td></tr>
+                    <tr><td>Bicarbonate</td><td class="mono">Selon GDS</td><td>IV</td><td>Si pH &lt; 7.1</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div style="text-align:center;color:var(--text-dim);font-size:16px;">↓</div>
-            <div style="background:var(--bg2);border:1px solid var(--border);padding:8px 12px;border-radius:3px;font-family:var(--mono);font-size:11px;">
-              <span class="text-red">02 ·</span> Localisation précise + sécurisation
+
+            <div class="panel">
+              <div class="panel-header">Critères de réévaluation</div>
+              <div class="panel-body">
+                <ul>
+                  <li>Rythme cardiaque et activité électrique organisée.</li>
+                  <li>Présence d’un pouls central et reprise hémodynamique.</li>
+                  <li>ETCO2, SpO2 et qualité des compressions thoraciques.</li>
+                  <li>Correction des causes 4H/4T avant transport.</li>
+                </ul>
+              </div>
             </div>
-            <div style="text-align:center;color:var(--text-dim);font-size:16px;">↓</div>
-            <div style="background:var(--bg2);border:1px solid var(--border);padding:8px 12px;border-radius:3px;font-family:var(--mono);font-size:11px;">
-              <span class="text-red">03 ·</span> Bilan clinique rapide (ABCDE téléphonique)
+          </article>
+
+          <article id="procedure-shock" class="procedure-panel">
+            <div class="alert alert-red"><strong>Priorité :</strong> P0/P1 selon instabilité hémodynamique</div>
+            <div class="section-title">Choc — sous-types</div>
+
+            <div class="shock-subtabs" role="tablist" aria-label="Sous-onglets choc">
+              <button class="shock-tab-btn active" data-shock-tab="hem">Hémorragique</button>
+              <button class="shock-tab-btn" data-shock-tab="cardio">Cardiogénique</button>
+              <button class="shock-tab-btn" data-shock-tab="ana">Anaphylactique</button>
             </div>
-            <div style="text-align:center;color:var(--text-dim);font-size:16px;">↓</div>
-            <div style="background:var(--bg2);border:1px solid var(--border);padding:8px 12px;border-radius:3px;font-family:var(--mono);font-size:11px;">
-              <span class="text-red">04 ·</span> Décision médecin régulateur
+
+            <div id="shock-hem" class="shock-subpanel active">
+              <div class="hud-steps">
+                <label class="hud-step"><input type="checkbox"><span class="step-number">01</span><span class="step-text">Pose de garrot / contrôle hémorragie</span><span class="badge badge-green step-done">FAIT</span></label>
+                <label class="hud-step"><input type="checkbox"><span class="step-number">02</span><span class="step-text">Remplissage NaCl 500 ml</span><span class="step-med">NaCl 500ml</span><span class="badge badge-green step-done">FAIT</span></label>
+                <label class="hud-step"><input type="checkbox"><span class="step-number">03</span><span class="step-text">Administration Exacyl 1 g IV</span><span class="step-med">EXACYL 1g</span><span class="badge badge-green step-done">FAIT</span></label>
+                <label class="hud-step"><input type="checkbox"><span class="step-number">04</span><span class="step-text">Transfusion si disponible</span><span class="badge badge-green step-done">FAIT</span></label>
+              </div>
             </div>
-            <div style="display:flex;gap:8px;margin-top:4px;">
-              <div style="flex:1;background:rgba(230,48,48,0.1);border:1px solid rgba(230,48,48,0.3);padding:6px;border-radius:3px;font-family:var(--mono);font-size:10px;text-align:center;color:var(--red);">P0/P1 → SMUR</div>
-              <div style="flex:1;background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);padding:6px;border-radius:3px;font-family:var(--mono);font-size:10px;text-align:center;color:var(--yellow);">P2/P3 → VSAV</div>
-              <div style="flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border-dim);padding:6px;border-radius:3px;font-family:var(--mono);font-size:10px;text-align:center;">P4 → Conseil</div>
+
+            <div id="shock-cardio" class="shock-subpanel">
+              <div class="hud-steps">
+                <label class="hud-step"><input type="checkbox"><span class="step-number">01</span><span class="step-text">Début dobutamine</span><span class="step-med">DOBUTAMINE</span><span class="badge badge-green step-done">FAIT</span></label>
+                <label class="hud-step"><input type="checkbox"><span class="step-number">02</span><span class="step-text">Diurétiques selon surcharge</span><span class="step-med">DIURÉTIQUE</span><span class="badge badge-green step-done">FAIT</span></label>
+                <label class="hud-step"><input type="checkbox"><span class="step-number">03</span><span class="step-text">Monitoring strict continu</span><span class="badge badge-green step-done">FAIT</span></label>
+                <label class="hud-step"><input type="checkbox"><span class="step-number">04</span><span class="step-text">Organisation transfert USIC</span><span class="badge badge-green step-done">FAIT</span></label>
+              </div>
+            </div>
+
+            <div id="shock-ana" class="shock-subpanel">
+              <div class="hud-steps">
+                <label class="hud-step"><input type="checkbox"><span class="step-number">01</span><span class="step-text">Adrénaline 0.5 mg IM immédiate</span><span class="step-med">ADRÉNALINE 0.5mg IM</span><span class="badge badge-green step-done">FAIT</span></label>
+                <label class="hud-step"><input type="checkbox"><span class="step-number">02</span><span class="step-text">Remplissage vasculaire</span><span class="step-med">NaCl</span><span class="badge badge-green step-done">FAIT</span></label>
+                <label class="hud-step"><input type="checkbox"><span class="step-number">03</span><span class="step-text">Corticoïdes</span><span class="step-med">CORTICOÏDE</span><span class="badge badge-green step-done">FAIT</span></label>
+                <label class="hud-step"><input type="checkbox"><span class="step-number">04</span><span class="step-text">Antihistaminiques</span><span class="step-med">ANTI-H1</span><span class="badge badge-green step-done">FAIT</span></label>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">Médicaments</div>
+              <div class="panel-body">
+                <table class="data-table">
+                  <thead><tr><th>Médicament</th><th>Dose</th><th>Voie</th><th>Timing</th></tr></thead>
+                  <tbody>
+                    <tr><td>Exacyl</td><td class="mono">1 g</td><td>IV</td><td>Précoce hémorragique</td></tr>
+                    <tr><td>Dobutamine</td><td class="mono">5-20 µg/kg/min</td><td>IVSE</td><td>Choc cardiogénique</td></tr>
+                    <tr><td>Adrénaline</td><td class="mono">0.5 mg</td><td>IM</td><td>Anaphylaxie immédiate</td></tr>
+                    <tr><td>Corticoïdes / Antihistaminiques</td><td class="mono">Selon protocole</td><td>IV</td><td>Après adrénaline</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">Critères de réévaluation</div>
+              <div class="panel-body">
+                <ul>
+                  <li>PAM, fréquence cardiaque, recoloration cutanée.</li>
+                  <li>Diurèse, lactates et réponse au remplissage.</li>
+                  <li>Régression des signes allergiques ou congestifs.</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article id="procedure-resp" class="procedure-panel">
+            <div class="alert alert-red"><strong>Priorité :</strong> P1 en cas de décompensation respiratoire aiguë</div>
+            <div class="section-title">Check-list intervention — Détresse respiratoire</div>
+            <div class="hud-steps">
+              <label class="hud-step"><input type="checkbox"><span class="step-number">01</span><span class="step-text">Position demi-assise</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">02</span><span class="step-text">O2 15 L/min au masque haute concentration</span><span class="step-med">O2 15L/min</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">03</span><span class="step-text">Objectif SpO2 &gt; 94%</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">04</span><span class="step-text">Recherche étiologie</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">05</span><span class="step-text">Traitement spécifique selon cause</span><span class="badge badge-green step-done">FAIT</span></label>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">Médicaments et thérapeutiques</div>
+              <div class="panel-body">
+                <table class="data-table">
+                  <thead><tr><th>Médicament / Geste</th><th>Dose</th><th>Voie</th><th>Timing</th></tr></thead>
+                  <tbody>
+                    <tr><td>Furosémide (OAP)</td><td class="mono">20-40 mg</td><td>IV</td><td>Après évaluation hémodynamique</td></tr>
+                    <tr><td>Salbutamol (asthme)</td><td class="mono">2.5-5 mg</td><td>Nébulisation</td><td>Immédiat, répétable</td></tr>
+                    <tr><td>Exsufflation (pneumothorax)</td><td class="mono">Procédure</td><td>Geste</td><td>En urgence</td></tr>
+                    <tr><td>Héparine (EP suspectée)</td><td class="mono">Selon protocole</td><td>IV/SC</td><td>Après avis médical</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">Critères de réévaluation</div>
+              <div class="panel-body">
+                <ul>
+                  <li>Amélioration fréquence respiratoire et SpO2.</li>
+                  <li>Diminution tirage/signes de lutte.</li>
+                  <li>Contrôle auscultatoire et tolérance hémodynamique.</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article id="procedure-trauma" class="procedure-panel">
+            <div class="alert alert-red"><strong>Priorité :</strong> P0/P1 si polytraumatisme ou instabilité</div>
+            <div class="section-title">Check-list intervention — Traumatisme grave</div>
+            <div class="hud-steps">
+              <label class="hud-step"><input type="checkbox"><span class="step-number">A</span><span class="step-text">Airway : subluxation mandibulaire, canule de Guédel, IOT si GCS &lt; 8</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">B</span><span class="step-text">Breathing : SpO2, FR, auscultation</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">C</span><span class="step-text">Circulation : FC, PA, hémorragie, VVP x2</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">D</span><span class="step-text">Disability : GCS, pupilles, déficit moteur</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">E</span><span class="step-text">Exposure : déshabillage complet, prévention hypothermie</span><span class="badge badge-green step-done">FAIT</span></label>
+              <label class="hud-step"><input type="checkbox"><span class="step-number">F</span><span class="step-text">Packaging final : collier cervical + matelas coquille</span><span class="badge badge-green step-done">FAIT</span></label>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">Médicaments</div>
+              <div class="panel-body">
+                <table class="data-table">
+                  <thead><tr><th>Médicament</th><th>Dose</th><th>Voie</th><th>Timing</th></tr></thead>
+                  <tbody>
+                    <tr><td>Analgésie</td><td class="mono">Selon protocole</td><td>IV</td><td>Après ABC stabilisé</td></tr>
+                    <tr><td>Remplissage</td><td class="mono">250-500 ml</td><td>IV</td><td>Si hypotension</td></tr>
+                    <tr><td>Acide tranexamique</td><td class="mono">1 g</td><td>IV</td><td>Trauma hémorragique précoce</td></tr>
+                    <tr><td>Antibioprophylaxie</td><td class="mono">Selon lésion</td><td>IV</td><td>Après avis médical</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">Critères de réévaluation</div>
+              <div class="panel-body">
+                <ul>
+                  <li>Réévaluation ABCDE répétée après chaque geste.</li>
+                  <li>Stabilité tensionnelle et neurologique avant transfert.</li>
+                  <li>Contrôle immobilisation et protection thermique.</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-dispatch" class="main-tab-panel" role="tabpanel">
+      <div class="regulation-layout">
+        <div class="panel">
+          <div class="panel-header">Arbre décisionnel — appel entrant</div>
+          <div class="panel-body">
+            <div class="decision-tree">
+              <div class="tree-node tree-action">APPEL ENTRANT</div>
+              <div class="tree-arrow"></div>
+              <div class="tree-node tree-action">Identification + localisation</div>
+              <div class="tree-arrow"></div>
+              <div class="tree-node tree-action">Motif principal</div>
+              <div class="tree-arrow"></div>
+              <div class="tree-node tree-action">Bilan téléphonique ABCDE</div>
+              <div class="tree-arrow"></div>
+              <div class="tree-node tree-decision">Décision médecin régulateur</div>
+              <div class="tree-arrow"></div>
+              <div class="tree-branches">
+                <div class="tree-node tree-immediate">P0/P1 : SMUR immédiat</div>
+                <div class="tree-node tree-action">P2/P3 : VSAV</div>
+                <div class="tree-node tree-advice">P4 : Conseil médical</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <div class="panel-header">Niveaux de priorité P0 → P4</div>
+            <div class="panel-body">
+              <table class="data-table">
+                <thead><tr><th>Niveau</th><th>Définition</th><th>Délai</th></tr></thead>
+                <tbody>
+                  <tr class="priority-p0"><td><span class="badge badge-red">P0</span></td><td>ACR / détresse vitale immédiate</td><td class="mono text-red">&lt; 8 min</td></tr>
+                  <tr class="priority-p1"><td><span class="badge badge-red">P1</span></td><td>Urgence vitale potentielle</td><td class="mono text-red">&lt; 15 min</td></tr>
+                  <tr class="priority-p2"><td><span class="badge badge-yellow">P2</span></td><td>Urgence relative</td><td class="mono">&lt; 30 min</td></tr>
+                  <tr class="priority-p3"><td><span class="badge badge-yellow">P3</span></td><td>Urgence différable</td><td class="mono">&lt; 60 min</td></tr>
+                  <tr class="priority-p4"><td><span class="badge badge-green">P4</span></td><td>Conseil médical / orientation différée</td><td class="mono">Différé</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">Critères SMUR vs VSAV</div>
+            <div class="panel-body smur-vsav">
+              <div>
+                <span class="badge badge-red">SMUR</span>
+                <ul>
+                  <li>P0 / P1</li>
+                  <li>Médicalisation nécessaire</li>
+                  <li>Gestes avancés préhospitaliers</li>
+                </ul>
+              </div>
+              <div>
+                <span class="badge badge-yellow">VSAV</span>
+                <ul>
+                  <li>P2 / P3</li>
+                  <li>Surveillance simple</li>
+                  <li>Transport programmé ou orienté</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">Plan ORSAN / Multi-victimes</div>
+            <div class="panel-body">
+              <div class="alert alert-yellow"><strong>Alerte jaune :</strong> déclenchement renforcé si &gt; 5 victimes</div>
+              <div class="alert alert-red"><strong>Alerte rouge :</strong> crise majeure si &gt; 15 victimes</div>
+              <table class="data-table">
+                <thead><tr><th>Niveau</th><th>Déclenchement</th><th>Responsable</th><th>Moyens engagés</th></tr></thead>
+                <tbody>
+                  <tr><td class="mono">ORSAN 1</td><td>Incident localisé</td><td>Médecin régulateur</td><td>Ressources SAMU renforcées</td></tr>
+                  <tr><td class="mono">ORSAN 2</td><td>Multi-victimes limité</td><td>Cadre de garde</td><td>SMUR + VSAV additionnels</td></tr>
+                  <tr><td class="mono">ORSAN 3</td><td>Afflux massif régional</td><td>Direction SAMU</td><td>Poste médical avancé, rappel équipes</td></tr>
+                  <tr><td class="mono">ORSAN 4</td><td>Crise majeure</td><td>Cellule de crise</td><td>Coordination zonale, moyens exceptionnels</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">TIHM — Transfert Inter-Hospitalier Médicalisé</div>
+            <div class="panel-body check-columns">
+              <div>
+                <div class="section-title" style="margin-top:0;">Check-list départ</div>
+                <ul>
+                  <li>Dossier médical complet</li>
+                  <li>Consentement validé</li>
+                  <li>Monitoring opérationnel</li>
+                  <li>Médicaments prêts</li>
+                  <li>Contact service receveur confirmé</li>
+                </ul>
+              </div>
+              <div>
+                <div class="section-title" style="margin-top:0;">Check-list arrivée</div>
+                <ul>
+                  <li>Transmissions SBAR</li>
+                  <li>Passage de relais équipe receveuse</li>
+                  <li>Traçabilité horodatée</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="panel">
-        <div class="panel-header">🚨 Niveaux de priorité</div>
-        <div class="panel-body">
-          <table class="data-table">
-            <thead><tr><th>Niveau</th><th>Définition</th><th>Délai</th></tr></thead>
-            <tbody>
-              <tr>
-                <td><span class="badge badge-red">P0</span></td>
-                <td>Arrêt cardiaque / détresse vitale immédiate</td>
-                <td class="mono text-red">&lt; 8 min</td>
-              </tr>
-              <tr>
-                <td><span class="badge badge-red">P1</span></td>
-                <td>Urgence vitale potentielle</td>
-                <td class="mono text-red">&lt; 15 min</td>
-              </tr>
-              <tr>
-                <td><span class="badge badge-yellow">P2</span></td>
-                <td>Urgence relative</td>
-                <td class="mono text-yellow">&lt; 30 min</td>
-              </tr>
-              <tr>
-                <td><span class="badge badge-yellow">P3</span></td>
-                <td>Urgence différable</td>
-                <td class="mono text-yellow">&lt; 60 min</td>
-              </tr>
-              <tr>
-                <td><span class="badge badge-dim">P4</span></td>
-                <td>Conseil médical / orientation</td>
-                <td class="mono">Différé</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    </section>
 
     </div>
 
@@ -201,6 +352,86 @@
 
 <script src="nav.js"></script>
 <script src="main.js"></script>
+<script>
+  (function () {
+    const mainTabButtons = Array.from(document.querySelectorAll('[data-main-tab-target]'));
+    const mainPanels = {
+      medical: document.getElementById('tab-medical'),
+      dispatch: document.getElementById('tab-dispatch')
+    };
+
+    function activateMainTab(target) {
+      mainTabButtons.forEach((button) => {
+        const isActive = button.dataset.mainTabTarget === target;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-selected', String(isActive));
+      });
+
+      Object.keys(mainPanels).forEach((key) => {
+        mainPanels[key].classList.toggle('active', key === target);
+      });
+    }
+
+    mainTabButtons.forEach((button) => {
+      button.addEventListener('click', () => activateMainTab(button.dataset.mainTabTarget));
+    });
+
+    const procedureButtons = Array.from(document.querySelectorAll('[data-procedure-target]'));
+    const procedurePanels = {
+      acr: document.getElementById('procedure-acr'),
+      shock: document.getElementById('procedure-shock'),
+      resp: document.getElementById('procedure-resp'),
+      trauma: document.getElementById('procedure-trauma')
+    };
+
+    function activateProcedure(target) {
+      procedureButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.procedureTarget === target);
+      });
+
+      Object.keys(procedurePanels).forEach((key) => {
+        procedurePanels[key].classList.toggle('active', key === target);
+      });
+    }
+
+    procedureButtons.forEach((button) => {
+      button.addEventListener('click', () => activateProcedure(button.dataset.procedureTarget));
+    });
+
+    const shockButtons = Array.from(document.querySelectorAll('[data-shock-tab]'));
+    const shockPanels = {
+      hem: document.getElementById('shock-hem'),
+      cardio: document.getElementById('shock-cardio'),
+      ana: document.getElementById('shock-ana')
+    };
+
+    function activateShockTab(target) {
+      shockButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.shockTab === target);
+      });
+
+      Object.keys(shockPanels).forEach((key) => {
+        shockPanels[key].classList.toggle('active', key === target);
+      });
+    }
+
+    shockButtons.forEach((button) => {
+      button.addEventListener('click', () => activateShockTab(button.dataset.shockTab));
+    });
+
+    document.querySelectorAll('.hud-step input[type="checkbox"]').forEach((checkbox) => {
+      checkbox.addEventListener('change', function () {
+        const step = this.closest('.hud-step');
+        if (!step) return;
+        step.classList.toggle('done', this.checked);
+      });
+    });
+
+    activateMainTab('medical');
+    activateProcedure('acr');
+    activateShockTab('hem');
+  })();
+</script>
 <script>renderNav('procedures.html');</script>
 </body>
 </html>
