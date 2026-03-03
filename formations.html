@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formations — SAMU 96</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">
+      <div class="logo-badge">SAMU</div>
+      <span class="logo-name"><span>96</span> · SUPPORT</span>
+    </a>
+  </div>
+  <nav class="topbar-nav"></nav>
+  <div class="topbar-right">
+    <span class="topbar-clock"></span>
+    <button class="hamburger">☰</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"></aside>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="breadcrumb">/ <span>FORMATIONS</span></div>
+      <h1 class="page-title">Documents de <span>Formation</span></h1>
+      <p class="page-subtitle">Protocoles, supports pédagogiques, fiches mémo et bilans de stage</p>
+    </div>
+
+    <!-- Filtres -->
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;">
+      <button onclick="filterDocs('all')" id="btn-all" class="filter-btn active-filter" style="font-family:var(--mono);font-size:11px;padding:5px 12px;background:var(--red-glow);color:var(--red);border:1px solid rgba(230,48,48,0.3);border-radius:3px;cursor:pointer;">TOUT</button>
+      <button onclick="filterDocs('urg')" id="btn-urg" class="filter-btn" style="font-family:var(--mono);font-size:11px;padding:5px 12px;background:var(--bg3);color:var(--text-dim);border:1px solid var(--border-dim);border-radius:3px;cursor:pointer;">URGENCES</button>
+      <button onclick="filterDocs('rcp')" id="btn-rcp" class="filter-btn" style="font-family:var(--mono);font-size:11px;padding:5px 12px;background:var(--bg3);color:var(--text-dim);border:1px solid var(--border-dim);border-radius:3px;cursor:pointer;">RCP / GESTES</button>
+      <button onclick="filterDocs('reg')" id="btn-reg" class="filter-btn" style="font-family:var(--mono);font-size:11px;padding:5px 12px;background:var(--bg3);color:var(--text-dim);border:1px solid var(--border-dim);border-radius:3px;cursor:pointer;">RÉGULATION</button>
+      <button onclick="filterDocs('stage')" id="btn-stage" class="filter-btn" style="font-family:var(--mono);font-size:11px;padding:5px 12px;background:var(--bg3);color:var(--text-dim);border:1px solid var(--border-dim);border-radius:3px;cursor:pointer;">STAGES</button>
+    </div>
+
+    <div class="section-title">Protocoles & Procédures</div>
+    <ul class="doc-list" id="doc-container">
+
+      <li class="doc-item" data-cat="rcp">
+        <span class="doc-ext">PDF</span>
+        <span class="doc-name">RCP adulte — protocole SAMU 96</span>
+        <span class="badge badge-green">ACTIF</span>
+        <span class="doc-date">01/03/2025</span>
+      </li>
+      <li class="doc-item" data-cat="rcp">
+        <span class="doc-ext">PDF</span>
+        <span class="doc-name">RCP pédiatrique — protocole adapté âge</span>
+        <span class="badge badge-green">ACTIF</span>
+        <span class="doc-date">01/03/2025</span>
+      </li>
+      <li class="doc-item" data-cat="urg">
+        <span class="doc-ext">PDF</span>
+        <span class="doc-name">Prise en charge arrêt cardiaque — algorithme ERC 2021</span>
+        <span class="badge badge-yellow">MAJ</span>
+        <span class="doc-date">20/02/2025</span>
+      </li>
+      <li class="doc-item" data-cat="urg">
+        <span class="doc-ext">PDF</span>
+        <span class="doc-name">Choc anaphylactique — CAT et traitement</span>
+        <span class="badge badge-green">ACTIF</span>
+        <span class="doc-date">15/02/2025</span>
+      </li>
+      <li class="doc-item" data-cat="urg">
+        <span class="doc-ext">PDF</span>
+        <span class="doc-name">Détresse respiratoire aiguë — algorithme décisionnel</span>
+        <span class="badge badge-green">ACTIF</span>
+        <span class="doc-date">10/02/2025</span>
+      </li>
+      <li class="doc-item" data-cat="reg">
+        <span class="doc-ext">DOC</span>
+        <span class="doc-name">Guide de régulation médicale — niveaux de priorité</span>
+        <span class="badge badge-dim">v2.1</span>
+        <span class="doc-date">05/02/2025</span>
+      </li>
+      <li class="doc-item" data-cat="reg">
+        <span class="doc-ext">DOC</span>
+        <span class="doc-name">Critères d'engagement SMUR vs VSAV</span>
+        <span class="badge badge-green">ACTIF</span>
+        <span class="doc-date">28/01/2025</span>
+      </li>
+      <li class="doc-item" data-cat="reg">
+        <span class="doc-ext">PDF</span>
+        <span class="doc-name">Bilan infirmier — structure SBAR adapté SAMU</span>
+        <span class="badge badge-green">ACTIF</span>
+        <span class="doc-date">20/01/2025</span>
+      </li>
+      <li class="doc-item" data-cat="stage">
+        <span class="doc-ext">DOC</span>
+        <span class="doc-name">Grille d'évaluation stagiaire — semestre 3</span>
+        <span class="badge badge-dim">MODÈLE</span>
+        <span class="doc-date">15/01/2025</span>
+      </li>
+      <li class="doc-item" data-cat="stage">
+        <span class="doc-ext">DOC</span>
+        <span class="doc-name">Objectifs de stage SAMU — compétences infirmières</span>
+        <span class="badge badge-dim">MODÈLE</span>
+        <span class="doc-date">10/01/2025</span>
+      </li>
+
+    </ul>
+
+    <div class="section-title">Supports pédagogiques</div>
+    <div class="cards-grid">
+      <div class="card">
+        <span class="card-icon">💊</span>
+        <div class="card-title">Pharmacologie urgences</div>
+        <div class="card-desc">Médicaments d'urgence, voies d'administration, doses adulte/pédia.</div>
+        <div class="card-meta"><span class="card-tag">PHARMA</span><span class="card-count">3 fiches</span></div>
+      </div>
+      <div class="card">
+        <span class="card-icon">⚡</span>
+        <div class="card-title">Défibrillation & monitoring</div>
+        <div class="card-desc">DSA, choc électrique externe, lecture ECG basique.</div>
+        <div class="card-meta"><span class="card-tag">GESTES</span><span class="card-count">2 fiches</span></div>
+      </div>
+      <div class="card">
+        <span class="card-icon">🩹</span>
+        <div class="card-title">Traumatologie</div>
+        <div class="card-desc">Bilan traumatique, garrot, packaging, immobilisation.</div>
+        <div class="card-meta"><span class="card-tag">TRAUMA</span><span class="card-count">4 fiches</span></div>
+      </div>
+      <div class="card">
+        <span class="card-icon">🧠</span>
+        <div class="card-title">Neurologie urgences</div>
+        <div class="card-desc">AVC, score NIHSS, convulsions, Glasgow.</div>
+        <div class="card-meta"><span class="card-tag">NEURO</span><span class="card-count">3 fiches</span></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <span>SAMU 96 · Portail Support · Usage interne uniquement</span>
+  <span class="topbar-clock"></span>
+</footer>
+
+<style>
+.doc-item { cursor: default; }
+.doc-item[data-cat].hidden { display: none; }
+</style>
+
+<script>
+function filterDocs(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.style.background = 'var(--bg3)';
+    b.style.color = 'var(--text-dim)';
+    b.style.borderColor = 'var(--border-dim)';
+  });
+  const active = document.getElementById('btn-' + cat);
+  if (active) {
+    active.style.background = 'var(--red-glow)';
+    active.style.color = 'var(--red)';
+    active.style.borderColor = 'rgba(230,48,48,0.3)';
+  }
+  document.querySelectorAll('.doc-item[data-cat]').forEach(el => {
+    el.classList.toggle('hidden', cat !== 'all' && el.dataset.cat !== cat);
+  });
+}
+</script>
+<script src="js/nav.js"></script>
+<script src="js/main.js"></script>
+<script>renderNav('formations.html');</script>
+</body>
+</html>

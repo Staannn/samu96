@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spécialités — SAMU 96</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">
+      <div class="logo-badge">SAMU</div>
+      <span class="logo-name"><span>96</span> · SUPPORT</span>
+    </a>
+  </div>
+  <nav class="topbar-nav"></nav>
+  <div class="topbar-right">
+    <span class="topbar-clock"></span>
+    <button class="hamburger">☰</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"></aside>
+  <main class="main">
+
+    <div class="page-header">
+      <div class="breadcrumb">/ <span>SPÉCIALITÉS MÉDICALES</span></div>
+      <h1 class="page-title">Spécialités <span>Médicales</span></h1>
+      <p class="page-subtitle">Ressources par domaine clinique — fiches de référence, protocoles et algorithmes</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <a href="#cardio" class="card">
+        <span class="card-icon">🫀</span>
+        <div class="card-title">Cardiologie</div>
+        <div class="card-desc">IDM, SCA, trouble du rythme, choc cardiogénique, arrêt cardiaque.</div>
+        <div class="card-meta"><span class="card-tag">CARDIO</span><span class="card-count">7 fiches</span></div>
+      </a>
+
+      <a href="#neuro" class="card">
+        <span class="card-icon">🧠</span>
+        <div class="card-title">Neurologie</div>
+        <div class="card-desc">AVC, convulsions, Glasgow, NIHSS, états de mal épileptique.</div>
+        <div class="card-meta"><span class="card-tag">NEURO</span><span class="card-count">5 fiches</span></div>
+      </a>
+
+      <a href="#trauma" class="card">
+        <span class="card-icon">🦴</span>
+        <div class="card-title">Traumatologie</div>
+        <div class="card-desc">Bilan primaire, ABCDE, garrot, packaging, traumatisme crânien.</div>
+        <div class="card-meta"><span class="card-tag">TRAUMA</span><span class="card-count">6 fiches</span></div>
+      </a>
+
+      <a href="#respi" class="card">
+        <span class="card-icon">🫁</span>
+        <div class="card-title">Pneumologie</div>
+        <div class="card-desc">Détresse respiratoire, OAP, EP, asthme sévère, pneumothorax.</div>
+        <div class="card-meta"><span class="card-tag">RESPI</span><span class="card-count">5 fiches</span></div>
+      </a>
+
+      <a href="#pediatrie" class="card">
+        <span class="card-icon">👶</span>
+        <div class="card-title">Pédiatrie</div>
+        <div class="card-desc">Constantes pédiatriques, RCP nouveau-né, convulsions fébriles.</div>
+        <div class="card-meta"><span class="card-tag">PÉDIA</span><span class="card-count">4 fiches</span></div>
+      </a>
+
+      <a href="#toxico" class="card">
+        <span class="card-icon">☣️</span>
+        <div class="card-title">Toxicologie</div>
+        <div class="card-desc">Intoxications médicamenteuses, CO, antidotes, overdoses.</div>
+        <div class="card-meta"><span class="card-tag">TOXICO</span><span class="card-count">5 fiches</span></div>
+      </a>
+
+      <a href="#obstetrique" class="card">
+        <span class="card-icon">🤰</span>
+        <div class="card-title">Obstétrique</div>
+        <div class="card-desc">Accouchement inopiné, pré-éclampsie, hémorragie du post-partum.</div>
+        <div class="card-meta"><span class="card-tag">OBSTÉTR.</span><span class="card-count">3 fiches</span></div>
+      </a>
+
+      <a href="#psychiatrie" class="card">
+        <span class="card-icon">🧩</span>
+        <div class="card-title">Psychiatrie urgences</div>
+        <div class="card-desc">Agitation, tentative de suicide, HDT/HO, contention.</div>
+        <div class="card-meta"><span class="card-tag">PSY</span><span class="card-count">4 fiches</span></div>
+      </a>
+
+    </div>
+
+    <!-- Section détail Cardiologie -->
+    <div id="cardio" style="scroll-margin-top: 80px;">
+      <div class="section-title">🫀 Cardiologie</div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-header">⚡ Arrêt cardiaque — Algorithme</div>
+          <div class="panel-body">
+            <table class="data-table">
+              <thead><tr><th>Étape</th><th>Action</th><th>Durée</th></tr></thead>
+              <tbody>
+                <tr><td class="mono text-red">01</td><td>Confirmation ACR — absence pouls/ventilation</td><td class="mono">≤ 10s</td></tr>
+                <tr><td class="mono text-red">02</td><td>Appel SAMU + démarrage RCP 30:2</td><td class="mono">Immédiat</td></tr>
+                <tr><td class="mono text-red">03</td><td>Pose DSA + analyse rythme</td><td class="mono">≤ 2 min</td></tr>
+                <tr><td class="mono text-red">04</td><td>Adrénaline 1mg IV/IO si FV/TV sans pouls</td><td class="mono">Cycle 2</td></tr>
+                <tr><td class="mono text-red">05</td><td>Amiodarone 300mg si FV réfractaire</td><td class="mono">Cycle 3-5</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">📊 Constantes critiques — Cardio</div>
+          <div class="panel-body">
+            <table class="data-table">
+              <thead><tr><th>Paramètre</th><th>Normal</th><th>Alerte</th></tr></thead>
+              <tbody>
+                <tr><td>FC</td><td class="text-green mono">60–100/min</td><td class="text-red mono">&lt;40 ou &gt;150</td></tr>
+                <tr><td>PA Systolique</td><td class="text-green mono">100–140 mmHg</td><td class="text-red mono">&lt;90 mmHg</td></tr>
+                <tr><td>SpO2</td><td class="text-green mono">≥ 95%</td><td class="text-red mono">&lt;90%</td></tr>
+                <tr><td>Glycémie</td><td class="text-green mono">0.7–1.1 g/L</td><td class="text-red mono">&lt;0.5 ou &gt;3</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section détail Toxicologie -->
+    <div id="toxico" style="scroll-margin-top: 80px; margin-top: 20px;">
+      <div class="section-title">☣️ Toxicologie — Antidotes clés</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Toxique</th><th>Symptômes</th><th>Antidote</th><th>Dose adulte</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Opioïdes</td>
+            <td><span class="badge badge-red">Bradypnée · Myosis · Coma</span></td>
+            <td class="text-bright">Naloxone</td>
+            <td class="mono">0.4 mg IV/IM — titration</td>
+          </tr>
+          <tr>
+            <td>Benzodiazépines</td>
+            <td><span class="badge badge-yellow">Sédation · Hypotonie</span></td>
+            <td class="text-bright">Flumazénil</td>
+            <td class="mono">0.2 mg IV — max 1 mg</td>
+          </tr>
+          <tr>
+            <td>Paracétamol</td>
+            <td><span class="badge badge-yellow">Nausées · Cytolyse</span></td>
+            <td class="text-bright">N-Acétylcystéine</td>
+            <td class="mono">150 mg/kg IV sur 1h</td>
+          </tr>
+          <tr>
+            <td>Organophosphorés</td>
+            <td><span class="badge badge-red">Syndrome cholinergique</span></td>
+            <td class="text-bright">Atropine + Pralidoxime</td>
+            <td class="mono">2–4 mg IV (titration)</td>
+          </tr>
+          <tr>
+            <td>CO (intox. oxyde de carbone)</td>
+            <td><span class="badge badge-red">Céphalées · Coma · Acidose</span></td>
+            <td class="text-bright">O2 haute concentration</td>
+            <td class="mono">15L/min masque haute concentration</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <span>SAMU 96 · Portail Support · Usage interne uniquement</span>
+  <span class="topbar-clock"></span>
+</footer>
+
+<script src="js/nav.js"></script>
+<script src="js/main.js"></script>
+<script>renderNav('specialites.html');</script>
+</body>
+</html>
