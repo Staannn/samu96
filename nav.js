@@ -8,7 +8,6 @@ function renderNav(activePage) {
     { href: 'specialites.html', label: 'Spécialités' },
     { href: 'procedures.html', label: 'Procédures' },
     { href: 'equipements.html', label: 'Équipements' },
-    { href: 'modules.html', label: 'Modules' },
     { href: 'intranet.html', label: 'Intranet' },
   ];
 
@@ -40,7 +39,7 @@ function renderNav(activePage) {
 function getSidebarIcon(href) {
   const icons = {
     'index.html': '🏠', 'formations.html': '📚', 'specialites.html': '🫀',
-    'procedures.html': '📋', 'equipements.html': '🧰', 'modules.html': '🔌', 'intranet.html': '🔒'
+    'procedures.html': '📋', 'equipements.html': '🧰', 'intranet.html': '🔒'
   };
   return icons[href] || '▸';
 }

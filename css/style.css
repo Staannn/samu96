@@ -856,7 +856,7 @@ button:hover,
 
 .step-text {
   flex: 1;
-  color: #fff;
+  color: var(--text-bright);
   font-size: 13px;
 }
 
@@ -951,25 +951,25 @@ button:hover,
 .tree-action {
   background: rgba(234, 179, 8, 0.18);
   border-color: rgba(234, 179, 8, 0.4);
-  color: #facc15;
+  color: #7c6500;
 }
 
 .tree-decision {
   background: rgba(0, 48, 135, 0.25);
   border-color: rgba(0, 48, 135, 0.6);
-  color: #9ec5ff;
+  color: #0b2a66;
 }
 
 .tree-immediate {
   background: rgba(230, 48, 48, 0.18);
   border-color: rgba(230, 48, 48, 0.5);
-  color: #ff8b8b;
+  color: #8f1d1d;
 }
 
 .tree-advice {
   background: rgba(34, 197, 94, 0.18);
   border-color: rgba(34, 197, 94, 0.5);
-  color: #86efac;
+  color: #166534;
 }
 
 .tree-arrow {

@@ -11,7 +11,6 @@ samu96/
 ├── specialites.html    # Spécialités médicales
 ├── procedures.html     # Procédures opérationnelles
 ├── equipements.html    # Équipements & inventaire
-├── modules.html        # Modules tiers
 ├── intranet.html       # Intranet & fiches terrain
 ├── css/
 │   └── style.css       # Styles globaux

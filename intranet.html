@@ -206,9 +206,9 @@
 <script>
   renderNav('intranet.html');
 
-  const sidebar = document.querySelector('.sidebar');
-  if (sidebar) {
-    sidebar.insertAdjacentHTML('beforeend', `
+  const intranetSidebar = document.querySelector('.sidebar');
+  if (intranetSidebar) {
+    intranetSidebar.insertAdjacentHTML('beforeend', `
       <div class="sidebar-section">
         <div class="sidebar-label">Intranet</div>
         <a href="#annonces" class="sidebar-link"><span class="icon">📌</span>Annonces</a>
@@ -219,7 +219,7 @@
       </div>
     `);
 
-    const anchorLinks = Array.from(sidebar.querySelectorAll('a.sidebar-link[href^="#"]'));
+    const anchorLinks = Array.from(intranetSidebar.querySelectorAll('a.sidebar-link[href^="#"]'));
     const sections = anchorLinks
       .map((link) => document.querySelector(link.getAttribute('href')))
       .filter(Boolean);
