@@ -126,62 +126,62 @@
 
     <section id="tab-rea" class="main-tab-panel active" role="tabpanel">
       <div class="alert" style="background:rgba(0,48,135,0.12);border-color:rgba(0,48,135,0.34);color:#00215e;">
-        <strong>ALERTE SYSTÈME</strong>
-        Ce système de réanimation est propre au serveur SAMU 96. Il régit les chances de survie d'un patient en ACR.
+        <strong>ALERTE OPÉRATIONNELLE</strong>
+        Ce protocole de réanimation est spécifique au SAMU 96. Il encadre la prise en charge de l'arrêt cardio-respiratoire et conditionne directement les chances de survie du patient.
       </div>
 
-      <div class="section-title">1.1 — Les 3 scores</div>
+      <div class="section-title">1.1 — Les 3 indicateurs cliniques de survie</div>
       <div class="stats-row">
         <div class="stat-block">
-          <div class="stat-value mono">noflow</div>
+          <div class="stat-value mono">NEURO</div>
           <div class="stat-label">DÉGRADATION NEUROLOGIQUE</div>
         </div>
         <div class="stat-block">
-          <div class="stat-value mono">reviving</div>
-          <div class="stat-label">EFFORT CUMULÉ</div>
+          <div class="stat-value mono">RÉCUP</div>
+          <div class="stat-label">POTENTIEL DE RÉCUPÉRATION</div>
         </div>
         <div class="stat-block">
-          <div class="stat-value mono">needed</div>
-          <div class="stat-label">SEUIL À ATTEINDRE</div>
+          <div class="stat-value mono">SEUIL</div>
+          <div class="stat-label">SEUIL DE RÉCUPÉRATION REQUIS</div>
         </div>
       </div>
       <div class="panel">
-        <div class="panel-header">Scores de réanimation</div>
+        <div class="panel-header">Indicateurs de réanimation</div>
         <div class="panel-body">
           <table class="data-table">
             <thead>
               <tr>
-                <th>Score</th>
-                <th>Valeur initiale</th>
-                <th>Évolution</th>
+                <th>Indicateur clinique</th>
+                <th>Constat à l'arrivée sur ACR</th>
+                <th>Évolution pendant la prise en charge</th>
                 <th>Description</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td class="mono">noflow_score</td>
-                <td>Entre 280 et 320 à l'initialisation de l'ACR</td>
-                <td>+1 par seconde</td>
-                <td>Représente la dégradation neurologique. Plus il monte, plus la réanimation devient difficile.</td>
+                <td class="mono">Indice de dégradation neurologique</td>
+                <td>Entre 280 et 320 dès la constatation de l'ACR</td>
+                <td>Progression moyenne de +1 par seconde sans mesure correctrice</td>
+                <td>Reflète l'aggravation cérébrale liée au délai sans circulation efficace. Plus cet indice augmente, plus la fenêtre thérapeutique se réduit.</td>
               </tr>
               <tr>
-                <td class="mono">reviving_score</td>
-                <td>0 à l'initialisation</td>
-                <td>Augmente selon les actions</td>
-                <td>Représente l'effort de réanimation cumulé. Doit atteindre <span class="mono">reviving_score_needed</span> pour réanimer.</td>
+                <td class="mono">Potentiel de récupération</td>
+                <td>Démarre à 0 au début de la réanimation</td>
+                <td>Augmente en fonction de la qualité des gestes et des thérapeutiques engagées</td>
+                <td>Traduit l'efficacité cumulée de la réanimation. Il doit atteindre le seuil de récupération requis pour espérer un retour à la circulation spontanée.</td>
               </tr>
               <tr>
-                <td class="mono">reviving_score_needed</td>
-                <td>Entre 50 et 70 à l'initialisation</td>
-                <td>+40 si <span class="mono">noflow_score &gt; 800</span></td>
-                <td>Seuil à atteindre pour réanimer. Augmente si trop de temps s'est écoulé.</td>
+                <td class="mono">Seuil de récupération requis</td>
+                <td>Entre 50 et 70 au déclenchement de la prise en charge</td>
+                <td>Majoration de 40 points lorsque la dégradation neurologique dépasse 800</td>
+                <td>Niveau minimal à atteindre pour restaurer une circulation efficace. Il augmente lorsque le délai de no-flow devient critique.</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <div class="section-title">1.2 — Massages cardiaques</div>
+      <div class="section-title">1.2 — Qualité des compressions thoraciques</div>
       <div class="panel">
         <div class="panel-header">Cycle de massages — 8 secondes</div>
         <div class="panel-body">
@@ -189,22 +189,22 @@
             <thead>
               <tr>
                 <th>Profil</th>
-                <th>reviving_score</th>
-                <th>noflow_score</th>
+                <th>Impact sur le potentiel de récupération</th>
+                <th>Impact sur la dégradation neurologique</th>
                 <th>Efficacité</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Civil / FDO (sans formation médicale)</td>
-                <td>+1 à +4 par cycle</td>
-                <td>-2 à -6 par cycle</td>
+                <td>Gain modéré : +1 à +4 par cycle</td>
+                <td>Frein partiel de la dégradation : -2 à -6 par cycle</td>
                 <td><span class="badge badge-yellow">FAIBLE EFFICACITÉ</span></td>
               </tr>
               <tr>
                 <td>Pompier / Urgentiste (formation médicale)</td>
-                <td>+5 à +9 par cycle</td>
-                <td>-10 à -20 par cycle</td>
+                <td>Gain significatif : +5 à +9 par cycle</td>
+                <td>Réduction marquée de la dégradation : -10 à -20 par cycle</td>
                 <td><span class="badge badge-green">HAUTE EFFICACITÉ</span></td>
               </tr>
             </tbody>
@@ -212,16 +212,16 @@
         </div>
       </div>
 
-      <div class="section-title">1.3 — Actions médicales sur les scores</div>
+      <div class="section-title">1.3 — Effets des thérapeutiques sur les paramètres de survie</div>
       <div class="panel">
-        <div class="panel-header">Effets des équipements médicaux sur les scores</div>
+        <div class="panel-header">Effets des équipements médicaux sur les indicateurs cliniques</div>
         <div class="panel-body">
           <table class="data-table">
             <thead>
               <tr>
                 <th>Équipement</th>
-                <th>Effet sur noflow_score</th>
-                <th>Effet sur reviving_score</th>
+                <th>Effet sur l'indice de dégradation neurologique</th>
+                <th>Effet sur le potentiel de récupération</th>
                 <th>Utilisations</th>
                 <th>Particularité</th>
               </tr>
@@ -229,29 +229,29 @@
             <tbody>
               <tr>
                 <td>Adrénaline</td>
-                <td>-80 à -120</td>
-                <td>aucun</td>
+                <td>Baisse rapide : -80 à -120</td>
+                <td>Pas d'effet direct chiffré</td>
                 <td>Illimitée</td>
                 <td><span class="badge badge-red">PUISSANT</span></td>
               </tr>
               <tr>
                 <td>Défibrillateur</td>
-                <td>-40 à -60</td>
-                <td>+20 à +30</td>
+                <td>Réduction : -40 à -60</td>
+                <td>Amélioration : +20 à +30</td>
                 <td>Illimitée</td>
-                <td>1 chance sur 6 de réanimer instantanément — <span class="badge badge-yellow">⚡ CHANCE</span></td>
+                <td>Peut entraîner un retour en rythme efficace dans 1 cas sur 6 — <span class="badge badge-yellow">⚡ CHANCE</span></td>
               </tr>
               <tr>
                 <td>Oxygénothérapie</td>
-                <td>-100 à -200 (usage unique) puis progression à +0.5/s au lieu de +1/s</td>
-                <td>aucun</td>
+                <td>Baisse immédiate de -100 à -200, puis ralentissement de progression à +0.5/s (au lieu de +1/s)</td>
+                <td>Pas d'effet direct chiffré</td>
                 <td>1 seule fois</td>
                 <td><span class="badge badge-red">USAGE UNIQUE</span></td>
               </tr>
               <tr>
                 <td>ECMO</td>
-                <td>Stoppe le comptage + remet <span class="mono">noflow_score</span> à 0</td>
-                <td>+30</td>
+                <td>Stabilisation complète avec retour à 0 et arrêt de l'aggravation</td>
+                <td>Amélioration majeure : +30</td>
                 <td>1 seule fois</td>
                 <td><span class="badge" style="background:rgba(127,29,29,0.18);color:#7f1d1d;border-color:rgba(127,29,29,0.42);">DERNIER RECOURS</span></td>
               </tr>
@@ -260,43 +260,43 @@
         </div>
       </div>
 
-      <div class="section-title">1.4 — Conditions de réanimation</div>
+      <div class="section-title">1.4 — Critères cliniques de réanimation</div>
       <div class="grid-2">
         <div class="panel">
-          <div class="panel-header" style="color:#047857;background:rgba(16,185,129,0.12);border-bottom-color:rgba(16,185,129,0.25);">CONDITIONS DE RÉANIMATION</div>
+          <div class="panel-header" style="color:#047857;background:rgba(16,185,129,0.12);border-bottom-color:rgba(16,185,129,0.25);">FENÊTRE THÉRAPEUTIQUE ACTIVE</div>
           <div class="panel-body mono" style="line-height:1.8;">
-            if (<span class="text-green">reviving_score &gt;= reviving_score_needed</span>)<br>
-            AND (<span class="text-green">noflow_score &lt; 800</span>)<br>
+            La réanimation reste indiquée lorsque le potentiel de récupération atteint le seuil requis<br>
+            et que la dégradation neurologique demeure inférieure à 800.<br>
             → <strong class="text-green">RÉANIMATION POSSIBLE ✓</strong>
           </div>
         </div>
         <div class="panel">
-          <div class="panel-header" style="color:#b91c1c;background:rgba(220,38,38,0.12);border-bottom-color:rgba(220,38,38,0.25);">ÉCHEC IRRÉVERSIBLE</div>
+          <div class="panel-header" style="color:#b91c1c;background:rgba(220,38,38,0.12);border-bottom-color:rgba(220,38,38,0.25);">LÉSIONS IRRÉVERSIBLES</div>
           <div class="panel-body mono" style="line-height:1.8;">
-            if (<span class="text-red">noflow_score &gt; 800</span>)<br>
-            → <strong class="text-red">RÉANIMATION IMPOSSIBLE ✗</strong><br>
-            → <span class="text-red">reviving_score_needed += 40</span><br>
-            <span class="text-dim">(le seuil augmente pour durcir toute tentative ultérieure)</span>
+            Au-delà d'une dégradation neurologique de 800,<br>
+            les chances de survie chutent fortement.<br>
+            Le seuil de récupération requis augmente de 40 points,<br>
+            ce qui durcit toute tentative ultérieure.
           </div>
         </div>
       </div>
       <div class="alert alert-red">
         <strong>CRITIQUE</strong>
-        Passé 800 de noflow_score, chaque seconde compte double. Engagez l'ECMO et l'oxygénothérapie en priorité absolue.
+        Après le seuil neurologique de 800, la fenêtre thérapeutique se referme rapidement et le risque de lésions cérébrales irréversibles devient majeur. Oxygénothérapie précoce et ECMO doivent être priorisées sans délai selon indication.
       </div>
 
-      <div class="section-title">1.5 — Chronologie d'une réanimation</div>
+      <div class="section-title">1.5 — Chronologie opérationnelle de prise en charge</div>
       <div class="panel">
-        <div class="panel-header">Timeline opérationnelle</div>
+        <div class="panel-header">Déroulé protocolisé</div>
         <div class="panel-body">
           <ul class="timeline-list">
-            <li class="timeline-item"><span class="mono">[0s]</span> ACR constaté — noflow_score initialisé (280–320) — reviving_score_needed fixé (50–70)</li>
-            <li class="timeline-item"><span class="mono">[0–30s]</span> Massages par civil/FDO en attendant les secours</li>
-            <li class="timeline-item"><span class="mono">[Arrivée SAMU]</span> Massages pompier/urgentiste × 8s = reviving_score +5 à +9 / noflow_score -10 à -20</li>
-            <li class="timeline-item"><span class="mono">[Dès que possible]</span> Oxygénothérapie (usage unique) → noflow_score -100 à -200 + ralentit à +0.5/s</li>
-            <li class="timeline-item"><span class="mono">[Si FV/TV]</span> Défibrillateur → reviving +20/+30, noflow -40/-60, 1/6 chance réa instantanée</li>
-            <li class="timeline-item"><span class="mono">[Si réfractaire]</span> Adrénaline → noflow -80 à -120 (répétable)</li>
-            <li class="timeline-item"><span class="mono">[Dernier recours]</span> ECMO → noflow = 0, comptage stoppé, reviving +30</li>
+            <li class="timeline-item"><span class="mono">[0s]</span> ACR confirmé : état neurologique déjà engagé (280–320) et seuil de récupération requis estimé entre 50 et 70.</li>
+            <li class="timeline-item"><span class="mono">[0–30s]</span> RCP témoin par civil ou FDO : maintien minimal de perfusion en attendant l'équipe médicalisée.</li>
+            <li class="timeline-item"><span class="mono">[Arrivée SAMU]</span> Compressions professionnelles sur cycles de 8 secondes : amélioration notable du potentiel de récupération (+5 à +9) et frein neurologique marqué (-10 à -20).</li>
+            <li class="timeline-item"><span class="mono">[Dès que possible]</span> Oxygénothérapie haute concentration en geste prioritaire unique : baisse neurologique immédiate (-100 à -200), puis progression ralentie à +0.5/s.</li>
+            <li class="timeline-item"><span class="mono">[Si FV/TV]</span> Défibrillation ciblée : amélioration du potentiel de récupération (+20 à +30), réduction neurologique (-40 à -60), avec possibilité rare de reprise immédiate de circulation (1/6).</li>
+            <li class="timeline-item"><span class="mono">[Si réfractaire]</span> Adrénaline répétable selon séquence de réanimation : réduction de la dégradation neurologique (-80 à -120).</li>
+            <li class="timeline-item"><span class="mono">[Dernier recours]</span> ECMO pour ACR réfractaire : stabilisation complète de l'état neurologique, retour à 0 et gain de récupération (+30).</li>
           </ul>
         </div>
       </div>
