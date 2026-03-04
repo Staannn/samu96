@@ -3,8 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Équipements ACE/KAT — SAMU 96</title>
+  <title>Équipements — SAMU 96</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .equip-tabs {
+      display: flex;
+      gap: 8px;
+      margin: 18px 0 24px;
+      flex-wrap: wrap;
+    }
+
+    .timeline-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-left: 2px solid rgba(0, 48, 135, 0.28);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-left: 12px;
+      padding: 0 0 16px 16px;
+      color: var(--text-bright);
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -19px;
+      top: 3px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 3px rgba(0, 48, 135, 0.16);
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .triage-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .triage-card {
+      border: 1px solid rgba(0, 48, 135, 0.16);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .triage-square {
+      width: 100%;
+      height: 54px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-family: var(--head);
+      letter-spacing: 1.2px;
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .triage-square.gray { background: #6b7280; }
+    .triage-square.yellow { background: #ca8a04; }
+    .triage-square.red { background: #b91c1c; }
+    .triage-square.black { background: #111827; }
+
+    @media (max-width: 980px) {
+      .triage-grid {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .triage-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -27,93 +114,395 @@
   <main class="main">
 
     <div class="page-header">
-      <div class="breadcrumb">/ <span>ÉQUIPEMENTS / ACE3 + KAT</span></div>
-      <h1 class="page-title">Guide Équipements <span>RP SAMU</span></h1>
-      <p class="page-subtitle">Référence gameplay Arma 3 RP pour les soins SAMU via ACE3 et KAT Medical.</p>
+      <div class="breadcrumb">/ <span>ÉQUIPEMENTS</span></div>
+      <h1 class="page-title">Équipements <span>SAMU 96</span></h1>
+      <p class="page-subtitle">Système de réanimation serveur et inventaire opérationnel terrain.</p>
     </div>
 
-    <div class="alert" style="background:rgba(0,48,135,0.11);border-color:rgba(0,48,135,0.34);color:#00215e;">
-      <strong>INFO MODS</strong>
-      Ce guide est basé sur ACE3 + KAT Medical. Vérifiez la version des mods sur le launcher avant intervention.
+    <div class="equip-tabs" role="tablist" aria-label="Onglets équipements">
+      <button class="main-tab-btn active" data-main-tab-target="rea" role="tab" aria-selected="true">SYSTÈME DE RÉANIMATION</button>
+      <button class="main-tab-btn" data-main-tab-target="inventory" role="tab" aria-selected="false">MATÉRIEL &amp; INVENTAIRE</button>
     </div>
 
-    <div class="cards-grid">
-      <a class="card" href="eq-bandages.html">
-        <span class="card-icon">🩹</span>
-        <div class="card-title">Bandages & Hémostase</div>
-        <div class="card-desc">Bandages ACE/KAT, contrôle hémorragie et priorités terrain via menu soin.</div>
-        <div class="card-meta"><span class="card-tag">ACE MENU</span><span class="badge badge-red">ROUGE</span></div>
-      </a>
-      <a class="card" href="eq-medicaments.html">
-        <span class="card-icon">💉</span>
-        <div class="card-title">Médicaments & Drogues</div>
-        <div class="card-desc">Posologies RP, interactions critiques et protocole injection ACE/KAT en intervention.</div>
-        <div class="card-meta"><span class="card-tag">PROTOCOLES</span><span class="badge" style="background:rgba(37,99,235,0.14);color:#1d4ed8;border-color:rgba(37,99,235,0.34);">BLEU</span></div>
-      </a>
-      <a class="card" href="eq-materiel.html">
-        <span class="card-icon">🫁</span>
-        <div class="card-title">Matériel médical</div>
-        <div class="card-desc">Airway, monitoring et gestes avancés avec interactions molette puis menu ACE/KAT.</div>
-        <div class="card-meta"><span class="card-tag">MATÉRIEL</span><span class="badge badge-yellow">JAUNE</span></div>
-      </a>
-      <a class="card" href="eq-raccourcis.html">
-        <span class="card-icon">⌨️</span>
-        <div class="card-title">Raccourcis & Interactions ACE</div>
-        <div class="card-desc">Touches essentielles, workflow SAMU complet et erreurs RP à éviter.</div>
-        <div class="card-meta"><span class="card-tag">CHEAT SHEET</span><span class="badge badge-green">VERT</span></div>
-      </a>
-    </div>
+    <section id="tab-rea" class="main-tab-panel active" role="tabpanel">
+      <div class="alert" style="background:rgba(0,48,135,0.12);border-color:rgba(0,48,135,0.34);color:#00215e;">
+        <strong>ALERTE SYSTÈME</strong>
+        Ce système de réanimation est propre au serveur SAMU 96. Il régit les chances de survie d'un patient en ACR.
+      </div>
 
-    <div class="section-title">Compatibilité ACE vanilla vs KAT Medical</div>
-    <table class="data-table">
-      <thead>
-        <tr><th>Fonctionnalité</th><th>ACE vanilla</th><th>KAT Medical</th><th>Notes</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="text-bright">Bandages</td>
-          <td>Oui</td>
-          <td>Oui (plus de types)</td>
-          <td>KAT remplace ACE</td>
-        </tr>
-        <tr>
-          <td class="text-bright">Morphine</td>
-          <td>Oui</td>
-          <td>Oui (dosage étendu)</td>
-          <td>Attention surdosage</td>
-        </tr>
-        <tr>
-          <td class="text-bright">Chirurgie</td>
-          <td>Non</td>
-          <td>Oui</td>
-          <td>Nécessite surgical kit</td>
-        </tr>
-        <tr>
-          <td class="text-bright">IV/IO</td>
-          <td>Basique</td>
-          <td>Avancé (NaCl, sang, médicaments IV)</td>
-          <td>Gestion complète de la perfusion</td>
-        </tr>
-        <tr>
-          <td class="text-bright">Airway management</td>
-          <td>Basique</td>
-          <td>Avancé (guédel, IOT, cric)</td>
-          <td>Voies aériennes fortement enrichies</td>
-        </tr>
-        <tr>
-          <td class="text-bright">Monitoring</td>
-          <td>Non</td>
-          <td>Oui (ECG, SpO2, PNI, EtCO2)</td>
-          <td>Surveillance vitale en continu</td>
-        </tr>
-        <tr>
-          <td class="text-bright">Triage</td>
-          <td>Oui</td>
-          <td>Oui (étendu)</td>
-          <td>Système SIEVE/SORT</td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="section-title">1.1 — Les 3 scores</div>
+      <div class="stats-row">
+        <div class="stat-block">
+          <div class="stat-value mono">noflow</div>
+          <div class="stat-label">DÉGRADATION NEUROLOGIQUE</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-value mono">reviving</div>
+          <div class="stat-label">EFFORT CUMULÉ</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-value mono">needed</div>
+          <div class="stat-label">SEUIL À ATTEINDRE</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">Scores de réanimation</div>
+        <div class="panel-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Score</th>
+                <th>Valeur initiale</th>
+                <th>Évolution</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">noflow_score</td>
+                <td>Entre 280 et 320 à l'initialisation de l'ACR</td>
+                <td>+1 par seconde</td>
+                <td>Représente la dégradation neurologique. Plus il monte, plus la réanimation devient difficile.</td>
+              </tr>
+              <tr>
+                <td class="mono">reviving_score</td>
+                <td>0 à l'initialisation</td>
+                <td>Augmente selon les actions</td>
+                <td>Représente l'effort de réanimation cumulé. Doit atteindre <span class="mono">reviving_score_needed</span> pour réanimer.</td>
+              </tr>
+              <tr>
+                <td class="mono">reviving_score_needed</td>
+                <td>Entre 50 et 70 à l'initialisation</td>
+                <td>+40 si <span class="mono">noflow_score &gt; 800</span></td>
+                <td>Seuil à atteindre pour réanimer. Augmente si trop de temps s'est écoulé.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-title">1.2 — Massages cardiaques</div>
+      <div class="panel">
+        <div class="panel-header">Cycle de massages — 8 secondes</div>
+        <div class="panel-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Profil</th>
+                <th>reviving_score</th>
+                <th>noflow_score</th>
+                <th>Efficacité</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Civil / FDO (sans formation médicale)</td>
+                <td>+1 à +4 par cycle</td>
+                <td>-2 à -6 par cycle</td>
+                <td><span class="badge badge-yellow">FAIBLE EFFICACITÉ</span></td>
+              </tr>
+              <tr>
+                <td>Pompier / Urgentiste (formation médicale)</td>
+                <td>+5 à +9 par cycle</td>
+                <td>-10 à -20 par cycle</td>
+                <td><span class="badge badge-green">HAUTE EFFICACITÉ</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-title">1.3 — Actions médicales sur les scores</div>
+      <div class="panel">
+        <div class="panel-header">Effets des équipements médicaux sur les scores</div>
+        <div class="panel-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Équipement</th>
+                <th>Effet sur noflow_score</th>
+                <th>Effet sur reviving_score</th>
+                <th>Utilisations</th>
+                <th>Particularité</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Adrénaline</td>
+                <td>-80 à -120</td>
+                <td>aucun</td>
+                <td>Illimitée</td>
+                <td><span class="badge badge-red">PUISSANT</span></td>
+              </tr>
+              <tr>
+                <td>Défibrillateur</td>
+                <td>-40 à -60</td>
+                <td>+20 à +30</td>
+                <td>Illimitée</td>
+                <td>1 chance sur 6 de réanimer instantanément — <span class="badge badge-yellow">⚡ CHANCE</span></td>
+              </tr>
+              <tr>
+                <td>Oxygénothérapie</td>
+                <td>-100 à -200 (usage unique) puis progression à +0.5/s au lieu de +1/s</td>
+                <td>aucun</td>
+                <td>1 seule fois</td>
+                <td><span class="badge badge-red">USAGE UNIQUE</span></td>
+              </tr>
+              <tr>
+                <td>ECMO</td>
+                <td>Stoppe le comptage + remet <span class="mono">noflow_score</span> à 0</td>
+                <td>+30</td>
+                <td>1 seule fois</td>
+                <td><span class="badge" style="background:rgba(127,29,29,0.18);color:#7f1d1d;border-color:rgba(127,29,29,0.42);">DERNIER RECOURS</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-title">1.4 — Conditions de réanimation</div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-header" style="color:#047857;background:rgba(16,185,129,0.12);border-bottom-color:rgba(16,185,129,0.25);">CONDITIONS DE RÉANIMATION</div>
+          <div class="panel-body mono" style="line-height:1.8;">
+            if (<span class="text-green">reviving_score &gt;= reviving_score_needed</span>)<br>
+            AND (<span class="text-green">noflow_score &lt; 800</span>)<br>
+            → <strong class="text-green">RÉANIMATION POSSIBLE ✓</strong>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-header" style="color:#b91c1c;background:rgba(220,38,38,0.12);border-bottom-color:rgba(220,38,38,0.25);">ÉCHEC IRRÉVERSIBLE</div>
+          <div class="panel-body mono" style="line-height:1.8;">
+            if (<span class="text-red">noflow_score &gt; 800</span>)<br>
+            → <strong class="text-red">RÉANIMATION IMPOSSIBLE ✗</strong><br>
+            → <span class="text-red">reviving_score_needed += 40</span><br>
+            <span class="text-dim">(le seuil augmente pour durcir toute tentative ultérieure)</span>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-red">
+        <strong>CRITIQUE</strong>
+        Passé 800 de noflow_score, chaque seconde compte double. Engagez l'ECMO et l'oxygénothérapie en priorité absolue.
+      </div>
+
+      <div class="section-title">1.5 — Chronologie d'une réanimation</div>
+      <div class="panel">
+        <div class="panel-header">Timeline opérationnelle</div>
+        <div class="panel-body">
+          <ul class="timeline-list">
+            <li class="timeline-item"><span class="mono">[0s]</span> ACR constaté — noflow_score initialisé (280–320) — reviving_score_needed fixé (50–70)</li>
+            <li class="timeline-item"><span class="mono">[0–30s]</span> Massages par civil/FDO en attendant les secours</li>
+            <li class="timeline-item"><span class="mono">[Arrivée SAMU]</span> Massages pompier/urgentiste × 8s = reviving_score +5 à +9 / noflow_score -10 à -20</li>
+            <li class="timeline-item"><span class="mono">[Dès que possible]</span> Oxygénothérapie (usage unique) → noflow_score -100 à -200 + ralentit à +0.5/s</li>
+            <li class="timeline-item"><span class="mono">[Si FV/TV]</span> Défibrillateur → reviving +20/+30, noflow -40/-60, 1/6 chance réa instantanée</li>
+            <li class="timeline-item"><span class="mono">[Si réfractaire]</span> Adrénaline → noflow -80 à -120 (répétable)</li>
+            <li class="timeline-item"><span class="mono">[Dernier recours]</span> ECMO → noflow = 0, comptage stoppé, reviving +30</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-inventory" class="main-tab-panel" role="tabpanel">
+      <div class="section-title">Équipements brancard Ferno F2</div>
+      <p class="page-subtitle" style="margin-bottom:14px;max-width:none;">
+        Le brancard Ferno F2 est le brancard standard du SAMU 96. Il est livré avec les équipements suivants pré-installés.
+      </p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Équipement</th>
+            <th>Description</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ferno F2 (brancard)</td>
+            <td>Brancard principal de transport, réglable en hauteur, compatible toutes configurations véhicule</td>
+            <td><span class="badge" style="background:rgba(37,99,235,0.14);color:#1d4ed8;border-color:rgba(37,99,235,0.34);">STANDARD</span></td>
+          </tr>
+          <tr>
+            <td>Lucas 3 (fixé sur brancard)</td>
+            <td>Dispositif de compression thoracique mécanique automatisé. Maintient un rythme de massages constant sans fatigue opérateur. Utilisé en réanimation prolongée.</td>
+            <td><span class="badge badge-red">RÉANIMATION</span></td>
+          </tr>
+          <tr>
+            <td>Lifepak 15 (accroché sur brancard)</td>
+            <td>Moniteur-défibrillateur multiparamétrique. Affiche ECG, SpO2, PA, EtCO2 et FC. Permet de visualiser l'état du patient en temps réel.</td>
+            <td><span class="badge badge-green">MONITORING</span></td>
+          </tr>
+          <tr>
+            <td>Couverture de survie (sur brancard)</td>
+            <td>Protection thermique contre l'hypothermie. Obligatoire sur tout patient transporté.</td>
+            <td><span class="badge" style="background:rgba(37,99,235,0.14);color:#1d4ed8;border-color:rgba(37,99,235,0.34);">STANDARD</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">Traitements &amp; Médicaments</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Médicament</th>
+            <th>Indication</th>
+            <th>Effet en jeu</th>
+            <th>Précaution</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Adrénaline</td>
+            <td>ACR, anaphylaxie grave</td>
+            <td>noflow_score -80 à -120</td>
+            <td>Ne pas utiliser sur cœur battant sans prescription médicale</td>
+            <td><span class="badge badge-red">RÉANIMATION</span></td>
+          </tr>
+          <tr>
+            <td>Défibrillateur</td>
+            <td>FV, TV sans pouls</td>
+            <td>reviving +20/+30 · noflow -40/-60 · 1/6 réa instantanée</td>
+            <td>Vérifier rythme avant utilisation — contre-indiqué asystolie</td>
+            <td><span class="badge badge-yellow">CHOC</span></td>
+          </tr>
+          <tr>
+            <td>Oxygénothérapie (bouteille O2)</td>
+            <td>Détresse respiratoire, ACR</td>
+            <td>noflow -100 à -200 (usage unique) + progression +0.5/s</td>
+            <td>Usage unique — poser en priorité dès l'ACR constaté</td>
+            <td><span class="badge badge-red">USAGE UNIQUE</span></td>
+          </tr>
+          <tr>
+            <td>ECMO</td>
+            <td>ACR réfractaire, noflow élevé</td>
+            <td>noflow = 0 + arrêt comptage + reviving +30</td>
+            <td>Dernier recours uniquement — personnel médical formé</td>
+            <td><span class="badge" style="background:rgba(127,29,29,0.18);color:#7f1d1d;border-color:rgba(127,29,29,0.42);">DERNIER RECOURS</span></td>
+          </tr>
+          <tr>
+            <td>Morphine</td>
+            <td>Douleur intense</td>
+            <td>Réduit la douleur au maximum — peut provoquer des nausées</td>
+            <td>Ne pas administrer sans prescription — surveiller FR et SpO2</td>
+            <td><span class="badge" style="background:rgba(37,99,235,0.14);color:#1d4ed8;border-color:rgba(37,99,235,0.34);">ANTALGIQUE</span></td>
+          </tr>
+          <tr>
+            <td>Paracétamol</td>
+            <td>Douleur légère à modérée, fièvre</td>
+            <td>Ajoute 20% à 30% de vie</td>
+            <td>Respecter les intervalles d'administration</td>
+            <td><span class="badge" style="background:rgba(37,99,235,0.14);color:#1d4ed8;border-color:rgba(37,99,235,0.34);">ANTALGIQUE</span></td>
+          </tr>
+          <tr>
+            <td>Naloxone</td>
+            <td>Overdose stupéfiants (obligatoire)</td>
+            <td>Antagoniste opioïdes — inverse les effets de la morphine</td>
+            <td>Administrer en titration — risque de sevrage brutal</td>
+            <td><span class="badge badge-green">ANTIDOTE</span></td>
+          </tr>
+          <tr>
+            <td>Traitement coma éthylique</td>
+            <td>Ivresse sévère, coma alcoolique</td>
+            <td>Perfusion glucosée + vitamines B1 — surveillance conscience et FR</td>
+            <td>Ne pas laisser seul — risque inhalation</td>
+            <td><span class="badge badge-yellow">INTOXICATION</span></td>
+          </tr>
+          <tr>
+            <td>Biafine</td>
+            <td>Brûlures cutanées</td>
+            <td>Aucun effet en jeu pour l'instant — usage cosmétique RP</td>
+            <td>-</td>
+            <td><span class="badge" style="background:rgba(107,114,128,0.16);color:#4b5563;border-color:rgba(107,114,128,0.38);">EN DÉVELOPPEMENT</span></td>
+          </tr>
+          <tr>
+            <td>Bandage hémostatique</td>
+            <td>Hémorragie externe</td>
+            <td>+20% de vie</td>
+            <td>Appliquer avec compression directe</td>
+            <td><span class="badge" style="background:rgba(249,115,22,0.16);color:#c2410c;border-color:rgba(249,115,22,0.38);">TRAUMATO</span></td>
+          </tr>
+          <tr>
+            <td>Trousse de premiers soins</td>
+            <td>Traumatismes multiples, soins généraux</td>
+            <td>+80% de vie</td>
+            <td>Usage unique par patient</td>
+            <td><span class="badge badge-green">SOINS</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">Équipements de terrain</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Équipement</th>
+            <th>Contenu</th>
+            <th>Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sac Dimatex Coyote</td>
+            <td>Sac médical principal de terrain — contient le matériel de premiers soins avancés</td>
+            <td>Intervention SMUR et VSAV</td>
+          </tr>
+          <tr>
+            <td>Sac Matrix</td>
+            <td>Sac d'intervention secondaire — matériel de monitoring et d'airway</td>
+            <td>Intervention longue durée ou renfort</td>
+          </tr>
+          <tr>
+            <td>Gants en nitrile</td>
+            <td>Protection EPI de base — obligatoires à tout contact patient</td>
+            <td>Tout type d'intervention</td>
+          </tr>
+          <tr>
+            <td>Aspirateur de mucosités (en sac)</td>
+            <td>Désobstruction des voies aériennes supérieures</td>
+            <td>Patient inconscient, vomissements, airway management</td>
+          </tr>
+          <tr>
+            <td>Lifepak 15 (en sac)</td>
+            <td>Version portable du moniteur-défibrillateur</td>
+            <td>Intervention hors véhicule, transfert patient</td>
+          </tr>
+          <tr>
+            <td>Schiller (en sac)</td>
+            <td>Électrocardiographe portable 12 dérivations</td>
+            <td>Suspicion SCA, trouble du rythme, bilan cardiaque terrain</td>
+          </tr>
+          <tr>
+            <td>Badges de triage</td>
+            <td>4 niveaux : IE (Impliqué Indemne) · UR (Urgence Relative) · UV (Urgence Vitale) · DCD (Décédé)</td>
+            <td>Triage multi-victimes, plan ORSAN</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="panel">
+        <div class="panel-header">Badges de triage — code couleur</div>
+        <div class="panel-body">
+          <div class="triage-grid">
+            <div class="triage-card">
+              <div class="triage-square gray">IE</div>
+              <div class="mono">Impliqué Indemne</div>
+            </div>
+            <div class="triage-card">
+              <div class="triage-square yellow">UR</div>
+              <div class="mono">Urgence Relative</div>
+            </div>
+            <div class="triage-card">
+              <div class="triage-square red">UV</div>
+              <div class="mono">Urgence Vitale</div>
+            </div>
+            <div class="triage-card">
+              <div class="triage-square black">DCD</div>
+              <div class="mono">Décédé</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
   </main>
 </div>
@@ -125,6 +514,34 @@
 
 <script src="nav.js"></script>
 <script src="main.js"></script>
-<script>renderNav('equipements.html');</script>
+<script>
+  (function () {
+    const tabButtons = Array.from(document.querySelectorAll('[data-main-tab-target]'));
+    const tabPanels = {
+      rea: document.getElementById('tab-rea'),
+      inventory: document.getElementById('tab-inventory')
+    };
+
+    function activateTab(target) {
+      tabButtons.forEach(button => {
+        const active = button.dataset.mainTabTarget === target;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+
+      Object.entries(tabPanels).forEach(([key, panel]) => {
+        panel.classList.toggle('active', key === target);
+      });
+    }
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => activateTab(button.dataset.mainTabTarget));
+    });
+
+    activateTab('rea');
+  })();
+
+  renderNav('equipements.html');
+</script>
 </body>
 </html>
