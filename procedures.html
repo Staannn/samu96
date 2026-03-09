@@ -764,6 +764,107 @@
         .vd-row.p2 .vd-priority { color: #ca8a04; }
         .vd-row.p3 .vd-priority { color: #15803d; }
 
+        /* Bouton Reset Scores */
+        .btn-reset-scores {
+          background: transparent;
+          border: 1px solid rgba(153,27,27,0.3);
+          color: #991b1b;
+          font-size: 0.78rem;
+          padding: 5px 12px;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: 600;
+          margin-bottom: 12px;
+          transition: background 0.12s, border-color 0.12s;
+        }
+        .btn-reset-scores:hover {
+          background: rgba(153,27,27,0.08);
+          border-color: rgba(153,27,27,0.5);
+        }
+
+        /* Grille SBAR */
+        .sbar-section { display: flex; flex-direction: column; gap: 10px; }
+        .sbar-block {
+          border: 1px solid rgba(153,27,27,0.15);
+          border-radius: 5px;
+          padding: 10px;
+          background: rgba(153,27,27,0.02);
+        }
+        .sbar-label {
+          font-weight: 700;
+          color: #991b1b;
+          font-size: 0.78rem;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          margin-bottom: 4px;
+        }
+        .sbar-question {
+          font-size: 0.8rem;
+          color: #64748b;
+          margin-bottom: 6px;
+          line-height: 1.4;
+        }
+        .sbar-question em {
+          color: #991b1b;
+          font-style: italic;
+          font-weight: 600;
+        }
+        .sbar-input {
+          width: 100%;
+          min-height: 50px;
+          border: 1px solid rgba(153,27,27,0.2);
+          border-radius: 4px;
+          padding: 6px 9px;
+          font-size: 0.82rem;
+          font-family: inherit;
+          resize: vertical;
+          margin-bottom: 5px;
+        }
+        .sbar-input:focus {
+          outline: none;
+          border-color: #991b1b;
+          background: #fffbfb;
+        }
+        .sbar-badge {
+          font-size: 0.72rem !important;
+          padding: 3px 8px !important;
+        }
+
+        /* Aide à la décision hospitalisation */
+        .hosp-criteria {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          margin-bottom: 12px;
+        }
+        .hosp-decision-banner {
+          animation: slideDown 0.2s ease;
+        }
+
+        /* Bouton Copier Consignes */
+        .btn-copy-consignes {
+          background: #991b1b;
+          color: #fff;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 4px;
+          font-size: 0.78rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.12s;
+        }
+        .btn-copy-consignes:hover {
+          background: #7f1d1d;
+        }
+        #copy-feedback {
+          animation: fadeInOut 2.5s ease;
+        }
+        @keyframes fadeInOut {
+          0% { opacity: 1; }
+          85% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+
         /* Références footer */
         .refs-footer {
           margin-top: 24px;
@@ -1021,6 +1122,7 @@
           <!-- Zone principale médecin -->
           <div>
             <div class="section-title" style="color:#991b1b;border-color:rgba(153,27,27,0.3);">Sélectionne la situation clinique reçue du terrain</div>
+            <button id="btn-reset-scores" class="btn-reset-scores">↺ Réinitialiser les scores</button>
             <div class="med-motifs-grid">
               <div class="med-motif-card" data-med-motif="neuro">
                 <span class="mm-label">🧠 Atteinte neurologique</span>
@@ -1045,6 +1147,10 @@
               <div class="med-motif-card" data-med-motif="toxico">
                 <span class="mm-label">💊 Intoxication / Toxique</span>
                 <span class="mm-desc">Ingestion médicamenteuse, CO, drogue</span>
+              </div>
+              <div class="med-motif-card" data-med-motif="bilan-retour">
+                <span class="mm-label">📋 Bilan retour VSAV</span>
+                <span class="mm-desc">Compte-rendu terrain → décision hospitalisation</span>
               </div>
             </div>
 
@@ -1285,6 +1391,103 @@
                     <div class="vd-row p2"><span class="vd-priority">P2</span><span>GCS 13–15, stable, produit peu toxique → <span class="vecteur-tag vsav">VSAV</span> + avis CAPTV si besoin</span></div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div class="med-detail" id="med-detail-bilan-retour">
+              <div class="med-detail-header">
+                📋 Bilan retour VSAV — Compte-rendu terrain
+                <span class="close-btn" data-close-med="bilan-retour">✕</span>
+              </div>
+              <div class="med-detail-body">
+                <div class="sbar-section">
+                  <div class="section-title" style="color:#991b1b;border-color:rgba(153,27,27,0.3);margin-bottom:10px;">Grille SBAR — Réception du bilan terrain</div>
+                  
+                  <div class="sbar-block">
+                    <div class="sbar-label">S — Situation</div>
+                    <div class="sbar-question"><em>« Quel est le motif d'intervention et l'identité de la victime ? (âge, sexe, circonstances) »</em></div>
+                    <textarea class="sbar-input sbar-s" placeholder="Ex : Homme 67 ans, chute de sa hauteur à domicile, retrouvé par son épouse..."></textarea>
+                    <span class="badge badge-green sbar-badge" style="display:none;">✓ Renseigné</span>
+                  </div>
+                  
+                  <div class="sbar-block">
+                    <div class="sbar-label">B — Background</div>
+                    <div class="sbar-question"><em>« Quels sont les antécédents connus, traitements en cours, allergies ? »</em></div>
+                    <textarea class="sbar-input sbar-b" placeholder="Ex : ATCD HTA, diabète type 2 — Traitement : metformine, amlodipine — Allergies : pénicilline..."></textarea>
+                    <span class="badge badge-green sbar-badge" style="display:none;">✓ Renseigné</span>
+                  </div>
+                  
+                  <div class="sbar-block">
+                    <div class="sbar-label">A — Assessment</div>
+                    <div class="sbar-question"><em>« Quelles sont les constantes exactes maintenant ? (SpO2, FC, TA, FR, GCS, température si dispo) »</em></div>
+                    <textarea class="sbar-input sbar-a" placeholder="Ex : SpO2 96% AA, FC 88, TA 134/82, FR 18, GCS 15, T° 37.1°C..."></textarea>
+                    <span class="badge badge-green sbar-badge" style="display:none;">✓ Renseigné</span>
+                  </div>
+                  
+                  <div class="sbar-block">
+                    <div class="sbar-label">R — Recommandation</div>
+                    <div class="sbar-question"><em>« Quel est votre impression clinique et votre demande ? (transport, conseil, avis) »</em></div>
+                    <textarea class="sbar-input sbar-r" placeholder="Ex : Victime stable, douleur cheville EVA 5, demande transport SAU pour radio..."></textarea>
+                    <span class="badge badge-green sbar-badge" style="display:none;">✓ Renseigné</span>
+                  </div>
+                </div>
+                
+                <div class="hosp-decision-section" style="margin-top:16px;padding-top:16px;border-top:1.5px solid rgba(153,27,27,0.2);">
+                  <div class="section-title" style="color:#991b1b;border-color:rgba(153,27,27,0.3);margin-bottom:10px;">Aide à la décision — Orientation</div>
+                  
+                  <div class="hosp-criteria">
+                    <label style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:6px 0;">
+                      <input type="checkbox" class="hosp-criterion"> <span><strong>Constantes hors normes</strong> (SpO2 &lt;95%, FC &lt;50 ou &gt;130, TA &lt;90 ou &gt;180, FR &lt;10 ou &gt;25)</span>
+                    </label>
+                    <label style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:6px 0;">
+                      <input type="checkbox" class="hosp-criterion"> <span><strong>GCS &lt; 15 ou altération de conscience</strong></span>
+                    </label>
+                    <label style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:6px 0;">
+                      <input type="checkbox" class="hosp-criterion"> <span><strong>Douleur EVA ≥ 7 ou douleur thoracique / abdominale</strong></span>
+                    </label>
+                    <label style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:6px 0;">
+                      <input type="checkbox" class="hosp-criterion"> <span><strong>Mécanisme à risque</strong> (haute cinétique, pénétrant, chute &gt;1m)</span>
+                    </label>
+                    <label style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:6px 0;">
+                      <input type="checkbox" class="hosp-criterion"> <span><strong>Terrain à risque</strong> (âge &gt;75 ans, anticoagulants, immunodéprimé, grossesse)</span>
+                    </label>
+                    <label style="font-size:0.82rem;display:flex;align-items:flex-start;gap:8px;cursor:pointer;padding:6px 0;">
+                      <input type="checkbox" class="hosp-criterion"> <span><strong>Incapacité fonctionnelle ou absence d'entourage à domicile</strong></span>
+                    </label>
+                  </div>
+                  
+                  <div id="hosp-decision-banner" class="hosp-decision-banner" style="margin-top:12px;padding:10px 12px;border-radius:5px;font-size:0.82rem;font-weight:600;background:rgba(34,197,94,0.1);border-left:4px solid #22c55e;color:#15803d;">
+                    ✅ Aucun critère — Maintien à domicile possible avec consignes de retour. Conseil médical téléphonique suffisant.
+                  </div>
+                </div>
+                
+                <details class="home-consignes-details" style="margin-top:14px;">
+                  <summary style="cursor:pointer;font-size:0.82rem;font-weight:600;color:#991b1b;padding:8px;user-select:none;">📄 Générer les consignes de retour à domicile</summary>
+                  <div style="margin-top:8px;padding:8px 12px;background:rgba(153,27,27,0.05);border-radius:4px;">
+                    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px;">
+                      <label style="font-size:0.8rem;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" class="consignes-check"> Revenir si douleur augmente ou apparition de nouveaux symptômes
+                      </label>
+                      <label style="font-size:0.8rem;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" class="consignes-check"> Revenir si fièvre &gt; 38,5°C
+                      </label>
+                      <label style="font-size:0.8rem;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" class="consignes-check"> Revenir si vomissements répétés ou impossibilité de s'alimenter
+                      </label>
+                      <label style="font-size:0.8rem;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" class="consignes-check"> Consulter son médecin traitant dans les 24–48h
+                      </label>
+                      <label style="font-size:0.8rem;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" class="consignes-check"> Ne pas conduire si traitement antalgique prescrit
+                      </label>
+                      <label style="font-size:0.8rem;display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" class="consignes-check"> Appeler le 15 sans hésiter si aggravation brutale
+                      </label>
+                    </div>
+                    <button id="btn-copy-consignes" class="btn-copy-consignes">📋 Copier les consignes cochées</button>
+                    <span id="copy-feedback" style="display:none;margin-left:8px;font-size:0.78rem;color:#22c55e;font-weight:600;">✓ Copié !</span>
+                  </div>
+                </details>
               </div>
             </div>
 
@@ -1533,12 +1736,112 @@
     if (mgapGcsEl) { mgapGcsEl.addEventListener('input', updateMedMGAP); mgapGcsEl.addEventListener('change', updateMedMGAP); }
     document.querySelectorAll('.med-news2-crit').forEach(el => el.addEventListener('change', updateMedNEWS2));
 
+    // ── Bouton Reset Scores ──
+    document.getElementById('btn-reset-scores')?.addEventListener('click', () => {
+      // Réinitialiser les selects GCS
+      document.getElementById('med-gcs-eyes').value = '4';
+      document.getElementById('med-gcs-verbal').value = '5';
+      document.getElementById('med-gcs-motor').value = '6';
+      // Réinitialiser les inputs MGAP
+      document.getElementById('med-mgap-mech').value = '4';
+      document.getElementById('med-mgap-gcs').value = '15';
+      document.getElementById('med-mgap-age').value = '5';
+      document.getElementById('med-mgap-sbp').value = '5';
+      // Décocher les news2
+      document.querySelectorAll('.med-news2-crit:checked').forEach(el => el.checked = false);
+      // Fermer tous les détails
+      document.querySelectorAll('.med-detail.open').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('[data-med-motif]').forEach(c => c.classList.remove('open'));
+      // Recalculer les scores
+      updateMedGCS();
+      updateMedMGAP();
+      updateMedNEWS2();
+    });
+
+    // ── Grille SBAR - Indicateurs "Renseigné" ──
+    document.querySelectorAll('.sbar-input').forEach(textarea => {
+      const badge = textarea.nextElementSibling;
+      textarea.addEventListener('input', () => {
+        if (badge && badge.classList.contains('sbar-badge')) {
+          badge.style.display = textarea.value.trim() ? 'inline-block' : 'none';
+        }
+      });
+    });
+
+    // ── Aide à la décision hospitalisation ──
+    function updateHospDecision() {
+      const count = document.querySelectorAll('.hosp-criterion:checked').length;
+      const banner = document.getElementById('hosp-decision-banner');
+      if (!banner) return;
+      
+      let msg = '', bgColor = '', textColor = '', borderColor = '';
+      if (count === 0) {
+        msg = '✅ Aucun critère — Maintien à domicile possible avec consignes de retour. Conseil médical téléphonique suffisant.';
+        bgColor = 'rgba(34,197,94,0.1)';
+        borderColor = '#22c55e';
+        textColor = '#15803d';
+      } else if (count <= 2) {
+        msg = '⚠️ ' + count + ' critère(s) — Surveillance renforcée recommandée. Envisager passage SAU ou consultation rapide dans les 24h.';
+        bgColor = 'rgba(234,179,8,0.1)';
+        borderColor = '#eab308';
+        textColor = '#854d0e';
+      } else if (count <= 4) {
+        msg = '🔶 ' + count + ' critères — Orientation SAU recommandée. VSAV transport.';
+        bgColor = 'rgba(234,88,12,0.1)';
+        borderColor = '#ea580c';
+        textColor = '#92400e';
+      } else {
+        msg = '🔴 ' + count + ' critères — Hospitalisation urgente. Prévenir le SAU à l\'avance. Vérifier disponibilité lit si P1.';
+        bgColor = 'rgba(185,28,28,0.1)';
+        borderColor = '#b91c1c';
+        textColor = '#7f1d1d';
+      }
+      
+      banner.textContent = msg;
+      banner.style.background = bgColor;
+      banner.style.borderColor = borderColor;
+      banner.style.color = textColor;
+    }
+
+    document.querySelectorAll('.hosp-criterion').forEach(el => {
+      el.addEventListener('change', updateHospDecision);
+    });
+
+    // ── Copier les consignes ──
+    document.getElementById('btn-copy-consignes')?.addEventListener('click', () => {
+      const checks = Array.from(document.querySelectorAll('.consignes-check:checked'));
+      if (checks.length === 0) {
+        alert('Veuillez sélectionner au moins une consigne.');
+        return;
+      }
+      
+      const consignes = checks.map(check => {
+        const label = check.closest('label');
+        return '• ' + (label ? label.textContent.trim() : '');
+      }).join('\n');
+      
+      const fullText = 'Consignes de retour à domicile :\n\n' + consignes + '\n\n--- Généré par SAMU 96 SUPPORT ---';
+      
+      navigator.clipboard.writeText(fullText).then(() => {
+        const feedback = document.getElementById('copy-feedback');
+        if (feedback) {
+          feedback.style.display = 'inline-block';
+          setTimeout(() => { feedback.style.display = 'none'; }, 2000);
+        }
+      }).catch(err => {
+        console.error('Erreur copie:', err);
+        alert('Erreur lors de la copie. Veuillez essayer à nouveau.');
+      });
+    });
+
     activateMainTab('medical');
     activateProcedure('acr');
     activateShockTab('hem');
     updateMedGCS();
     updateMedMGAP();
     updateMedNEWS2();
+    updateHospDecision();
+
   })();
 </script>
 <script>renderNav('procedures.html');</script>
