@@ -4,6 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SAMU 96 · Portail Intranet</title>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, doc,
+      getDocs, addDoc, setDoc, updateDoc, deleteDoc,
+      query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDa27t7jEnvsGNOHUvr9SRw10gS90qX7Ow",
+      authDomain: "sau96-urgences.firebaseapp.com",
+      projectId: "sau96-urgences",
+      storageBucket: "sau96-urgences.firebasestorage.app",
+      messagingSenderId: "807568498412",
+      appId: "1:807568498412:web:1a83fef33301ef1f604fc9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    window._db = db;
+    window._fs = { collection, doc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, query, orderBy };
+    window._pharmacieReady = false;
+
+    async function initPharmacie() {
+      try {
+        const { collection, getDocs, query, orderBy } = window._fs;
+
+        const snapStocks = await getDocs(collection(db, 'intranet_stocks'));
+        DATA.pharmacie.stocks = [];
+        snapStocks.forEach(d => DATA.pharmacie.stocks.push({ _id: d.id, ...d.data() }));
+
+        const snapCmd = await getDocs(query(collection(db, 'intranet_commandes'), orderBy('date', 'desc')));
+        DATA.pharmacie.commandes = [];
+        snapCmd.forEach(d => DATA.pharmacie.commandes.push({ _id: d.id, ...d.data() }));
+
+        const snapMvt = await getDocs(query(collection(db, 'intranet_mouvements'), orderBy('date', 'desc')));
+        DATA.pharmacie.mouvements = [];
+        snapMvt.forEach(d => DATA.pharmacie.mouvements.push({ _id: d.id, ...d.data() }));
+
+        window._pharmacieReady = true;
+        if (typeof state !== 'undefined' && state.activeTab === 'pharmacie') renderPharmacie();
+        else if (typeof renderPharmacie === 'function') renderPharmacie();
+      } catch(e) {
+        console.error('Firebase pharmacie init error:', e);
+        window._pharmacieReady = true;
+        if (typeof renderPharmacie === 'function') renderPharmacie();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => { initPharmacie(); });
+  </script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     :root { --bg:#f0f4f8; --surface:#ffffff; --border:#dde3ec; --accent:#0ea5e9; --accent-2:#6366f1; --ok:#16a34a; --danger:#dc2626; --warn:#d97706; --text:#1e293b; --muted:#64748b; --radius:16px; --shadow:0 0 0 1px var(--border),0 2px 12px rgba(14,165,233,.07); --shadow-strong:0 0 0 1px rgba(14,165,233,.3),0 6px 24px rgba(14,165,233,.13); }
@@ -109,6 +163,8 @@
       font-weight:700; }
     .mouvement-type.entree { background:#dcfce7; color:#15803d; }
     .mouvement-type.sortie { background:#fee2e2; color:#b91c1c; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -202,6 +258,14 @@
     const $ = (sel) => document.querySelector(sel);
 
     // ==============================
+    // Persistance localStorage (Personnel & Véhicules uniquement)
+    // ==============================
+    const STORAGE_KEY = 'samu96_intranet_v1';
+    function persistData() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ membres: DATA.membres, vehicules: DATA.vehicules })); } catch(e) {}
+    }
+
+    // ==============================
     // Helpers
     // ==============================
     function escapeHtml(value = '') { return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
@@ -240,12 +304,9 @@
       document.body.dataset.role = state.role || '';
     }
     function renderTabs() {
-      const isAdmin = state.role === 'admin';
-      if (!isAdmin && ['personnel', 'vehicules'].includes(state.activeTab)) state.activeTab = 'pharmacie';
       document.querySelectorAll('.tab-btn').forEach((btn) => {
-        const restricted = ['personnel', 'vehicules'].includes(btn.dataset.tab) && !isAdmin;
-        btn.style.opacity = restricted ? '0.4' : '1';
-        btn.style.pointerEvents = restricted ? 'none' : 'auto';
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
         btn.classList.toggle('active', btn.dataset.tab === state.activeTab);
       });
       $('#panelPersonnel').classList.toggle('active', state.activeTab === 'personnel');
@@ -278,7 +339,70 @@
       }).join('')}</div><div class="separator"></div><div class="table-wrap"><table><thead><tr><th>Nom</th><th>Type</th><th>Immatriculation</th><th>Affectation</th><th>Statut</th><th>Km actuel</th><th>Prochain CT</th><th>Incidents ouverts</th></tr></thead><tbody>${DATA.vehicules.map((v) => { const openCount = (v.incidents || []).filter((i) => !i.resolu).length; return `<tr><td>${escapeHtml(v.nom)}</td><td>${escapeHtml(v.type)}</td><td>${escapeHtml(v.immatriculation)}</td><td>${escapeHtml(v.affectation || '—')}</td><td><span style="font-weight:700;color:${v.statut === 'disponible' ? '#22c55e' : v.statut === 'en_intervention' ? '#0ea5e9' : '#ef4444'}">${statusLabel(v.statut)}</span></td><td>${Number(v.km_actuel || 0).toLocaleString('fr-FR')}</td><td><span class="badge-ct ${ctBadgeClass(v.date_prochain_ct)}">${formatDateFR(v.date_prochain_ct)}</span></td><td>${openCount > 0 ? `<span class="badge-ct danger">${openCount}</span>` : '0'}</td></tr>`; }).join('')}</tbody></table></div></div>`;
     }
 
+    // ==============================
+    // CRUD Firebase — Pharmacie
+    // ==============================
+    async function fsAddStock(stockObj) {
+      const { collection, addDoc } = window._fs;
+      const ref = await addDoc(collection(window._db, 'intranet_stocks'), stockObj);
+      stockObj._id = ref.id;
+      DATA.pharmacie.stocks.push(stockObj);
+      renderPharmacie();
+    }
+    async function fsUpdateStock(stockObj) {
+      const { doc, updateDoc } = window._fs;
+      const ref = doc(window._db, 'intranet_stocks', stockObj._id);
+      const { _id, ...data } = stockObj;
+      await updateDoc(ref, data);
+      const idx = DATA.pharmacie.stocks.findIndex(s => s._id === stockObj._id);
+      if (idx >= 0) DATA.pharmacie.stocks[idx] = stockObj;
+      renderPharmacie();
+    }
+    async function fsDeleteStock(id) {
+      const { doc, deleteDoc } = window._fs;
+      await deleteDoc(doc(window._db, 'intranet_stocks', id));
+      DATA.pharmacie.stocks = DATA.pharmacie.stocks.filter(s => s._id !== id);
+      renderPharmacie();
+    }
+    async function fsAddCommande(cmdObj) {
+      const { collection, addDoc } = window._fs;
+      const ref = await addDoc(collection(window._db, 'intranet_commandes'), cmdObj);
+      cmdObj._id = ref.id;
+      DATA.pharmacie.commandes.unshift(cmdObj);
+      renderPharmacie();
+    }
+    async function fsUpdateCommande(cmdObj) {
+      const { doc, updateDoc } = window._fs;
+      const ref = doc(window._db, 'intranet_commandes', cmdObj._id);
+      const { _id, ...data } = cmdObj;
+      await updateDoc(ref, data);
+      const idx = DATA.pharmacie.commandes.findIndex(c => c._id === cmdObj._id);
+      if (idx >= 0) DATA.pharmacie.commandes[idx] = cmdObj;
+      renderPharmacie();
+    }
+    async function fsDeleteCommande(id) {
+      const { doc, deleteDoc } = window._fs;
+      await deleteDoc(doc(window._db, 'intranet_commandes', id));
+      DATA.pharmacie.commandes = DATA.pharmacie.commandes.filter(c => c._id !== id);
+      renderPharmacie();
+    }
+    async function fsAddMouvement(mvtObj) {
+      const { collection, addDoc } = window._fs;
+      const ref = await addDoc(collection(window._db, 'intranet_mouvements'), mvtObj);
+      mvtObj._id = ref.id;
+      DATA.pharmacie.mouvements.unshift(mvtObj);
+      renderPharmacie();
+    }
+
     function renderPharmacie() {
+      if (!window._pharmacieReady) {
+        document.getElementById('panelPharmacie').innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:center;padding:60px;color:#64748b;font-size:.95rem;gap:12px;">
+            <span style="display:inline-block;width:20px;height:20px;border:3px solid #cbd5e1;border-top-color:#0ea5e9;border-radius:50%;animation:spin 0.8s linear infinite;"></span>
+            Chargement des données pharmacie…
+          </div>`;
+        return;
+      }
       const familles = ['Toutes', ...new Set(DATA.pharmacie.stocks.map((s) => s.famille).filter(Boolean))];
       const filteredStocks = DATA.pharmacie.stocks.filter((s) => {
         const txt = pharmaState.search.toLowerCase().trim();
@@ -297,7 +421,7 @@
 
       $('#panelPharmacie').innerHTML = `<div class="section"><h2 class="section-title">Pharmacie</h2><div class="sub-tabs"><button type="button" class="sub-tab-btn ${pharmaState.subTab === 'stocks' ? 'active' : ''}" data-action="pharma-subtab" data-subtab="stocks">📦 Stocks</button><button type="button" class="sub-tab-btn ${pharmaState.subTab === 'commandes' ? 'active' : ''}" data-action="pharma-subtab" data-subtab="commandes">📋 Commandes</button><button type="button" class="sub-tab-btn ${pharmaState.subTab === 'mouvements' ? 'active' : ''}" data-action="pharma-subtab" data-subtab="mouvements">📜 Mouvements</button></div>
       <div class="sub-panel ${pharmaState.subTab === 'stocks' ? 'active' : ''}"><div class="vehicle-summary"><div class="mini-card"><div class="label">Total références</div><div class="value">${DATA.pharmacie.stocks.length}</div></div><div class="mini-card"><div class="label">Stocks critiques</div><div class="value" style="color:var(--danger)">${critical}</div></div><div class="mini-card"><div class="label">Péremptions &lt; 3 mois</div><div class="value" style="color:var(--warn)">${expSoon}</div></div><div class="mini-card"><div class="label">Péremptions dépassées</div><div class="value" style="color:var(--danger)">${expired}</div></div></div><div class="separator"></div><div class="filters"><input id="pharmaSearch" class="input" type="text" placeholder="Rechercher (nom / DCI / famille)..." value="${escapeHtml(pharmaState.search)}" /><select id="pharmaFamille" class="select">${familles.map((f) => `<option ${pharmaState.famille === f ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('')}</select><select id="pharmaAlerte" class="select"><option ${pharmaState.alerte === 'Tous' ? 'selected' : ''}>Tous</option><option ${pharmaState.alerte === 'Stock critique' ? 'selected' : ''}>Stock critique</option><option ${pharmaState.alerte === 'Péremption proche' ? 'selected' : ''}>Péremption proche</option><option ${pharmaState.alerte === 'Péremption dépassée' ? 'selected' : ''}>Péremption dépassée</option></select><button type="button" class="btn primary admin-only pharma-only" data-action="add-pharma-product">+ Ajouter un médicament</button></div><div class="table-wrap"><table><thead><tr><th>Nom</th><th>DCI</th><th>Forme</th><th>Stock</th><th>Min/Max</th><th>Péremption</th><th>Localisation</th><th>Actions</th></tr></thead><tbody>${filteredStocks.map((s) => { const stClass = s.stock_actuel < s.stock_min ? 'danger' : s.stock_actuel < s.stock_min * 1.3 ? 'warn' : 'ok'; const flags = pharmaExpiryFlags(s.peremption); const expClass = flags.isExpired ? 'danger' : flags.isExpiringSoon ? 'warn' : 'ok'; return `<tr><td>${escapeHtml(s.nom)}</td><td>${escapeHtml(s.dci)}</td><td>${escapeHtml(s.forme)}</td><td><span class="stock-badge ${stClass}">${s.stock_actuel} ${escapeHtml(s.unite)} ${stClass === 'danger' ? '⚠️' : ''}</span></td><td>${s.stock_min} / ${s.stock_max}</td><td><span class="badge-ct ${expClass}">${formatDateFR(s.peremption)}</span></td><td>${escapeHtml(s.localisation || '—')}</td><td><button type="button" class="btn admin-only pharma-only" data-action="edit-pharma-product" data-id="${s.id}">✏️ Modifier</button> <button type="button" class="btn danger admin-only" data-action="delete-pharma-product" data-id="${s.id}">🗑️ Supprimer</button> <button type="button" class="btn admin-only pharma-only" data-action="add-pharma-order" data-product-id="${s.id}">📦 Commander</button></td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">Aucune référence.</td></tr>'}</tbody></table></div></div>
-      <div class="sub-panel ${pharmaState.subTab === 'commandes' ? 'active' : ''}"><div style="display:flex;justify-content:flex-end;"><button type="button" class="btn primary admin-only pharma-only" data-action="add-pharma-order">+ Nouvelle commande</button></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Produit</th><th>Qté</th><th>Fournisseur</th><th>Demandeur</th><th>Statut</th><th>Commentaire</th><th>Actions</th></tr></thead><tbody>${DATA.pharmacie.commandes.map((c) => { const badge = c.statut === 'livree' ? '<span class="badge-ct ok">livree</span>' : c.statut === 'en_attente' ? '<span class="badge-ct warn">en_attente</span>' : '<span class="badge-ct" style="background:#e2e8f0;color:#475569;">annulee</span>'; return `<tr><td>${formatDateFR(c.date)}</td><td>${escapeHtml(c.produit_nom)}</td><td>${c.quantite}</td><td>${escapeHtml(c.fournisseur || '—')}</td><td>${escapeHtml(c.demandeur || '—')}</td><td>${badge}</td><td>${escapeHtml(c.commentaire || '')}</td><td>${c.statut === 'en_attente' ? '<button type="button" class="btn admin-only pharma-only" data-action="deliver-pharma-order" data-id="' + c.id + '">Marquer livré</button>' : ''} <button type="button" class="btn admin-only" data-action="cancel-pharma-order" data-id="${c.id}">Annuler</button> <button type="button" class="btn danger admin-only" data-action="delete-pharma-order" data-id="${c.id}">🗑️</button></td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">Aucune commande.</td></tr>'}</tbody></table></div></div>
+      <div class="sub-panel ${pharmaState.subTab === 'commandes' ? 'active' : ''}"><div style="display:flex;justify-content:flex-end;"><button type="button" class="btn primary admin-only pharma-only" data-action="add-pharma-order">+ Nouvelle commande</button></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Produit</th><th>Qté</th><th>Fournisseur</th><th>Demandeur</th><th>Statut</th><th>Commentaire</th><th>Actions</th></tr></thead><tbody>${DATA.pharmacie.commandes.map((c) => { const cid = c._id || String(c.id || ''); const badge = c.statut === 'livree' ? '<span class="badge-ct ok">livree</span>' : c.statut === 'en_attente' ? '<span class="badge-ct warn">en_attente</span>' : '<span class="badge-ct" style="background:#e2e8f0;color:#475569;">annulee</span>'; return `<tr><td>${formatDateFR(c.date)}</td><td>${escapeHtml(c.produit_nom)}</td><td>${c.quantite}</td><td>${escapeHtml(c.fournisseur || '—')}</td><td>${escapeHtml(c.demandeur || '—')}</td><td>${badge}</td><td>${escapeHtml(c.commentaire || '')}</td><td>${c.statut === 'en_attente' ? '<button type="button" class="btn admin-only pharma-only" data-action="deliver-pharma-order" data-id="' + cid + '">Marquer livré</button>' : ''} <button type="button" class="btn admin-only" data-action="cancel-pharma-order" data-id="${cid}">Annuler</button> <button type="button" class="btn danger admin-only" data-action="delete-pharma-order" data-id="${cid}">🗑️</button></td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">Aucune commande.</td></tr>'}</tbody></table></div></div>
       <div class="sub-panel ${pharmaState.subTab === 'mouvements' ? 'active' : ''}"><div style="display:flex;justify-content:flex-end;"><button type="button" class="btn primary admin-only pharma-only" data-action="add-pharma-movement">+ Enregistrer un mouvement</button></div><div class="table-wrap"><table><thead><tr><th>Date/heure</th><th>Produit</th><th>Type</th><th>Quantité</th><th>Motif</th><th>Opérateur</th></tr></thead><tbody>${DATA.pharmacie.mouvements.map((m) => `<tr><td>${new Date(m.date).toLocaleString('fr-FR')}</td><td>${escapeHtml(m.produit_nom)}</td><td><span class="mouvement-type ${m.type}">${m.type === 'entree' ? 'ENTRÉE' : 'SORTIE'}</span></td><td>${m.quantite}</td><td>${escapeHtml(m.motif || '')}</td><td>${escapeHtml(m.operateur || '')}</td></tr>`).join('') || '<tr><td colspan="6" class="empty">Aucun mouvement.</td></tr>'}</tbody></table></div></div></div>`;
     }
 
@@ -347,7 +471,7 @@
       const formations = [...document.querySelectorAll('[data-row="formation"]')].map((row) => ({ nom: row.querySelector('[data-f="nom"]')?.value.trim() || '', date: row.querySelector('[data-f="date"]')?.value || '', 'validé': Boolean(row.querySelector('[data-f="valide"]')?.checked) })).filter((f) => f.nom);
       if (state.modal.id) { const idx = DATA.membres.findIndex((m) => m.id === state.modal.id); if (idx >= 0) DATA.membres[idx] = { ...DATA.membres[idx], nom, grade, role, discord, statut, competences, formations }; }
       else DATA.membres.push({ id: Math.max(0, ...DATA.membres.map((m) => m.id)) + 1, nom, grade, role, discord, statut, photo: '', competences, formations });
-      renderPersonnel(); closeModal();
+      persistData(); renderPersonnel(); closeModal();
     }
     function saveVehicleFromModal() {
       const nom = $('#vNom').value.trim(), type = $('#vType').value, immatriculation = $('#vImmat').value.trim(), statut = $('#vStatut').value; if (!nom || !immatriculation) return;
@@ -367,9 +491,9 @@
       const incidents = [...document.querySelectorAll('[data-row="incident"]')].map((row, idx) => ({ id: Number(row.dataset.incidentId || idx + 1), date: row.querySelector('[data-i="date"]')?.value || '', description: row.querySelector('[data-i="description"]')?.value.trim() || '', gravite: row.querySelector('[data-i="gravite"]')?.value || 'mineur', resolu: Boolean(row.querySelector('[data-i="resolu"]')?.checked), date_resolution: row.querySelector('[data-i="date_resolution"]')?.value || '' })).filter((i) => i.description || i.date);
       if (state.modal.id) { const idx = DATA.vehicules.findIndex((v) => v.id === state.modal.id); if (idx >= 0) DATA.vehicules[idx] = { ...DATA.vehicules[idx], nom, type, immatriculation, statut, affectation, km_actuel, km_achat, date_achat, date_derniere_vidange, km_derniere_vidange, intervalle_vidange_km, date_prochain_ct, date_dernier_ct, date_prochaine_revision, km_prochaine_revision, equipements, incidents, commentaire }; }
       else DATA.vehicules.push({ id: Math.max(0, ...DATA.vehicules.map((v) => v.id)) + 1, nom, type, immatriculation, statut, affectation, km_actuel, km_achat, date_achat, date_derniere_vidange, km_derniere_vidange, intervalle_vidange_km, date_prochain_ct, date_dernier_ct, date_prochaine_revision, km_prochaine_revision, equipements, incidents, commentaire });
-      renderVehicules(); closeModal();
+      persistData(); renderVehicules(); closeModal();
     }
-    function savePharmaProductFromModal() {
+    async function savePharmaProductFromModal() {
       const item = {
         nom: $('#pNom')?.value.trim() || '', famille: $('#pFamille')?.value.trim() || '', forme: $('#pForme')?.value.trim() || '', dci: $('#pDci')?.value.trim() || '',
         stock_actuel: Number($('#pStockActuel')?.value || 0), stock_min: Number($('#pStockMin')?.value || 0), stock_max: Number($('#pStockMax')?.value || 0),
@@ -377,42 +501,59 @@
         ref_fournisseur: $('#pRef')?.value.trim() || '', localisation: $('#pLoc')?.value.trim() || '', commentaire: $('#pComment')?.value.trim() || ''
       };
       if (!item.nom) return;
-      if (state.modal.id) {
-        const idx = DATA.pharmacie.stocks.findIndex((x) => x.id === state.modal.id);
-        if (idx >= 0) DATA.pharmacie.stocks[idx] = { ...DATA.pharmacie.stocks[idx], ...item };
-      } else DATA.pharmacie.stocks.push({ id: Math.max(0, ...DATA.pharmacie.stocks.map((x) => x.id)) + 1, ...item });
-      renderPharmacie(); closeModal();
+      closeModal();
+      if (state.modal.id || (state.modal.id === null && false)) {
+        // never — handled below
+      }
+      // Récupérer l'_id de l'objet en cours de modification
+      const editId = state.modal.id;
+      if (editId) {
+        const existing = DATA.pharmacie.stocks.find(s => s._id === editId || String(s.id) === String(editId));
+        if (existing) await fsUpdateStock({ ...existing, ...item });
+      } else {
+        await fsAddStock(item);
+      }
     }
-    function savePharmaOrderFromModal() {
-      const produit_id = Number($('#oProduit')?.value || 0);
-      const product = DATA.pharmacie.stocks.find((s) => s.id === produit_id);
+    async function savePharmaOrderFromModal() {
+      const produit_id = $('#oProduit')?.value || '';
+      const product = DATA.pharmacie.stocks.find((s) => s._id === produit_id || String(s.id) === String(produit_id));
       if (!product) return;
-      DATA.pharmacie.commandes.push({
-        id: Math.max(0, ...DATA.pharmacie.commandes.map((x) => x.id)) + 1,
+      const cmdObj = {
         date: new Date().toISOString().slice(0, 10),
-        produit_id,
+        produit_id: product._id || String(product.id),
         produit_nom: product.nom,
         quantite: Number($('#oQuantite')?.value || 1),
         statut: 'en_attente',
         fournisseur: $('#oFournisseur')?.value.trim() || product.fournisseur || '',
         demandeur: state.role === 'admin' ? 'Administrateur' : 'Gérant Pharma',
         commentaire: $('#oCommentaire')?.value.trim() || ''
-      });
+      };
       pharmaState.subTab = 'commandes';
-      renderPharmacie(); closeModal();
+      closeModal();
+      await fsAddCommande(cmdObj);
     }
-    function savePharmaMovementFromModal() {
-      const produit_id = Number($('#mvProduit')?.value || 0);
-      const product = DATA.pharmacie.stocks.find((s) => s.id === produit_id);
+    async function savePharmaMovementFromModal() {
+      const produit_id = $('#mvProduit')?.value || '';
+      const product = DATA.pharmacie.stocks.find((s) => s._id === produit_id || String(s.id) === String(produit_id));
       const type = $('#mvType')?.value || 'entree';
       const quantite = Number($('#mvQuantite')?.value || 1);
       if (!product || quantite <= 0) return;
       if (!window.confirm('Confirmer le mouvement et la mise à jour du stock ?')) return;
-      if (type === 'sortie') product.stock_actuel = Math.max(0, product.stock_actuel - quantite);
-      else product.stock_actuel += quantite;
-      DATA.pharmacie.mouvements.push({ id: Math.max(0, ...DATA.pharmacie.mouvements.map((x) => x.id)) + 1, date: new Date().toISOString().slice(0, 16), produit_id, produit_nom: product.nom, type, quantite, motif: $('#mvMotif')?.value.trim() || '', operateur: $('#mvOperateur')?.value || (state.role === 'admin' ? 'Administrateur' : 'Gérant Pharma') });
+      const updatedStock = { ...product };
+      if (type === 'sortie') updatedStock.stock_actuel = Math.max(0, updatedStock.stock_actuel - quantite);
+      else updatedStock.stock_actuel += quantite;
+      const mvtObj = {
+        date: new Date().toISOString().slice(0, 16),
+        produit_id: product._id || String(product.id),
+        produit_nom: product.nom,
+        type, quantite,
+        motif: $('#mvMotif')?.value.trim() || '',
+        operateur: $('#mvOperateur')?.value || (state.role === 'admin' ? 'Administrateur' : 'Gérant Pharma')
+      };
       pharmaState.subTab = 'mouvements';
-      renderPharmacie(); closeModal();
+      closeModal();
+      await fsUpdateStock(updatedStock);
+      await fsAddMouvement(mvtObj);
     }
 
     // ==============================
@@ -443,7 +584,7 @@
       const isAdmin = state.role === 'admin';
       const canPharma = state.role === 'admin' || state.role === 'pharma';
       if (action === 'open-auth') return openModal('auth');
-      if (action === 'logout') { state.role = null; state.activeTab = 'pharmacie'; renderAuth(); renderTabs(); renderPersonnel(); renderVehicules(); renderPharmacie(); return; }
+      if (action === 'logout') { state.role = null; renderAuth(); renderTabs(); renderPersonnel(); renderVehicules(); renderPharmacie(); return; }
       if (action === 'validate-auth') {
         const username = $('#authUsername')?.value || '';
         const pass = $('#authPassword')?.value || '';
@@ -458,34 +599,39 @@
       if (!isAdmin && ['add-member', 'edit-member', 'delete-member', 'add-vehicle', 'edit-vehicle', 'delete-vehicle', 'toggle-formation', 'save-member', 'save-vehicle'].includes(action)) return;
       if (action === 'add-member') return openModal('member');
       if (action === 'edit-member') return openModal('member', Number(target.dataset.id));
-      if (action === 'delete-member') { const id = Number(target.dataset.id); if (window.confirm('Supprimer ce membre ?')) { DATA.membres = DATA.membres.filter((m) => m.id !== id); renderPersonnel(); } return; }
-      if (action === 'toggle-formation') { const id = Number(target.dataset.id), idx = Number(target.dataset.formIndex), member = DATA.membres.find((m) => m.id === id); if (!member || !member.formations[idx]) return; member.formations[idx]['validé'] = !member.formations[idx]['validé']; if (!member.formations[idx]['validé']) member.formations[idx].date = ''; if (member.formations[idx]['validé'] && !member.formations[idx].date) member.formations[idx].date = new Date().toISOString().slice(0, 10); renderPersonnel(); return; }
+      if (action === 'delete-member') { const id = Number(target.dataset.id); if (window.confirm('Supprimer ce membre ?')) { DATA.membres = DATA.membres.filter((m) => m.id !== id); persistData(); renderPersonnel(); } return; }
+      if (action === 'toggle-formation') { const id = Number(target.dataset.id), idx = Number(target.dataset.formIndex), member = DATA.membres.find((m) => m.id === id); if (!member || !member.formations[idx]) return; member.formations[idx]['validé'] = !member.formations[idx]['validé']; if (!member.formations[idx]['validé']) member.formations[idx].date = ''; if (member.formations[idx]['validé'] && !member.formations[idx].date) member.formations[idx].date = new Date().toISOString().slice(0, 10); persistData(); renderPersonnel(); return; }
       if (action === 'save-member') return saveMemberFromModal();
       if (action === 'add-vehicle') return openModal('vehicle');
       if (action === 'edit-vehicle') return openModal('vehicle', Number(target.dataset.id));
-      if (action === 'delete-vehicle') { const id = Number(target.dataset.id); if (window.confirm('Supprimer ce véhicule ?')) { DATA.vehicules = DATA.vehicules.filter((v) => v.id !== id); renderVehicules(); } return; }
+      if (action === 'delete-vehicle') { const id = Number(target.dataset.id); if (window.confirm('Supprimer ce véhicule ?')) { DATA.vehicules = DATA.vehicules.filter((v) => v.id !== id); persistData(); renderVehicules(); } return; }
       if (action === 'save-vehicle') return saveVehicleFromModal();
       if (action === 'pharma-subtab') { pharmaState.subTab = target.dataset.subtab; renderPharmacie(); return; }
       if (action === 'add-pharma-product' && canPharma) return openModal('pharma-product');
       if (action === 'edit-pharma-product' && canPharma) return openModal('pharma-product', Number(target.dataset.id));
-      if (action === 'delete-pharma-product' && isAdmin) { const id = Number(target.dataset.id); if (window.confirm('Supprimer ce produit ?')) { DATA.pharmacie.stocks = DATA.pharmacie.stocks.filter((s) => s.id !== id); renderPharmacie(); } return; }
+      if (action === 'delete-pharma-product' && isAdmin) { const id = target.dataset.id; if (window.confirm('Supprimer ce produit ?')) { fsDeleteStock(id); } return; }
       if (action === 'save-pharma-product' && canPharma) return savePharmaProductFromModal();
       if (action === 'add-pharma-order' && canPharma) return openModal('pharma-order', Number(target.dataset.productId || 0) || null);
       if (action === 'save-pharma-order' && canPharma) return savePharmaOrderFromModal();
       if (action === 'deliver-pharma-order' && canPharma) {
-        const id = Number(target.dataset.id);
-        const order = DATA.pharmacie.commandes.find((c) => c.id === id);
+        const id = target.dataset.id;
+        const order = DATA.pharmacie.commandes.find((c) => c._id === id || String(c.id) === id);
         if (!order || order.statut !== 'en_attente') return;
-        order.statut = 'livree';
-        if (window.confirm('Ajouter la quantité livrée au stock actuel du produit ?')) {
-          const product = DATA.pharmacie.stocks.find((s) => s.id === order.produit_id);
-          if (product) product.stock_actuel += Number(order.quantite || 0);
-        }
-        renderPharmacie();
+        (async () => {
+          if (window.confirm('Ajouter la quantité livrée au stock actuel du produit ?')) {
+            const product = DATA.pharmacie.stocks.find((s) => s._id === order.produit_id || String(s.id) === order.produit_id);
+            if (product) {
+              const updatedStock = { ...product, stock_actuel: product.stock_actuel + Number(order.quantite || 0) };
+              await fsUpdateStock(updatedStock);
+            }
+          }
+          const updatedOrder = { ...order, statut: 'livree' };
+          await fsUpdateCommande(updatedOrder);
+        })();
         return;
       }
-      if (action === 'cancel-pharma-order' && isAdmin) { const id = Number(target.dataset.id); const order = DATA.pharmacie.commandes.find((c) => c.id === id); if (order) order.statut = 'annulee'; renderPharmacie(); return; }
-      if (action === 'delete-pharma-order' && isAdmin) { const id = Number(target.dataset.id); if (window.confirm('Supprimer cette commande ?')) { DATA.pharmacie.commandes = DATA.pharmacie.commandes.filter((c) => c.id !== id); renderPharmacie(); } return; }
+      if (action === 'cancel-pharma-order' && isAdmin) { const id = target.dataset.id; const order = DATA.pharmacie.commandes.find((c) => c._id === id || String(c.id) === id); if (order) { const upd = { ...order, statut: 'annulee' }; fsUpdateCommande(upd); } return; }
+      if (action === 'delete-pharma-order' && isAdmin) { const id = target.dataset.id; if (window.confirm('Supprimer cette commande ?')) { fsDeleteCommande(id); } return; }
       if (action === 'add-pharma-movement' && canPharma) return openModal('pharma-movement');
       if (action === 'save-pharma-movement' && canPharma) return savePharmaMovementFromModal();
       if (action === 'add-formation-row') { const wrap = $('#formationRows'); if (wrap) wrap.insertAdjacentHTML('beforeend', formationRowHtml({ nom: '', date: '', 'validé': false }, Date.now())); return; }
@@ -499,7 +645,17 @@
     // ==============================
     // Initialisation
     // ==============================
-    function boot() { updateClock(); setInterval(updateClock, 1000); renderAuth(); renderTabs(); renderPersonnel(); renderVehicules(); renderPharmacie(); }
+    function boot() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.membres) DATA.membres = parsed.membres;
+          if (parsed.vehicules) DATA.vehicules = parsed.vehicules;
+        }
+      } catch(e) {}
+      updateClock(); setInterval(updateClock, 1000); renderAuth(); renderTabs(); renderPersonnel(); renderVehicules(); renderPharmacie();
+    }
     boot();
   </script>
 </body>
