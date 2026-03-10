@@ -56,220 +56,316 @@
     <div class="page-header">
       <div class="breadcrumb">/ <span>FORMATIONS</span> / <span>INTERNE / MÉDECIN</span></div>
       <h1 class="page-title">Parcours <span>Interne / Médecin</span></h1>
-      <p class="page-subtitle">Formation médicale avancée pour régulation, décision critique et coordination multi-acteurs.</p>
+      <p class="page-subtitle">Formation médicale avancée pour régulation, décision critique, procédures avancées et commandement terrain.</p>
     </div>
 
     <div class="section-title">Objectifs de formation</div>
     <table class="data-table">
       <thead><tr><th>Objectif</th><th>Niveau visé</th><th>Évaluation</th></tr></thead>
       <tbody>
-        <tr><td>Prioriser les appels selon niveaux P0 à P4.</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td><td>Audit d'appels régulation simulés</td></tr>
-        <tr><td>Prendre une décision rapide sur critères cliniques et différentiels.</td><td><span class="badge badge-red">EXPERT</span></td><td>Cas progressifs chronométrés</td></tr>
-        <tr><td>Maîtriser les procédures médicales préhospitalières avancées.</td><td><span class="badge badge-red">EXPERT</span></td><td>Simulation procédurale + revue collégiale</td></tr>
-        <tr><td>Coordonner l'action inter-services en contexte de crise.</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td><td>Exercice ORSAN multi-acteurs</td></tr>
+        <tr><td>Prioriser les appels selon niveaux P0 à P4 et critères médicaux.</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td><td>Audit d'appels régulation simulés</td></tr>
+        <tr><td>Prendre une décision rapide et argumentée en urgence vitale.</td><td><span class="badge badge-red">EXPERT</span></td><td>Cas progressifs chronométrés</td></tr>
+        <tr><td>Maîtriser les procédures avancées (IOT, ECMO, arrêt réanimation).</td><td><span class="badge badge-red">EXPERT</span></td><td>Simulation procédurale + revue collégiale</td></tr>
+        <tr><td>Coordonner l'action multi-acteurs en contexte ORSAN.</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td><td>Exercice multi-services</td></tr>
+        <tr><td>Maîtriser l'éthique et l'arrêt de réanimation (noflow, DCD).</td><td><span class="badge badge-red">EXPERT</span></td><td>Débriefing collégial</td></tr>
+        <tr><td>Piloter des scénarios Arma 3 en tant que médecin terrain.</td><td><span class="badge badge-red">EXPERT</span></td><td>Simulation temps réel</td></tr>
       </tbody>
     </table>
 
     <div class="section-title">Modules</div>
     <div class="module-nav">
-      <button class="mod-btn active" onclick="showModule('regulation')">01 · Régulation médicale</button>
-      <button class="mod-btn" onclick="showModule('decision')">02 · Décision en urgence</button>
-      <button class="mod-btn" onclick="showModule('procedures')">03 · Procédures avancées</button>
-      <button class="mod-btn" onclick="showModule('coordination')">04 · Coordination inter-services</button>
+      <button class="mod-btn active" onclick="showModule('regulation')">01 · Régulation</button>
+      <button class="mod-btn" onclick="showModule('decision')">02 · Décision</button>
+      <button class="mod-btn" onclick="showModule('procedures')">03 · Procédures</button>
+      <button class="mod-btn" onclick="showModule('coordination')">04 · Coordination</button>
+      <button class="mod-btn" onclick="showModule('ethique')">05 · Éthique</button>
+      <button class="mod-btn" onclick="showModule('arma')">06 · Scénarios Arma 3</button>
     </div>
 
-    <!-- MODULE 1 : RÉGULATION -->
+    <!-- MODULE 1 : RÉGULATION MÉDICALE -->
     <div id="mod-regulation" class="module-content active">
       <div class="panel">
         <div class="panel-header">📞 Module 01 — Régulation médicale · Durée : 3h30 · <span style="color:var(--green,#22c55e)">DISPONIBLE</span></div>
         <div class="panel-body">
-          <div class="info-box">Le médecin régulateur est le pivot du SAMU. Il évalue, priorise et décide des moyens à engager pour chaque appel entrant, 24h/24. Sa décision est médicale et engage sa responsabilité.</div>
+          <div class="info-box">Le médecin régulateur est le pivot décisionnel du SAMU. Il évalue chaque appel, priorise médicalement et alloue les ressources de manière optimale. Sa décision est traçable et engage sa responsabilité médicale.</div>
 
           <div class="section-title">Niveaux de priorité P0 → P4</div>
           <table class="data-table">
-            <thead><tr><th>Niveau</th><th>Définition</th><th>Exemples RP Arma 3</th><th>Moyen</th><th>Délai</th></tr></thead>
+            <thead><tr><th>Niveau</th><th>Définition</th><th>Critères cliniques</th><th>Exemples RP Arma 3</th><th>Vecteur</th><th>Délai</th></tr></thead>
             <tbody>
               <tr>
                 <td><span class="badge badge-red">P0</span></td>
                 <td>Détresse vitale immédiate</td>
-                <td>ACR, détresse respiratoire sévère, trauma balistique grave</td>
-                <td>SMUR</td>
+                <td>GCS <13, SpO2 <90% réfractaire, PA <90, ACR</td>
+                <td>ACR, détresse respiratoire sévère, trauma balistique grave, polytrauma instable</td>
+                <td>SMUR + Médecin</td>
                 <td class="mono text-red">&lt; 8 min</td>
               </tr>
               <tr>
                 <td><span class="badge badge-red">P1</span></td>
                 <td>Urgence vitale potentielle</td>
-                <td>Choc hémorragique, AVC suspecté, polytraumatisé stable</td>
+                <td>Altération conscience modérée, PA 90-100, mécanisme haute cinétique</td>
+                <td>Choc hémorragique, AVC suspecté, polytraumatisé stable, brûlures étendues</td>
                 <td>SMUR ± VSAV</td>
                 <td class="mono text-red">&lt; 15 min</td>
               </tr>
               <tr>
                 <td><span class="badge badge-yellow">P2</span></td>
                 <td>Urgence relative</td>
-                <td>Fracture membre, douleur thoracique sans critère grave</td>
+                <td>Symptômes sévères, stabilité hémodynamique, conscience préservée</td>
+                <td>Fracture membre, douleur thoracique atypique, trauma mineur stable</td>
                 <td>VSAV</td>
                 <td class="mono">&lt; 30 min</td>
               </tr>
               <tr>
                 <td><span class="badge badge-yellow">P3</span></td>
                 <td>Urgence différable</td>
-                <td>Plaie simple, malaise résolu, chute sans trauma apparent</td>
+                <td>Symptômes légers à modérés, stabilité générale</td>
+                <td>Plaie simple, malaise résolu, chute sans trauma apparent, douleur mineure</td>
                 <td>VSAV / VSL</td>
                 <td class="mono">&lt; 60 min</td>
               </tr>
               <tr>
                 <td><span class="badge badge-dim">P4</span></td>
                 <td>Conseil médical</td>
-                <td>Conseil, orientation, patient ne nécessitant pas d'envoi</td>
+                <td>Symptômes bénins ou absence urgence</td>
+                <td>Conseil orientation, patient stable sans transport nécessaire</td>
                 <td>Téléphone</td>
                 <td class="mono">Différé</td>
               </tr>
             </tbody>
           </table>
 
-          <div class="section-title">Critères d'engagement SMUR vs VSAV</div>
+          <div class="section-title">Critères d'engagement SMUR vs VSAV seul</div>
           <div class="grid-2">
             <div>
               <div style="background:rgba(230,48,48,0.08);border:1px solid rgba(230,48,48,0.2);border-radius:4px;padding:16px;">
-                <div style="font-family:var(--mono,monospace);font-size:11px;color:#e63030;letter-spacing:2px;margin-bottom:10px;">SMUR — CRITÈRES</div>
+                <div style="font-family:var(--mono,monospace);font-size:11px;color:#e63030;letter-spacing:2px;margin-bottom:10px;">CRITÈRES SMUR</div>
                 <ul style="font-size:13px;padding-left:16px;line-height:2;">
-                  <li>Détresse vitale confirmée ou fortement suspectée</li>
-                  <li>Geste médical invasif prévisible (IOT, IOO, défibrillation, adrénaline en ACR)</li>
-                  <li>Traitement médicamenteux spécialisé nécessaire</li>
-                  <li>Transfert secondaire médicalisé</li>
-                  <li>Doute diagnostique à fort risque vital</li>
+                  <li>GCS <13 ou altération conscience</li>
+                  <li>SpO2 <90% réfractaire à O2</li>
+                  <li>PA <90 mmHg</li>
+                  <li>Mécanisme haute cinétique (polytrauma, balistique)</li>
+                  <li>ACR confirmé ou suspe</li>
+                  <li>Geste invasif prévisible (IOT, défibrillation)</li>
+                  <li>Traitement spécialisé nécessaire</li>
                 </ul>
               </div>
             </div>
             <div>
-              <div style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.2);border-radius:4px;padding:16px;">
-                <div style="font-family:var(--mono,monospace);font-size:11px;color:#eab308;letter-spacing:2px;margin-bottom:10px;">VSAV — CRITÈRES</div>
+              <div style="background:rgba(67,230,48,0.08);border:1px solid rgba(67,230,48,0.2);border-radius:4px;padding:16px;">
+                <div style="font-family:var(--mono,monospace);font-size:11px;color:#43e630;letter-spacing:2px;margin-bottom:10px;">CRITÈRES VSAV SEUL</div>
                 <ul style="font-size:13px;padding-left:16px;line-height:2;">
-                  <li>Urgence relative sans critère de gravité immédiate</li>
-                  <li>Surveillance de paramètres stables</li>
-                  <li>Transport programmé vers structure adaptée</li>
-                  <li>Bilan et conditionnement sans geste invasif</li>
-                  <li>Renfort bilan en attente du SMUR</li>
+                  <li>GCS 15, conscience préservée</li>
+                  <li>SpO2 ≥95% en air ambiant</li>
+                  <li>FC 60–100, TA normale</li>
+                  <li>Mécanisme bénin (chute, plaie simple)</li>
+                  <li>P3/P4 confirmé</li>
+                  <li>Aucun geste invasif prévisible</li>
+                  <li>Bilan et transport simple</li>
                 </ul>
               </div>
             </div>
           </div>
+
+          <div class="section-title">Critères HELISMUR (SUdF 2019)</div>
+          <div class="info-box">Les 4 critères cumulatifs d'engagement HELISMUR : <strong>1)</strong> Distance terrestre >20–25 min ; <strong>2)</strong> Urgence P0 ou P1 confirmée ; <strong>3)</strong> Pas de centre chirurgical sur site ou transport primaire ; <strong>4)</strong> Patient stable à la cinétique rotor.</div>
+          <table class="data-table">
+            <thead><tr><th>Décision</th><th>Condition</th><th>Moyen préconisé</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Engager HELISMUR</strong></td><td>Tous 4 critères validés</td><td>Appel direct + prise en charge terrain</td></tr>
+              <tr><td><strong>Refuser HELISMUR</strong></td><td>Distance &lt;20 min OU priorité <P1</td><td>SMUR + VLM (plus rapide)</td></tr>
+              <tr><td><strong>HELISMUR en attente</strong></td><td>Décision incertaine</td><td>Débuter stabilisation + réévaluation à 5 min</td></tr>
+            </tbody>
+          </table>
+
+          <div class="section-title" style="margin-top:20px;">Scénario RP interactif — Priorisation d'appels simultanés</div>
+          <div class="info-box"><strong>Situation :</strong> 3 appels arrivent en même temps à la régulation. Vous devez les prioriser en P0/P1/P2/P3/P4 et décider du vecteur pour chacun.</div>
+          
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:16px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:8px;">Appel 1 — Homme 45 ans</div>
+            <div style="font-size:13px;line-height:1.6;margin-bottom:12px;">Douleur thoracique typique depuis 2h (rétrosternale, irradiation bras gauche), sueurs froides, dyspnée légère, PA 85/55, FC 122 bpm, SpO2 92% air ambiant.</div>
+            <div style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.2);border-radius:3px;padding:10px;font-size:12px;font-family:var(--mono,monospace);">
+              <strong>Diagnostic évident :</strong> SCA ST+ (probable), choc cardiogénique naissant → P0/P1<br>
+              <strong>Vecteur :</strong> SMUR immédiat, ECG terrain, préhospitalier SMUR<br>
+              <strong>Orientation :</strong> Appel direct centre cardio interventionnel (délai primo-angiographie < 120 min)
+            </div>
+          </div>
+
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:16px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:8px;">Appel 2 — Femme 32 ans</div>
+            <div style="font-size:13px;line-height:1.6;margin-bottom:12px;">Cheville douloureuse après chute sur escalier (20 min), marche avec difficulté mais autonome, conscience claire, TA/FC normales, pas de dyspnée, déformation cheville visible.</div>
+            <div style="background:rgba(67,230,48,0.08);border:1px solid rgba(67,230,48,0.2);border-radius:3px;padding:10px;font-size:12px;font-family:var(--mono,monospace);">
+              <strong>Diagnostic :</strong> Fracture cheville probable, stable → P3<br>
+              <strong>Vecteur :</strong> VSAV seul, pas urgence immédiate<br>
+              <strong>Orientation :</strong> Radiologie + urgence chirurgicale standard
+            </div>
+          </div>
+
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:16px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:8px;">Appel 3 — Enfant 8 ans</div>
+            <div style="font-size:13px;line-height:1.6;margin-bottom:12px;">Convulsions tonico-cloniques en cours (durée 4 min environ), GCS 8 (E2V2M4), FR 28 bpm, SpO2 85% air ambiant, pouls bien frappé, pas de cyanose.</div>
+            <div style="background:rgba(230,48,48,0.08);border:1px solid rgba(230,48,48,0.2);border-radius:3px;padding:10px;font-size:12px;font-family:var(--mono,monospace);">
+              <strong>Diagnostic :</strong> Crise convulsive prolongée (status potentiel) → P0 (danger vital immédiat)<br>
+              <strong>Vecteur :</strong> SMUR immédiat, O2 terrain, Diazépam IV si IV obtenue<br>
+              <strong>Orientation :</strong> Pédiatrie hospitalière urgente, monitorage neuro
+            </div>
+          </div>
+
+          <div class="section-title" style="margin-top:20px;">Résumé décisions</div>
+          <table class="data-table" style="font-size:12px;">
+            <thead><tr><th>Appel</th><th>Priorité</th><th>Vecteur</th><th>Justification</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><span class="badge badge-red">P0</span></td><td>SMUR immédiat</td><td>SCA ST+ + choc cardiogénique : menace vitale immédiate</td></tr>
+              <tr><td>3</td><td><span class="badge badge-red">P0</span></td><td>SMUR immédiat</td><td>Crise convulsive prolongée : danger vital respiratoire</td></tr>
+              <tr><td>2</td><td><span class="badge badge-yellow">P3</span></td><td>VSAV</td><td>Fracture stable, patient autonome : urgence différable</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
-    <!-- MODULE 2 : DÉCISION -->
+    <!-- MODULE 2 : DÉCISION EN URGENCE -->
     <div id="mod-decision" class="module-content">
       <div class="panel">
-        <div class="panel-header">🧠 Module 02 — Prise de décision en urgence · Durée : 3h00 · <span style="color:var(--yellow,#eab308)">EN COURS</span></div>
+        <div class="panel-header">🧠 Module 02 — Décision en urgence · Durée : 4h00 · <span style="color:var(--green,#22c55e)">DISPONIBLE</span></div>
         <div class="panel-body">
-          <div class="info-box">La décision médicale en urgence préhospitalière s'appuie sur une évaluation rapide, des arbres décisionnels éprouvés et une gestion du risque dans un environnement opérationnel (RP Arma 3).</div>
+          <div class="info-box">La décision médicale en urgence préhospitalière s'appuie sur l'évaluation rapide ABCDE, l'intégration des scores cliniques (GCS, MGAP, NEWS2, choc index) et une gestion du risque dans un environnement operationnel RP.</div>
 
-          <div class="section-title">Trauma balistique — Arbre décisionnel xABCDE</div>
-          <div style="max-width:600px;">
-            <div class="tree-box" style="background:rgba(230,48,48,0.08);border-color:rgba(230,48,48,0.3);">TRAUMA BALISTIQUE → Bilan xABCDE</div>
-            <div class="tree-arrow">↓</div>
-            <div class="tree-box">Hémorragie catastrophique (jet, perte > 500 mL/min) ?</div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <div style="flex:1;">
-                <div class="tree-box" style="background:rgba(230,48,48,0.1);border-color:rgba(230,48,48,0.4);"><strong>OUI</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box"><strong>Garrot proximale immédiat</strong> ou <strong>Packing compressif</strong> — Puis O2 + accès IV + transport immédiat</div>
-              </div>
-              <div style="flex:1;">
-                <div class="tree-box"><strong>NON</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box">Continuer xABCDE</div>
-              </div>
-            </div>
-            <div class="tree-arrow" style="margin-top:12px;">↓</div>
-            <div class="tree-box">Détresse respiratoire ?</div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <div style="flex:1;">
-                <div class="tree-box" style="background:rgba(230,48,48,0.1);border-color:rgba(230,48,48,0.4);"><strong>OUI</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box">O2 haut débit + position demi-assise si possible</div>
-              </div>
-              <div style="flex:1;">
-                <div class="tree-box"><strong>NON</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box">Continuer évaluation</div>
-              </div>
-            </div>
-            <div class="tree-arrow" style="margin-top:12px;">↓</div>
-            <div class="tree-box">État hémodynamique : PA &lt; 90 mmHg ?</div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <div style="flex:1;">
-                <div class="tree-box" style="background:rgba(230,48,48,0.1);border-color:rgba(230,48,48,0.4);"><strong>OUI</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box">Remplissage prudent (250 mL bolus, réévaluer) — Garrot si saignement visible</div>
-              </div>
-              <div style="flex:1;">
-                <div class="tree-box"><strong>NON</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box">Continuer évaluation</div>
-              </div>
-            </div>
-            <div class="tree-arrow" style="margin-top:12px;">↓</div>
-            <div class="tree-box">Neurologique : GCS ≤ 8 ?</div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <div style="flex:1;">
-                <div class="tree-box" style="background:rgba(230,48,48,0.1);border-color:rgba(230,48,48,0.4);"><strong>OUI</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box"><strong>Protection voies aériennes</strong> (IOT ou VAS selon protocole) — Montée en GCS ?</div>
-              </div>
-              <div style="flex:1;">
-                <div class="tree-box"><strong>NON</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box">Monitoring neurologique continu</div>
-              </div>
-            </div>
-            <div class="tree-arrow" style="margin-top:12px;">↓</div>
-            <div class="tree-box" style="background:rgba(67,230,48,0.1);border-color:rgba(67,230,48,0.3);"><strong>PACKAGING & TRANSPORT IMMÉDIAT</strong> — Vers centre référent trauma</div>
-          </div>
-
-          <div class="section-title" style="margin-top:20px;">Mécanismes lésionnels fréquents en RP — Tableau diagnostique</div>
+          <div class="section-title">Raisonnement clinique ABCDE appliqué</div>
           <table class="data-table">
-            <thead><tr><th>Mécanisme</th><th>Signes évocateurs</th><th>Action prioritaire</th><th>Transport</th></tr></thead>
+            <thead><tr><th>Étape</th><th>Évaluation</th><th>Hypothèse principale</th><th>Diagnostic différentiel clé</th><th>Question décisive terrain</th></tr></thead>
             <tbody>
               <tr>
-                <td><strong>Trauma balistique</strong> (plaie pénétrante)</td>
-                <td>Plaie par projectile · saignement externe · douleur locale · entrée/sortie</td>
-                <td>Arrêt hémorragie (garrot/packing) · O2 · accès IV · monitorage PA</td>
-                <td>SMUR immédiat</td>
+                <td><strong>A : Voies</strong></td>
+                <td>Perméabilité, ouverture voies</td>
+                <td>Voies libres → continuer</td>
+                <td>Obstruction langue, corps étranger, œdème</td>
+                <td>Patient ventile-t-il correctement ?</td>
               </tr>
               <tr>
-                <td><strong>Accident de véhicule</strong> (polytraumatisme)</td>
-                <td>Déformation habitacle · perte de conscience · trauma multiple · douleur diffuse</td>
-                <td>xABCDE · immobilisation · O2 · accès IV</td>
-                <td>SMUR immédiat</td>
+                <td><strong>B : Breathing</strong></td>
+                <td>FR, SpO2, auscultation</td>
+                <td>FR 12-20, SpO2 >95%</td>
+                <td>Pneumothorax, OAP, asthme, pneumonie sévère</td>
+                <td>Asymétrie auscultatoire ? Crépitations ?</td>
               </tr>
               <tr>
-                <td><strong>Chute de hauteur</strong></td>
-                <td>Histoire de chute &gt; 3 m · douleur membres/rachis · possible coma</td>
-                <td>Immobilisation rachis · O2 si SpO2 &lt; 94% · accès IV · observation neuro</td>
-                <td>SMUR si GCS &lt; 15 ou PA instable</td>
+                <td><strong>C : Circulation</strong></td>
+                <td>PA, FC, pouls, perfusion</td>
+                <td>PA >90, FC 60-100, pouls présent</td>
+                <td>Choc hypovolémique, cardiogénique, septique</td>
+                <td>Extremités chaudes ou froides ? TRC > 2s ?</td>
               </tr>
               <tr>
-                <td><strong>Intoxication / Overdose</strong></td>
-                <td>Substance identifiée ou antécédents · conscience altérée · FR déprimée · pupilles anormales</td>
-                <td>Protection voies aériennes (VAS/IOT) · O2 · accès IV · Narcan si opioïdes</td>
-                <td>SMUR si coma ou détresse respi</td>
+                <td><strong>D : Disability</strong></td>
+                <td>GCS, pupils, motricitéGCS, pupilles, motricité</td>
+                <td>GCS 15, pupils symétriques et réactives</td>
+                <td>TCC, AVC, hypoglycémie, intoxication</td>
+                <td>GCS ? Pupils ? Glycémie capillaire si altéré ?</td>
               </tr>
               <tr>
-                <td><strong>Coma éthylique</strong></td>
-                <td>Haleine alcoolisée · conscience altérée · FR variable · hypothermie possible</td>
-                <td>Positionnement latéral · O2 · accès IV · prévention aspiration · observation</td>
-                <td>VSAV si stable, SMUR si GCS ≤ 8 ou complications</td>
-              </tr>
-              <tr>
-                <td><strong>Arrêt cardiaque</strong> (toutes causes)</td>
-                <td>Perte de conscience · absence pouls · apnée · peau marbrée/cyanosée</td>
-                <td><strong>RCP immédiate</strong> · défibrillation FV/TV · adrénaline cycles · IOT</td>
-                <td>SMUR immédiat</td>
+                <td><strong>E : Exposure</strong></td>
+                <td>Examen complet sans hypothermie</td>
+                <td>Pas de trauma occulte</td>
+                <td>Plaies pénétrantes, brûlures, fractures</td>
+                <td>Mécanisme trauma ? Log trauma complet ?</td>
               </tr>
             </tbody>
           </table>
+
+          <div class="section-title">Scores cliniques intégrés à la décision</div>
+          
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:8px;">GCS — Glasgow Coma Scale</div>
+            <table class="data-table" style="font-size:12px;">
+              <thead><tr><th>Composante</th><th>Cotation</th><th>Interprétation</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Y (Yeux)</strong></td><td>1–4</td><td>1=fermés réflexe seul, 2=douleur, 3=ordre verbal, 4=spontané</td></tr>
+                <tr><td><strong>V (Verbal)</strong></td><td>1–5</td><td>1=aucune, 2=incompréhensible, 3=inadapté, 4=désorienté, 5=orienté</td></tr>
+                <tr><td><strong>M (Motricité)</strong></td><td>1–6</td><td>1=aucune, 2=extension, 3=flexion, 4=évite douleur, 5=localise, 6=obéit</td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:10px;font-size:12px;background:rgba(234,179,8,0.1);padding:8px;border-radius:3px;">
+              <strong>Seuils décisifs :</strong> GCS ≤8 → IOT, GCS <13 → P1, GCS <9 → intubation préventive transporte
+            </div>
+          </div>
+
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:8px;">MGAP — Modified Glasgow Prognostic Score (allocation vecteur)</div>
+            <table class="data-table" style="font-size:12px;">
+              <thead><tr><th>Score</th><th>Variable</th><th>Points</th><th>Interprétation</th><th>Vecteur</th></tr></thead>
+              <tbody>
+                <tr><td>&lt;17</td><td>Stable</td><td>Bas</td><td>Peu de gravité → bilan faible risque</td><td>UMH recommandée</td></tr>
+                <tr><td>18–22</td><td>Moyen</td><td>Moyen</td><td>Urgence modérée → risque différentiel</td><td>VLM (plus de surveillance)</td></tr>
+                <tr><td>≥23</td><td>Sévère</td><td>Haut</td><td>Urgence majeure → pronostic à risque</td><td>VSAV si très stable, sinon SMUR</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:8px;">Choc Index (FC/PAS) — Détection rapide de choc</div>
+            <div style="font-size:12px;line-height:1.6;">
+              <strong>Calcul :</strong> FC (bpm) / PAS (mmHg)<br>
+              <strong>Interprétation :</strong> <span class="badge badge-green">≤0.5 = Normal</span> · <span class="badge badge-yellow">0.5–1 = Compensation modérée</span> · <span class="badge badge-red">>1 = Choc établi</span><br>
+              <strong>Action :</strong> Choc index >1 → remplissage d'urgence ou diagnostic différentiel rapidement
+            </div>
+          </div>
+
+          <div class="section-title">Prescription à distance (protocole RP médecin → IDE)</div>
+          <div class="info-box"><strong>Protocole radio :</strong> Médecin donne ordre vocal explicite → IDE répète et confirme → IDE exécute. Tout ordre médicamenteux est tracé par heure et contexte.</div>
+          <table class="data-table">
+            <thead><tr><th>Médicament</th><th>Indication</th><th>Dose standard</th><th>Contre-indication absolue</th><th>Vérification avant prescription</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Morphine</strong></td>
+                <td>Douleur EVA ≥5</td>
+                <td>3 mg IV lentement</td>
+                <td>Allergie, GCS ≤12, PA <90</td>
+                <td>PA ? GCS ? Allergie ? TCC non évalué ?</td>
+              </tr>
+              <tr>
+                <td><strong>Naloxone</strong></td>
+                <td>Overdose opioïdes confirmée/suspectée</td>
+                <td>0.4 mg IV/IM, répétable</td>
+                <td>Aucune absolue en urgence</td>
+                <td>Contexte overdose ? FR <8 ? Pupils puntiformes ?</td>
+              </tr>
+              <tr>
+                <td><strong>Adrénaline ACR</strong></td>
+                <td>ACR confirmé, tous cycles impairs</td>
+                <td>1 mg IV toutes 3-5 min</td>
+                <td>Aucune en ACR</td>
+                <td>ACR confirmé ? Comptes cycles ? Accès IV ?</td>
+              </tr>
+              <tr>
+                <td><strong>Adrénaline anaphylaxie</strong></td>
+                <td>Anaphylaxie grade 3–4 (stridor, choc)</td>
+                <td>0.5 mg IM immédiat</td>
+                <td>Aucune absolue en anaphylaxie</td>
+                <td>Signes anaphylaxie sévère confirmés ?</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="section-title" style="margin-top:20px;">Scénario RP interactif — Décision thérapeutique à distance</div>
+          <div class="info-box"><strong>Situation terrain :</strong> IDE radio : "Médecin, patient conscient GCS 13, PA 88/52, FC 138, douleur abdominale EVA 9, mécanisme trauma fermé abdomen il y a 15 min."</div>
+          <div style="border:1px solid rgba(230,48,48,0.25);border-radius:4px;padding:14px;margin:12px 0;background:rgba(230,48,48,0.05);">
+            <div style="font-weight:bold;color:#e63030;margin-bottom:10px;">Question : Décidez pour chaque item →</div>
+            <div style="font-size:13px;line-height:1.8;">
+              <strong>1. Prescrire Morphine 3mg IV maintenant ?</strong><br>
+              ☐ <strong style="color:red;">A) OUI, patient a mal</strong> — Incorrect : PA <90 = contre-indication relative majeure. Morphine aggrave hypotension.<br>
+              ☐ <strong style="color:green;">B) NON, pas de Morphine pour l'instant</strong> — Correct : PA <90 + trauma abdominal = risque hémorragique → nécessite stabilisation hémodynamique d'abord.<br>
+              ☐ <strong style="color:orange;">C) OUI si PA >90 après fluide</strong> — Partiel : logique correcte, mais trop tard si délai critique.<br><br>
+              <strong>2. Action immédiate terrain ?</strong><br>
+              ☐ <strong style="color:green;">A) Remplissage NaCl 0.9% 250 mL bolus IV rapide, réévaluer PA à 5 min</strong> — Correct : crise hypovolémique probable, remplissage = premier volet stabilisation.<br>
+              ☐ <strong style="color:red;">B) Aucun fluide, transport immédiat</strong> — Incorrect : délai dangereux sans stabilisation minimale.<br>
+              ☐ <strong style="color:orange;">C) Attendre bilan complet avant décision</strong> — Incorrect : patient instable, action requise maintenant.<br><br>
+              <strong>3. Surveillance demandée IDE pendant transport ?</strong><br>
+              ☐ <strong style="color:green;">A) PA/FC toutes les 2 min, SpO2 continu, EVA, signes d'aggravation</strong> — Correct : monitorage rapproché essentiel en choc hémorragique.<br>
+              ☐ <strong style="color:red;">B) Bilan standard à destination</strong> — Incorrect : trop passer.
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -277,227 +373,466 @@
     <!-- MODULE 3 : PROCÉDURES AVANCÉES -->
     <div id="mod-procedures" class="module-content">
       <div class="panel">
-        <div class="panel-header">⚕️ Module 03 — Procédures médicales avancées · Durée : 4h00 · <span style="color:var(--yellow,#eab308)">EN COURS</span></div>
+        <div class="panel-header">⚕️ Module 03 — Procédures avancées · Durée : 4h30 · <span style="color:var(--green,#22c55e)">DISPONIBLE</span></div>
         <div class="panel-body">
+          <div class="info-box"><strong>Référentiel :</strong> ERC 2021, SFMU, SUdF 2019. Chaque procédure est une décision médicale exclusive du médecin. Les gestes associés sont exécutés par IDE/IADE sur ordre.</div>
 
-          <div class="alert alert-yellow"><strong>Référentiel :</strong> alignement pédagogique sur ERC, SFMU et HAS. La logique de jeu est utilisée comme traduction opérationnelle, sans remplacer le jugement médical.</div>
-
-          <div class="section-title">Index du module</div>
-          <ul class="step-list">
-            <li class="step-item"><span class="step-num">01</span><span class="step-text">🧠 Ischémie tissulaire irréversible et seuil de futilité.</span></li>
-            <li class="step-item"><span class="step-num">02</span><span class="step-text">⚡ Électrophysiologie FV/TV sans pouls et défibrillation précoce.</span></li>
-            <li class="step-item"><span class="step-num">03</span><span class="step-text">🫀 ECMO VA : indication stricte, arbre décisionnel ECMO vs DCD.</span></li>
-            <li class="step-item"><span class="step-num">04</span><span class="step-text">🏷️ Triage IE/UR/UV/DCD basé sur physiologie du choc.</span></li>
-          </ul>
-
-          <div class="section-title">Théorie médicale (Physiopathologie / SFMU)</div>
-          <table class="data-table">
-            <thead><tr><th>Axe</th><th>Concept scientifique</th><th>Traduction clinique</th></tr></thead>
-            <tbody>
-              <tr>
-                <td><strong>No-flow prolongé</strong></td>
-                <td>Ischémie cérébrale et myocardique → déplétion ATP, dysfonction membranaire, acidose et nécrose cellulaire irréversible.</td>
-                <td>Après un seuil critique, probabilité de ROSC utile très faible ; décision d'arrêt des soins discutée selon contexte, qualité RCP et causes réversibles.</td>
-              </tr>
-              <tr>
-                <td><strong>FV / TV sans pouls</strong></td>
-                <td>Activité électrique anarchique ventriculaire (FV) ou circuit rapide non perfusant (TVSP), sans débit effectif.</td>
-                <td>Défibrillation précoce = meilleure chance de restaurer un rythme organisé perfusant.</td>
-              </tr>
-              <tr>
-                <td><strong>ECMO VA</strong></td>
-                <td>Assistance extracorporelle cardio-respiratoire (drainage veineux + réinjection artérielle), maintien perfusion d'organes nobles.</td>
-                <td>Indication en ACR réfractaire sélectionné : no-flow court et low-flow optimisé, stratégie de centre expert.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="section-title">Application système (Gameplay) — justification médicale des variables</div>
-          <table class="data-table">
-            <thead><tr><th>Variable script</th><th>Règle hardcodée</th><th>Lecture physiopathologique</th><th>Conduite médicale</th></tr></thead>
-            <tbody>
-              <tr>
-                <td><strong>noflow_score</strong></td>
-                <td>+1/s (ralenti à +0.5/s sous O2), seuil critique &gt; 800</td>
-                <td>Accumulation de dette ischémique globale (cerveau + myocarde).</td>
-                <td>Réduire rapidement le no-flow: RCP, défibrillation précoce, adrénaline, oxygénation.</td>
-              </tr>
-              <tr>
-                <td><strong>reviving_score_needed</strong></td>
-                <td>Cible 50–70 ; +40 si no-flow &gt; 800</td>
-                <td>Besoin de récupération plus élevé si lésions d'ischémie avancée.</td>
-                <td>Interpréter comme bascule vers pronostic défavorable et possible futilité.</td>
-              </tr>
-              <tr>
-                <td><strong>reviving_score</strong></td>
-                <td>Score de réponse aux actions thérapeutiques</td>
-                <td>Approximation de la restauration d'une perfusion efficace.</td>
-                <td>Poursuivre uniquement si stratégie cohérente avec pronostic et causes réversibles.</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="section-title">Défibrillation précoce — rationnel et impact</div>
-          <table class="data-table">
-            <thead><tr><th>Élément</th><th>Théorie</th><th>Impact gameplay</th></tr></thead>
-            <tbody>
-              <tr>
-                <td><strong>Choc externe FV/TVSP</strong></td>
-                <td>Dépolarisation simultanée du myocarde, interruption des circuits électriques pathologiques, possibilité de reprise sinusale.</td>
-                <td><span class="badge badge-green">reviving_score +20 à +30</span> + <span class="badge badge-yellow">noflow_score -40 à -60</span></td>
-              </tr>
-              <tr>
-                <td><strong>ROSC immédiat</strong></td>
-                <td>Peut survenir si myocarde encore récupérable et temps de choc court.</td>
-                <td><span class="badge badge-red">1 chance sur 6</span></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="section-title">Arbre décisionnel strict — ECMO VA vs Déclaration de décès (DCD)</div>
-          <div style="max-width:760px;">
-            <div class="tree-box" style="background:rgba(0,48,135,0.08);border-color:rgba(0,48,135,0.25);">ACR réfractaire après ACLS optimisé (RCP + défibrillation + adrénaline + oxygénation)</div>
-            <div class="tree-arrow">↓</div>
-            <div class="tree-box">No-flow estimé &lt; 5 min ?</div>
-            <div style="display:flex;gap:8px;margin-top:8px;">
-              <div style="flex:1;">
-                <div class="tree-box" style="background:rgba(67,230,48,0.1);border-color:rgba(67,230,48,0.35);"><strong>OUI</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box">Low-flow optimisé (compressions efficaces, pauses minimales, ETCO2 compatible) ?</div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box">Cause potentiellement réversible identifiée (H/T) ?</div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box" style="background:rgba(67,230,48,0.12);border-color:rgba(67,230,48,0.35);"><strong>ECMO VA</strong> : antéalerte centre expert, transport médicalisé continu.</div>
-              </div>
-              <div style="flex:1;">
-                <div class="tree-box" style="background:rgba(230,48,48,0.1);border-color:rgba(230,48,48,0.35);"><strong>NON</strong></div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box">Si <span class="badge badge-red">noflow_score &gt; 800</span> + absence cause réversible + absence ROSC malgré stratégie complète :</div>
-                <div class="tree-arrow">↓</div>
-                <div class="tree-box" style="background:rgba(230,48,48,0.12);border-color:rgba(230,48,48,0.35);"><strong>DCD</strong> : décision médicale argumentée, traçabilité horaire et contexte.</div>
-              </div>
+          <div class="section-title">IOT préhospitalière — Indications et séquence décisionnelle</div>
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:8px;">Indications strictes</div>
+            <ul style="font-size:13px;padding-left:16px;line-height:2;">
+              <li><strong>GCS ≤8</strong> → perte de réflexes protecteurs, risque aspiration</li>
+              <li><strong>FR <8 ou >35</strong> → dépression respiratoire ou surcharge métabolique</li>
+              <li><strong>SpO2 <85% réfractaire à O2 haut débit</strong> → hypoxémie critique</li>
+              <li><strong>Transport long (>30 min) + risque respiratory/GCS limité</strong> → protection préventive</li>
+            </ul>
+            <div style="margin-top:10px;font-size:12px;background:rgba(234,179,8,0.1);padding:8px;border-radius:3px;">
+              <strong>Contre-indications relatives :</strong> Anatomie difficile (obésité extrême, traumatisme maxillofacial), patient coopératif sans indication stricte, absence sédation disponible.
             </div>
           </div>
 
-          <div class="section-title" style="margin-top:20px;">Triage avancé — Badges IE / UR / UV / DCD (base physiologique)</div>
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:8px;">Séquence médicale — Décision → Exécution → Vérification</div>
+            <ol style="font-size:13px;padding-left:20px;line-height:2;">
+              <li><strong>Décider IOT</strong> — Médecin évalue indication. Si GCS ≤8 ou SpO2 critique → IOT obligatoire.</li>
+              <li><strong>Ordre vocal</strong> — "IDE, je décide IOT immédiate. Préparez matériel + pré-oxygénation 100% 3–5 min."</li>
+              <li><strong>Matériel IDE</strong> — Lames, tubes (8–8.5 adulte), sac-ballon, succion, CLEMS.</li>
+              <li><strong>Pré-oxygénation</strong> — SpO2 max avant tentative.</li>
+              <li><strong>Intubation</strong> — Médecin intube (ou supervise IDE formé si cas sélect). Position sniffing, vue laryngée directe.</li>
+              <li><strong>Vérification post-intubation</strong> — Auscultation bilatérale, absence sons épigastriques, FiO2 100% si possible, fixation tube.</li>
+              <li><strong>Surveillance post-IOT</strong> — GCS maintenu, SpO2 >94%, FR adapté, absence migration tube.</li>
+            </ol>
+          </div>
+
+          <div class="section-title">ECMO VA — Indication, arbre décisionnel et impact IG</div>
+          <div class="warn-box"><strong>Alerte serveur :</strong> ECMO est un dernier recours en ACR réfractaire. Indication stricte : noflow <5 min, low-flow optimisé (compressions efficaces), cause potentiellement réversible (H/T) identifiée.</div>
+          
           <table class="data-table">
-            <thead><tr><th>Badge</th><th>Définition opérationnelle</th><th>Profil de choc dominant</th><th>Critères décisionnels</th></tr></thead>
+            <thead><tr><th>Variable IG</th><th>Effet mécanique</th><th>Traduction médicale</th></tr></thead>
             <tbody>
               <tr>
-                <td><span class="badge badge-red">IE</span></td>
-                <td>Extrême urgence immédiate, menace vitale minute.</td>
-                <td>Cardiogénique sévère, hypovolémique massif, obstructif.</td>
-                <td>Altération conscience, PAS &lt; 90, signes d'hypoperfusion, détresse respiratoire majeure.</td>
+                <td><strong>noflow_score</strong></td>
+                <td>Stop accumulation → noflow_score remet à 0</td>
+                <td>Perfusion extracorporelle reprend l'oxygénation cérébrale/cardiaque</td>
               </tr>
               <tr>
-                <td><span class="badge badge-yellow">UR</span></td>
-                <td>Urgence relative avec potentiel de décompensation.</td>
-                <td>Distributif débutant, hypovolémique modéré, cardiogénique compensé.</td>
-                <td>Stabilité transitoire, monitorage rapproché requis, réévaluation fréquente.</td>
+                <td><strong>reviving_score</strong></td>
+                <td>+30 à la mise en place ECMO</td>
+                <td>Potentiel de récupération restauré par sortie d'ischémie</td>
               </tr>
               <tr>
-                <td><span class="badge badge-green">UV</span></td>
-                <td>Urgence différable, fonction vitale préservée.</td>
-                <td>Absence de choc constitué.</td>
-                <td>Paramètres stables, pas de critère d'hypoperfusion d'organe.</td>
-              </tr>
-              <tr>
-                <td><span class="badge badge-dim">DCD</span></td>
-                <td>Décès constaté ou réanimation jugée futile.</td>
-                <td>ACR irréversible / lésions incompatibles avec survie.</td>
-                <td>No-flow prolongé, absence ROSC, absence cause réversible, décision collégiale tracée.</td>
+                <td><strong>Délai limite</strong></td>
+                <td>noflow >800 = irréversible IG</td>
+                <td>Après ~13–15 min de no-flow sans extracorporelle, lésions anoxiques cérébrales irréversibles</td>
               </tr>
             </tbody>
           </table>
 
-          <div class="section-title">Zone d'incertitude / données manquantes</div>
-          <div class="alert alert-red"><strong>Points à préciser côté serveur :</strong> seuil ETCO2 non codé, critères d'exclusion ECMO non explicités (âge, comorbidités, délai exact low-flow), absence de protocole d'hypothermie thérapeutique post-ROSC.</div>
+          <div class="section-title">Arrêt de réanimation — Critères et seuils IG</div>
+          <div style="border:1px solid rgba(230,48,48,0.25);border-radius:4px;padding:14px;margin:12px 0;background:rgba(230,48,48,0.05);">
+            <div style="font-weight:bold;color:#e63030;margin-bottom:8px;">Critères d'arrêt (décision médicale exclusive)</div>
+            <table class="data-table" style="font-size:12px;">
+              <thead><tr><th>Critère</th><th>Seuil IG</th><th>Signification</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>noflow_score</strong></td>
+                  <td>>800</td>
+                  <td>Ischémie cérébrale prolongée incompatible avec survie utile. Arrêt obligatoire.</td>
+                </tr>
+                <tr>
+                  <td><strong>Absence cause réversible</strong></td>
+                  <td>4H/4T négatifs</td>
+                  <td>Hypoxie, Hypovolémie, Hypo/hyperkaliémie, Hypothermie / Tamponnade, Pneumothorax, Thrombose, Toxique.</td>
+                </tr>
+                <tr>
+                  <td><strong>ACR traumatique</strong></td>
+                  <td>Destruction incompatible</td>
+                  <td>Trauma majeur (balistique point vital, écrasement thorax) → arrêt immédiat sans RCP.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="section-title">Scénario RP interactif — Décision ECMO ou arrêt</div>
+          <div class="info-box"><strong>Situation :</strong> noflow_score 743 après 4 cycles RCP complets, 2 Adrénalines, 1 défibrillation (pas ROSC), O2 appliqué. Équipe fatigue. Patient polytraumatisé, cause potentiellement réversible exclue à l'interrogatoire (trauma fermé, non-balistique). IDE vous demande : "Médecin, on continue ou on arrête ?"</div>
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-size:13px;line-height:1.8;">
+              <strong>A) Continuer la RCP indéfiniment</strong> <span style="color:red;font-weight:bold;">INCORRECT</span><br>
+              → Inefficace, noflow >800 approche (7 min de plus). Fatigue équipe croît, risque d'erreurs. Pas de ROSC en 4 cycles = mauvais pronostic habituel.<br><br>
+              <strong>B) ECMO maintenant + 1 dernier cycle pendant mise en place</strong> <span style="color:green;font-weight:bold;">CORRECT</span><br>
+              → Dernière option avant seuil noflow irréversible. noflow_score 743 → fenêtre ~8 min avant 800. ECMO permet : stop noflow, reviving_score +30, potentiel récupération restauré.<br><br>
+              <strong>C) Arrêt immédiat sans ECMO</strong> <span style="color:orange;font-weight:bold;">DÉBATABLE</span><br>
+              → Justifiable si ECMO non disponible ou contrainte clinique majeure. Mais noflow <800 → ECMO tentée si ressources. Si refusé : tracer décision (pas cause réversible, noflow proche seuil, pronostic très péjoratif).
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- MODULE 4 : COORDINATION -->
+    <!-- MODULE 4 : COORDINATION INTER-SERVICES -->
     <div id="mod-coordination" class="module-content">
       <div class="panel">
         <div class="panel-header">🤝 Module 04 — Coordination inter-services · Durée : 2h45 · <span style="color:var(--green,#22c55e)">DISPONIBLE</span></div>
         <div class="panel-body">
-          <div class="info-box">En situation de crise ou de multi-victimes RP, la coordination entre SAMU, SDIS, Police/Gendarmerie est déterminante. Le médecin régulateur SAMU coordonne le volet médical sur le terrain.</div>
+          <div class="info-box">La coordination multi-acteurs (SAMU, SDIS, Police, régulation) en situation de crise ou multi-victimes est critique. Le médecin régulateur SAMU pilote l'allocation médicale. Les principes ORSAN et SIEVE structurent la réponse.</div>
 
-          <div class="section-title">Niveaux ORSAN (contexte RP serveur)</div>
+          <div class="section-title">Niveaux ORSAN (Organisations Réponse Sanitaire Anormale)</div>
           <table class="data-table">
-            <thead><tr><th>Niveau</th><th>Déclenchement</th><th>Effectifs engagés</th><th>Commandement</th></tr></thead>
+            <thead><tr><th>Niveau</th><th>Déclenchement</th><th>Patients potentiels</th><th>Effectifs engagés</th><th>Commandement médical</th></tr></thead>
             <tbody>
-              <tr><td><span class="badge badge-green">ORSAN 1</span></td><td>Afflux ponctuel modéré (5–15 patients)</td><td>Renfort équipes en place + rappel personnels</td><td>Médecin régulateur SAMU</td></tr>
-              <tr><td><span class="badge badge-yellow">ORSAN 2</span></td><td>Afflux important (15–50 patients)</td><td>Mobilisation SAMU + SDIS + Police</td><td>Chef SMUR + Chef SDIS</td></tr>
-              <tr><td><span class="badge badge-red">ORSAN 3</span></td><td>Catastrophe (> 50 patients)</td><td>Mobilisation totale tous services + autres régions</td><td>Préfet / Autorités civiles + Médecin terrain</td></tr>
+              <tr>
+                <td><span class="badge badge-green">ORSAN 1</span></td>
+                <td>Afflux ponctuel</td>
+                <td>5–15</td>
+                <td>Renfort équipes en place + rappel personnels</td>
+                <td>Médecin régulateur SAMU</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-yellow">ORSAN 2</span></td>
+                <td>Afflux important</td>
+                <td>15–50</td>
+                <td>Mobilisation SAMU + SDIS + Police</td>
+                <td>Chef SMUR terrain + Chef SDIS</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-red">ORSAN 3</span></td>
+                <td>Catastrophe</td>
+                <td">>50</td>
+                <td>Mobilisation totale + renfort inter-régional</td>
+                <td>Préfet / Auotrités + Médecin terrain</td>
+              </tr>
             </tbody>
           </table>
 
-          <div class="section-title">Triage multi-victimes — Méthode SIEVE (RP)</div>
+          <div class="section-title">Triage multi-victimes — Méthode SIEVE</div>
           <ul class="step-list">
-            <li class="step-item"><span class="step-num">M</span><span class="step-text"><strong>Marche</strong> — les victimes qui marchent seules = urgence relative (tag VERT). Les diriger vers un point de rassemblement supervisé.</span></li>
-            <li class="step-item"><span class="step-num">V</span><span class="step-text"><strong>Ventilation</strong> — ouvrir les voies aériennes. Ventilation absente après ouverture = décédé (tag NOIR). Présente → étape suivante.</span></li>
-            <li class="step-item"><span class="step-num">FR</span><span class="step-text"><strong>FR > 30 ou < 10</strong> → Urgence absolue (tag ROUGE P0). FR 10–29 → étape suivante.</span></li>
-            <li class="step-item"><span class="step-num">TRC</span><span class="step-text"><strong>TRC > 2 secondes ou pouls radial absent</strong> → tag ROUGE (P0/P1). TRC ≤ 2s et pouls présent → tag JAUNE (P2 urgence relative).</span></li>
+            <li class="step-item"><span class="step-num">M</span><span class="step-text"><strong>Marche ?</strong> — Victimes qui marchent seules = urgence relative (tag <span style="color:#43e630;">VERT</span>). Les diriger vers point rassemblement supervisé.</span></li>
+            <li class="step-item"><span class="step-num">V</span><span class="step-text"><strong>Ventilation ?</strong> — Ouvrir voies aériennes. Absence ventilation après ouverture = décédé (tag <span style="color:#999;">NOIR</span>). Présente → étape FR.</span></li>
+            <li class="step-item"><span class="step-num">FR</span><span class="step-text"><strong>FR extrême (>30 ou <10) ?</strong> → tag <span style="color:#e63030;">ROUGE</span> (P0/IE). FR 10–29 → étape TRC.</span></li>
+            <li class="step-item"><span class="step-num">TRC</span><span class="step-text"><strong>TRC >2s ou pouls radial absent ?</strong> → tag <span style="color:#e63030;">ROUGE</span> (P0/P1). TRC ≤2s et pouls présent → tag <span style="color:#eab308;">JAUNE</span> (P2/UR).</span></li>
           </ul>
 
-          <div class="section-title">Services coordonnés en préhospitalier RP</div>
-          <table class="data-table">
-            <thead><tr><th>Service</th><th>Rôle en préhospitalier</th><th>Contacte</th></tr></thead>
-            <tbody>
-              <tr><td><strong>SDIS</strong> (Pompiers)</td><td>Premiers secours, sécurisation scène, désincarcération, renfort équipes</td><td>Régulation SDIS + radio ANTARES</td></tr>
-              <tr><td><strong>Police / Gendarmerie</strong></td><td>Sécurisation scène, périmètre, identification victimes, prélèvements</td><td>Appel direct + coordination sur site</td></tr>
-              <tr><td><strong>SAMU adjacent</strong></td><td>Renfort en cas de saturation, support régulation</td><td>Appel régulation à régulation (hotline)</td></tr>
-            </tbody>
-          </table>
-
-          <div class="section-title">Format de message inter-services (RP)</div>
+          <div class="section-title">Format messages inter-services — Modèles radio</div>
           <div class="grid-2">
             <div>
               <div style="background:rgba(230,48,48,0.08);border:1px solid rgba(230,48,48,0.2);border-radius:4px;padding:16px;margin-bottom:12px;">
-                <div style="font-family:var(--mono,monospace);font-size:11px;color:#e63030;letter-spacing:1px;margin-bottom:8px;"><strong>APPEL SDIS</strong></div>
+                <div style="font-family:var(--mono,monospace);font-size:11px;color:#e63030;letter-spacing:1px;margin-bottom:8px;"><strong>APPEL SDIS (Pompiers)</strong></div>
                 <div style="font-size:13px;line-height:1.8;">
-                  📞 <strong>Indicatif SDIS</strong> [ex: "SDIS 96 Chef"]<br>
-                  ➤ <strong>Demande</strong> : Renfort pompiers / Désincarcération / Sécurisation<br>
-                  ➤ <strong>Situation</strong> : Nombre victimes · lieu · type sinistre<br>
-                  ➤ <strong>Moyen SAMU en place</strong> : SMUR + VSAV...
+                  📞 [Indicatif SDIS]<br>
+                  🎯 Demande : Renfort / Désincarcération / Sécurisation<br>
+                  📍 Lieu précis + repères<br>
+                  👥 Nombre victimes potentielles<br>
+                  🚑 Moyens SAMU en place : [détail]<br>
+                  ⏰ Délai estimé ≥X min
                 </div>
               </div>
             </div>
             <div>
               <div style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.2);border-radius:4px;padding:16px;margin-bottom:12px;">
-                <div style="font-family:var(--mono,monospace);font-size:11px;color:#eab308;letter-spacing:1px;margin-bottom:8px;"><strong>APPEL POLICE</strong></div>
+                <div style="font-family:var(--mono,monospace);font-size:11px;color:#eab308;letter-spacing:1px;margin-bottom:8px;"><strong>APPEL POLICE (Gendarmes)</strong></div>
                 <div style="font-size:13px;line-height:1.8;">
-                  📞 <strong>Indicatif Police</strong> [ex: "Genda 96"]<br>
-                  ➤ <strong>Sécurisation scène</strong> : Demandée / En cours / Complète<br>
-                  ➤ <strong>Adresse / Lieu</strong> : Précis + repères<br>
-                  ➤ <strong>Bilan SAMU</strong> : Nombre patients · type urgence
+                  📞 [Indicatif Police]<br>
+                  🎯 Sécurisation scène : Demandée / En cours / Complète<br>
+                  📍 Adresse + repères visuels<br>
+                  👥 Bilan SAMU : Nombre patients + type urgence<br>
+                  ⚠️ Risques (véhicule instable, produits, armes)
                 </div>
               </div>
             </div>
           </div>
 
           <div style="background:rgba(67,230,48,0.08);border:1px solid rgba(67,230,48,0.2);border-radius:4px;padding:16px;margin-bottom:12px;">
-            <div style="font-family:var(--mono,monospace);font-size:11px;color:#43e630;letter-spacing:1px;margin-bottom:8px;"><strong>APPEL RÉGULATION (Bilan SBAR)</strong></div>
+            <div style="font-family:var(--mono,monospace);font-size:11px;color:#43e630;letter-spacing:1px;margin-bottom:8px;"><strong>APPEL RÉGULATION — Bilan structuré (SBAR)</strong></div>
             <div style="font-size:13px;line-height:1.8;">
-              📞 <strong>Situation</strong> (Lieu + Type sinistre + Contexte)<br>
-              📍 <strong>Background</strong> (Nombre patients + Mécanisme lésionnel)<br>
-              ⚕️ <strong>Assessment</strong> (Bilan triage P0-P4 rapide)<br>
-              📋 <strong>Recommendation</strong> (Moyens demandés + Transport + Destinations)
+              <strong>S — Situation :</strong> Lieu + Type sinistre + Contexte (AVP, ORSAN trigger)<br>
+              <strong>B — Background :</strong> Nombre patients + Mécanisme lésionnel (trauma, intoxication, autre)<br>
+              <strong>A — Assessment :</strong> Bilan triage rapide (P0 : X, P1 : Y, P2 : Z, P3 : …)<br>
+              <strong>R — Recommendation :</strong> Moyens demandés + Transport + Destinations hospitalisées
+            </div>
+          </div>
+
+          <div class="section-title">Scénario RP interactif — Exercice ORSAN 2, AVP bus scolaire</div>
+          <div class="info-box"><strong>Événement :</strong> Bus scolaire (25 enfants) AVP frontale route. 15 victimes potentielles conscientes à semi-conscientes. 3 critères P0 évidents, 5 P1, reste P2–P3.</div>
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:10px;">Décision 1 : Déclencher ORSAN 1 ou ORSAN 2 ?</div>
+            <div style="font-size:13px;line-height:1.8;">
+              <strong style="color:green;">Réponse : ORSAN 2</strong><br>
+              Justification : >15 victimes potentielles, 3 P0 confirmés = afflux important → ORSAN 2 d'emblée. Mobilisation SAMU + SDIS + Police nécessaire.
+            </div>
+          </div>
+
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:10px;">Décision 2 : Premier message SDIS — que demander immédiatement ?</div>
+            <div style="font-size:13px;line-height:1.8;">
+              <strong style="color:green;">Réponse : "Renfort SDIS, désincarcération probable (3 victimes impactées cabine), sécurisation route. Affluence multi-victimes 15+ détectée."</strong><br>
+              → Cela mobilise ressources lourdes dès alerte (grues, équipes extrication).
+            </div>
+          </div>
+
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:10px;">Décision 3 : Triage SIEVE + allocation ressources</div>
+            <div style="font-size:13px;line-height:1.8;">
+              Vous avez 2 UMH (15 lits), 3 victimes P0 critères : GCS <8, FR >35, aucune n'est décédée.<br>
+              <strong style="color:green;">Action : Trier P0 par SIEVE + prioriser le plus récupérable (meilleur GCS).</strong><br>
+              - P0-1 : GCS 9, FR 32 → Transport immédiat UMH<br>
+              - P0-2 : GCS 7, FR 38 → UMH (2e lit)<br>
+              - P0-3 : GCS 5, FR 40 → Attendre ou décider HELISMUR si délai >20 min.<br>
+              → Si distance >20 min du centre trauma : HELISMUR pour P0-1 et P0-2, P0-3 attend VLM SMUR.
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="section-title" style="margin-top:32px;">Tableau des compétences visées</div>
+    <!-- MODULE 5 : ÉTHIQUE & ARRÊT DE RÉANIMATION -->
+    <div id="mod-ethique" class="module-content">
+      <div class="panel">
+        <div class="panel-header">⚖️ Module 05 — Éthique & Arrêt de réanimation · Durée : 1h30 · <span style="color:var(--green,#22c55e)">DISPONIBLE</span></div>
+        <div class="panel-body">
+          <div class="info-box">L'arrêt de réanimation est une décision médicale grave, exclusive du médecin, basée sur des critères objectifs (noflow, absence ROSC, causes réversibles exclues) et des principes éthiques universels (ERC 2021).</div>
+
+          <div class="section-title">Critères d'arrêt de réanimation (référentiel ERC + mécanique IG)</div>
+          <table class="data-table">
+            <thead><tr><th>Critère</th><th>Seuil / Condition</th><th>Signification médicale</th><th>Traduction IG</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>noflow_score >800</strong></td>
+                <td>&approx;13–15 min d'ischémie cérébrale</td>
+                <td>Ischémie cérébrale prolongée incompatible avec survie avec qualité de vie acceptable</td>
+                <td>Seuil critique IG, arrêt obligatoire automatiquement ou décision médicale d'arrêt à ≥800</td>
+              </tr>
+              <tr>
+                <td><strong>Absence cause réversible (4H/4T)</strong></td>
+                <td>Tous diagnostics différentiels explorés</td>
+                <td>Si H/T était correctible (hypothermie, hypovolémie…) → continuer RCP. Si exclus → futilité probable</td>
+                <td>Vérifier : Hypoxie ? Hypovolémie ? Hypo/hyper-K ? Hypothermie / Tamponnade ? Pneumo ? Thrombose ? Toxique ?</td>
+              </tr>
+              <tr>
+                <td><strong>ACR traumatique lésions incompatibles</strong></td>
+                <td>Destruction anatomique majeure</td>
+                <td>Trauma balistique point vital (cœur, grands vaisseaux), crush thoracique → arrêt immédiat</td>
+                <td>Pas de délai : décision d'arrêt clinique immédiate</td>
+              </tr>
+              <tr>
+                <td><strong>Absence ROSC après cycles complets</strong></td>
+                <td>≥4 cycles ACLS optimisé sans ROSC</td>
+                <td>Probabilité ROSC utile chute exponentiellement après 15–20 min de RCP sans ROSC</td>
+                <td>Critère de guidance, pas absolu. Contexte clinical global prime.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="section-title">Annonce officielle de décès (RP radio)</div>
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;background:rgba(0,48,135,0.05);">
+            <div style="font-weight:bold;color:var(--primary,#003087);margin-bottom:8px;">Script d'annonce structuré (format RP radio)</div>
+            <div style="font-size:13px;font-family:var(--mono,monospace);line-height:1.8;">
+              "[Indicatif terrain] de [Indicatif régulation] — <strong>Annonce décès</strong>. Nous constatons le décès de la victime sur site. Contexte : [brève description]. <strong>noflow_score >800</strong>, causes réversibles exclues (4H/4T négatifs). <strong>Décision médicale tracée</strong>. Demande GN pour levée de corps. <strong>Badge DCD posé</strong>. Heure de constat : [heure]. Fin de transmission."
+            </div>
+            <div style="margin-top:10px;font-size:12px;background:rgba(234,179,8,0.1);padding:8px;border-radius:3px;">
+              <strong>Éléments essentiels :</strong> L'annonce est <strong>exclusive du médecin</strong>. Traçabilité horaire + contexte médical requis. IDE n'annonce pas la mort — rôle médecin.
+            </div>
+          </div>
+
+          <div class="warn-box"><strong>Zone critique IG :</strong> Si noflow_score entre 750 et 800, c'est la <strong>dernière fenêtre d'action</strong>. ECMO si disponible + 1 dernier cycle complet. Si pas de ROSC obtenu avant noflow >800 : arrêt OBLIGATOIRE. Ne jamais attendre passivement le compteur dépasser 800.</div>
+
+          <div class="section-title" style="margin-top:20px;">Principes éthiques applicables</div>
+          <table class="data-table">
+            <thead><tr><th>Principe</th><th>Définition</th><th>Application RP Arma 3</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Non-malfaisance</strong></td>
+                <td>Éviter harm, ne pas prolonger souffrance sans espoir</td>
+                <td>Continuer RCP futile = prolonger souffrance. Arrêt à noflow >800 = respect dignité</td>
+              </tr>
+              <tr>
+                <td><strong>Bénéficience</strong></td>
+                <td>Maximer chances récupération viable</td>
+                <td>Tout essayer avant noflow 800 : RCP efficace, défibrillation, ECMO si dispo</td>
+              </tr>
+              <tr>
+                <td><strong>Autonomie</strong></td>
+                <td>Respecter volonté patient si documentée</td>
+                <td>Aucun papier → décision médicale objectif critères. Antécédents violents → "probablement aurait refusé RCP prolongée" ne suffit pas</td>
+              </tr>
+              <tr>
+                <td><strong>Justice / Allocation ressources</strong></td>
+                <td>Utiliser ressources équitablement</td>
+                <td>En multi-victimes : ECMO allouée à P0 le plus viable, pas aux cas irréversibles</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="section-title">Scénario RP interactif — Décision d'arrêt</div>
+          <div class="info-box"><strong>Situation :</strong> noflow_score 812, reviving_score 45 (< seuil reviving_score_needed 68). Aucune cause réversible identifiée à la question (4H/4T exhaustifs). ECMO non disponible sur intervention. 5 cycles RCP réalisés, 0 ROSC. Équipe SMUR fatiguée, demande clarification : "Médecin, on continue ou on arrête ?"</div>
+          <div style="border:1px solid rgba(0,48,135,0.25);border-radius:4px;padding:14px;margin:12px 0;">
+            <div style="font-size:13px;line-height:1.8;">
+              <strong>A) Continuer la RCP indéfiniment</strong> <span style="color:red;font-weight:bold;">INCORRECT</span><br>
+              → noflow >800 = ischémie cérébrale irréversible mécaniquement. RCP devient futile. Viole non-malfaisance (prolonge souffrance). Arrêt obligatoire ERC 2021.<br><br>
+              <strong>B) Arrêt de réanimation, annonce décès, badge DCD, demande GN pour levée</strong> <span style="color:green;font-weight:bold;">CORRECT</span><br>
+              → noflow >800 + causes réversibles exclues + pas ROSC = critères d'arrêt remplis. Décision éthique et médicale appropriée. Traçabilité : heure + contexte médical.<br><br>
+              <strong>C) Attendre HELISMUR avant de décider</strong> <span style="color:red;font-weight:bold;">INCORRECT</span><br>
+              → HELISMUR ne change rien si noflow >800 + aucune cause réversible. Délai aggrave situations éthique et pratique. Arrêt doit être immédiat.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 6 : SCÉNARIOS ARMA 3 -->
+    <div id="mod-arma" class="module-content">
+      <div class="panel">
+        <div class="panel-header">🎮 Module 06 — Scénarios Arma 3 · Durée : 3h30 · <span style="color:var(--green,#22c55e)">DISPONIBLE</span></div>
+        <div class="panel-body">
+          <div class="info-box"><strong>Contexte :</strong> Ce module simule des situations de commandement médical terrain sur SAMU 96 RP. Chaque scénario exige une décision médicale structurée en 3 séquences. L'objectif est de piloter l'IDE, allouer les moyens correctement et respecter les seuils IG (noflow, reviving_score, ECMO, DCD).</div>
+
+          <div class="section-title">6 scénarios en simulation progressive</div>
+
+          <details style="border:1px solid rgba(0,48,135,0.2);border-radius:4px;padding:12px;margin:12px 0;cursor:pointer;">
+            <summary style="font-weight:bold;color:var(--primary,#003087);padding:6px;"><span style="font-size:16px;">▶</span> Scénario 1 — ACR réfractaire : Décision ECMO vs Arrêt</summary>
+            <div style="margin-top:12px;padding:12px;border-top:1px solid rgba(0,48,135,0.2);">
+              <div style="font-size:13px;line-height:1.6;">
+                <strong>Bilan initial :</strong> Homme 62 ans, ACR suspecté de cause cardiaque (SCA). No-flow estimé 8 min (VSAV trouvé patient inconscient). RCP débutée. Vous arrivez noflow_score 450.<br><br>
+                <strong>Séquence 1 — Défibrillation ?</strong><br>
+                ☐ A) Oui, DEFI immédiat (rythme FV détecté) → +30 reviving_score, -60 noflow<br>
+                ☐ B) Non, RCP seule d'abord — trop lent, délai dangereux<br>
+                ✓ Correct : A<br><br>
+                <strong>Séquence 2 — noflow 600 après 3 cycles</strong><br>
+                ☐ A) ECMO demande si noflow approche 800 → oui, demande<br>
+                ☐ B) Continuer RCP sans ECMO — pas assez rapide<br>
+                ✓ Correct : A<br><br>
+                <strong>Séquence 3 — noflow 790, pas ROSC, reviving_score 55 (<68 needed)</strong><br>
+                ☐ A) Continuer RCP — futile, noflow ~800<br>
+                ☐ B) Arrêt réanimation + annonce décès — correct<br>
+                ✓ Correct : B<br><br>
+                <strong>Erreur fréquente RP :</strong> "Je continue la RCP même quand noflow atteint 800 parce que c'est un challenge RP". → Médicalement faux, éthiquement inacceptable.
+              </div>
+            </div>
+          </details>
+
+          <details style="border:1px solid rgba(0,48,135,0.2);border-radius:4px;padding:12px;margin:12px 0;cursor:pointer;">
+            <summary style="font-weight:bold;color:var(--primary,#003087);padding:6px;"><span style="font-size:16px;">▶</span> Scénario 2 — Trauma balistique : Prescription Morphine, orientation</summary>
+            <div style="margin-top:12px;padding:12px;border-top:1px solid rgba(0,48,135,0.2);">
+              <div style="font-size:13px;line-height:1.6;">
+                <strong>Bilan :</strong> Homme 35 ans, plaie thoracique antérieure (projectile), PA 92/58, FC 110, FR 24, SpO2 94%, GCS 15, douleur EVA 10.<br><br>
+                <strong>Séquence 1 — Prescrire Morphine ?</strong><br>
+                ☐ A) Oui, 3 mg IV immédiat pour douleur EVA 10<br>
+                ☐ B) Non, PA liminal (92) → remplissage d'abord puis réévaluer<br>
+                ✓ Correct : B (PA >90 mais limite, remplissage prioritaire)<br><br>
+                <strong>Séquence 2 — Diagnostic + orientation ?</strong><br>
+                ☐ A) Choc hémorragique thoracique probable → Centre trauma urgence<br>
+                ☐ B) Attendre radiographie régionale standard<br>
+                ✓ Correct : A (transport immédiat centre trauma cardio-thoracique)<br><br>
+                <strong>Scéna 3 — Route centre trauma 35 min. Changement : PA 85/50. Prescrire Morphine maintenant ?</strong><br>
+                ☐ A) Oui, douleur toujours ≥5<br>
+                ☐ B) Non, PA <90 = CI relative majeure<br>
+                ✓ Correct : B (différer Morphine, continuer remplissage)<br><br>
+                <strong>Erreur fréquente RP :</strong> Morphine systématique sans vérifier PA. → Aggrave choc hemorragique, dépression respiratoire catastrophique si FiO2 limité.
+              </div>
+            </div>
+          </details>
+
+          <details style="border:1px solid rgba(0,48,135,0.2);border-radius:4px;padding:12px;margin:12px 0;cursor:pointer;">
+            <summary style="font-weight:bold;color:var(--primary,#003087);padding:6px;"><span style="font-size:16px;">▶</span> Scénario 3 — Overdose : Naloxone, surveillance re-narcotisation</summary>
+            <div style="margin-top:12px;padding:12px;border-top:1px solid rgba(0,48,135,0.2);">
+              <div style="font-size:13px;line-height:1.6;">
+                <strong>Bilan :</strong> Femme 28 ans, trouvée inconsciente, seringue + produit blanc (héroine suspectée). GCS 8, FR 8, SpO2 82% air ambiant, pupils puntiformes, PA 98/62.<br><br>
+                <strong>Séquence 1 — Prescrire Naloxone ?</strong><br>
+                ☐ A) Oui, immédiat 0.4 mg IV<br>
+                ☐ B) Non, attendre diagnostic confirmé<br>
+                ✓ Correct : A (suspicion forte, aucune CI, gain immédiat si opioïdes vraiment cause)<br><br>
+                <strong>Séquence 2 — Réponse Naloxone bonne : GCS 14, FR 16, SpO2 95%</strong><br>
+                ☐ A) Transport VSAV, patient stable<br>
+                ☐ B) Transport SMUR (risque re-narcotisation car Naloxone dure <90 min)<br>
+                ✓ Correct : B (Naloxone durée courte, overdose dure plus long, risque re-narcotisation en route)<br><br>
+                <strong>Séquence 3 — À destination (90 min après Naloxone) : GCS 7 à nouveau, FR 10</strong><br>
+                ☐ A) 2e dose Naloxone si IV disponible<br>
+                ☐ B) Surveillance (re-narcotisation attendue, sera managée à l'hôpital)<br>
+                ✓ Correct : A (si SMUR terrain dispose IV encore, 2e dose justifiée)<br><br>
+                <strong>Erreur fréquente RP :</strong> Donner Naloxone une fois et arrêter surveillance = patient crash en route re-narcotisé.
+              </div>
+            </div>
+          </details>
+
+          <details style="border:1px solid rgba(0,48,135,0.2);border-radius:4px;padding:12px;margin:12px 0;cursor:pointer;">
+            <summary style="font-weight:bold;color:var(--primary,#003087);padding:6px;"><span style="font-size:16px;">▶</span> Scénario 4 — AVP Polytrauma : HELISMUR, IOT, orientation trauma</summary>
+            <div style="margin-top:12px;padding:12px;border-top:1px solid rgba(0,48,135,0.2);">
+              <div style="font-size:13px;line-height:1.6;">
+                <strong>Bilan :</strong> Homme 45 ans, AVP frontale vitesse élev, polytraumatisé : fracture tibia/fibula bilatérale, contusion abdominale, GCS 11, PA 95/60, FC 115, FR 26, SpO2 91% O2, douleur EVA 9.<br><br>
+                <strong>Séquence 1 — Décision IOT ?</strong><br>
+                ☐ A) Oui, GCS 11 → IOT préventive<br>
+                ☐ B) Non, GCS >8<br>
+                ✓ Correct : débatable (GCS <13 = P1 fort, mais IOT strict si <8 ou SpO2 <85%). Ici : GCS 11 + SpO2 91% → IOT justifiée si transport long. Décision terrain context.<br><br>
+                <strong>Séquence 2 — HELISMUR ?</strong><br>
+                ☐ A) Demander HELISMUR immédiat<br>
+                ☐ B) VLM + transport au + proche centre trauma<br>
+                Contexte : Distance centre trauma 32 km (28 min terrestre), patient P0 confirmé<br>
+                ✓ Correct : A (distance >20 min + P0 + centre trauma loin → HELISMUR critique)<br><br>
+                <strong>Séquence 3 — Orientation finale ?</strong><br>
+                ☐ A) Centre trauma régional (chirurgie polytraumatisée)<br>
+                ☐ B) CHU plus proche même non cardio<br>
+                ✓ Correct : A (traumatisé instable → centre expert trauma)<br><br>
+                <strong>Erreur fréquente RP :</strong> Refuser HELISMUR par formalisme bureaucratique. → Délai terrestre catastrophique, patient décompense en route, inacceptable.
+              </div>
+            </div>
+          </details>
+
+          <details style="border:1px solid rgba(0,48,135,0.2);border-radius:4px;padding:12px;margin:12px 0;cursor:pointer;">
+            <summary style="font-weight:bold;color:var(--primary,#003087);padding:6px;"><span style="font-size:16px;">▶</span> Scénario 5 — Coma éthylique : Observation, prévention aspiration</summary>
+            <div style="margin-top:12px;padding:12px;border-top:1px solid rgba(0,48,135,0.2);">
+              <div style="font-size:13px;line-height:1.6;">
+                <strong>Bilan :</strong> Homme 55 ans, trouvé inconscient rue (alcool suspected). GCS 9, haleine alcoolisée, FR 14, SpO2 94% air ambiant, PA 110/70, FC 92, pas de trauma apparent, pas fièvre.<br><br>
+                <strong>Séquence 1 — Diagnostic différentiel prioritaire ?</strong><br>
+                ☐ A) Hypoglycémie — faire glycémie capillaire<br>
+                ☐ B) Confiance coma éthylique simple<br>
+                ✓ Correct : A (hypoglycémie peut mimiquer ivresse, reversible immédiatement) — glucose vérifier avant tout<br><br>
+                <strong>Séquence 2 — Si glycémie normale, coma éthylique confirmé</strong><br>
+                ☐ A) Presscrire flumazénil (benzodiazépine reversal)<br>
+                ☐ B) Positionnement latéral de sécurité, O2, observation, pas de flumazénil<br>
+                ✓ Correct : B (flumazénil = risque convulsions, efficacité limité coma éthylique pur)<br><br>
+                <strong>Séquence 3 — Transport vecteur ?</strong><br>
+                ☐ A) VSAV simple si GCS 9 stable en position latérale<br>
+                ☐ B) SMUR (risque aspiration, dépression respi progressive)<br>
+                ✓ Correct : B (GCS <13, risque aspiration, surveillance requise)<br><br>
+                <strong>Erreur fréquente RP :</strong> Position allongée dorsale → aspiration vomi → décès évitable.
+              </div>
+            </div>
+          </details>
+
+          <details style="border:1px solid rgba(0,48,135,0.2);border-radius:4px;padding:12px;margin:12px 0;cursor:pointer;">
+            <summary style="font-weight:bold;color:var(--primary,#003087);padding:6px;"><span style="font-size:16px;">▶</span> Scénario 6 — Brûlures : IOT préventive, triage, HELISMUR</summary>
+            <div style="margin-top:12px;padding:12px;border-top:1px solid rgba(0,48,135,0.2);">
+              <div style="font-size:13px;line-height:1.6;">
+                <strong>Bilan :</strong> Incendie fermé : 3 victimes. Victime A : brûlures 60% SAT corps + visage, stridor auditif, GCS 15, FR 28, SpO2 88% malgré O2. Victime B : 20% SAT +/- superficiel, consciente. Victime C : inhalation fum, GCS 12, SpO2 84%.<br><br>
+                <strong>Séquence 1 — Victime A : IOT préventive ou non ?</strong><br>
+                ☐ A) Oui, stridor + inhalation = riskque œdème laryngé progressif<br>
+                ☐ B) Non, GCS 15<br>
+                ✓ Correct : A (stridor = IOT préventive indiquée, sinon risque occlusion airway)<br><br>
+                <strong>Séquence 2 — Triage gravité + vecteur ?</strong><br>
+                Victime A : P0 (brûlures massives + inhalation) → SMUR<br>
+                Victime B : P2 (brûlures limitées, stable) → VSAV<br>
+                Victime C : P1 (inhalation, GCS 12, SpO2 bas) → SMUR<br><br>
+                <strong>Séquence 3 — HELISMUR pour Victime A ?</strong><br>
+                ☐ A) Oui, brûlures étendues → centre spécialisé brûlures, délai >20 min terrestre<br>
+                ☐ B) Non, VLM standard<br>
+                ✓ Correct : A (brûlures >50% = urgence centre spécialisé, HELISMUR justify si délai)<br><br>
+                <strong>Erreur fréquente RP :</strong> Oublier IOT préventive brûlures inhalation = asphyxie progressive = mort évitable.
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:32px;">Tableau des compétences validées (après formation complète)</div>
     <table class="data-table">
-      <thead><tr><th>Compétence</th><th>Domaine</th><th>Niveau</th></tr></thead>
+      <thead><tr><th>Compétence</th><th>Domaine</th><th>Module(s)</th><th>Niveau</th></tr></thead>
       <tbody>
-        <tr><td>Arbitrer une priorité d'engagement médicalisée</td><td>Régulation</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td></tr>
-        <tr><td>Choisir une stratégie diagnostique/thérapeutique en incertitude</td><td>Décision clinique</td><td><span class="badge badge-red">EXPERT</span></td></tr>
-        <tr><td>Réaliser une procédure avancée en sécurité</td><td>Médecine d'urgence</td><td><span class="badge badge-red">EXPERT</span></td></tr>
-        <tr><td>Piloter la coordination avec acteurs externes</td><td>Gestion de crise</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td></tr>
+        <tr><td>Prioriser appels par critères P0–P4</td><td>Régulation médicale</td><td>M01</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td></tr>
+        <tr><td>Décider stratégie clinique urgence vitale</td><td>Décision en urgence</td><td>M02</td><td><span class="badge badge-red">EXPERT</span></td></tr>
+        <tr><td>Ordonner IOT, ECMO, arrêt réanimation</td><td>Procédures avancées</td><td>M03</td><td><span class="badge badge-red">EXPERT</span></td></tr>
+        <tr><td>Coordonner ORSAN et SIEVE</td><td>Coordination inter-services</td><td>M04</td><td><span class="badge badge-green">INTERMÉDIAIRE</span></td></tr>
+        <tr><td>Appliquer critères éthique arrêt RCP</td><td>Éthique médicale</td><td>M05</td><td><span class="badge badge-red">EXPERT</span></td></tr>
+        <tr><td>Piloter scénarios terrain Arma 3</td><td>Commandement médical RP</td><td>M06</td><td><span class="badge badge-red">EXPERT</span></td></tr>
       </tbody>
     </table>
 
