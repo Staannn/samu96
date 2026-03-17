@@ -989,7 +989,8 @@
       </div>
     </section>
 
-    <div style="display:flex;justify-content:flex-end;">
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button type="button" id="editEquipageDrawerBtn" class="btn-secondary" style="display:none;">✏️ Modifier l'équipage</button>
       <button type="button" id="closeInterventionBtn" class="btn-danger">Clôturer l'intervention</button>
     </div>
   </div>
@@ -1110,7 +1111,8 @@
     vehicleStatusGrid: document.getElementById("vehicleStatusGrid"),
     statsRow: document.getElementById("statsRow"),
     statsPriority: document.getElementById("statsPriority"),
-    topbarStatus: document.querySelector(".topbar-status")
+    topbarStatus: document.querySelector(".topbar-status"),
+    editEquipageDrawerBtn: document.getElementById("editEquipageDrawerBtn")
   };
 
   function escapeHtml(value = "") {
@@ -1161,6 +1163,79 @@
     return map[role] || role;
   }
 
+  function getPriorityClass(priority) {
+    return `priority-${priority || "p2"}`.toLowerCase();
+  }
+
+  function formatDuration(ms) {
+    if (!ms || ms < 0) return "—";
+    const minutes = Math.floor(ms / 60000);
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    if (hours > 0) {
+      return `${hours}h ${String(remainingMinutes).padStart(2, "0")}m`;
+    }
+    return `${minutes}m`;
+  }
+
+  function playAlertBeep() {
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Premier bip
+      const osc1 = audioCtx.createOscillator();
+      const gain1 = audioCtx.createGain();
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+      osc1.frequency.value = 220;
+      gain1.gain.setValueAtTime(0.4, audioCtx.currentTime);
+      osc1.start(audioCtx.currentTime);
+      osc1.stop(audioCtx.currentTime + 0.15);
+
+      // Deuxième bip avec oscillateur distinct
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      osc2.frequency.value = 220;
+      gain2.gain.setValueAtTime(0.4, audioCtx.currentTime + 0.35);
+      osc2.start(audioCtx.currentTime + 0.35);
+      osc2.stop(audioCtx.currentTime + 0.5);
+    } catch (err) {
+      console.log("Audio context unavailable", err);
+    }
+  }
+
+  function flashAlert() {
+    if (!refs.topbarStatus) return;
+    refs.topbarStatus.classList.add("flash-alert");
+    setTimeout(() => {
+      refs.topbarStatus.classList.remove("flash-alert");
+    }, 1500);
+  }
+
+  function triggerNewInterNotification(inter) {
+    flashAlert();
+    playAlertBeep();
+    showToast(`🚨 Nouvelle intervention — ${inter.numero} ${inter.motif}`);
+  }
+
+  function showToast(message) {
+    const existing = document.getElementById("toast");
+    if (existing) existing.remove();
+
+    const toast = document.createElement("div");
+    toast.id = "toast";
+    toast.className = "toast";
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add("hide");
+      setTimeout(() => toast.remove(), 300);
+    }, 5000);
+  }
+
   function isModalOpen() {
     return refs.newInterModal.classList.contains("open");
   }
@@ -1178,7 +1253,7 @@
   function recomputeActiveAssignments() {
     const busy = new Set();
     state.interventions
-      .filter((i) => i.statut === "en_cours")
+      .filter((i) => i.statut === "en_cours" && i.id !== state.editingInterventionId)
       .forEach((inter) => {
         (inter.equipages || []).forEach((eq) => {
           (eq.membres || []).forEach((m) => {
@@ -1224,21 +1299,34 @@
     renderCount();
 
     if (!list.length) {
-      refs.tableBody.innerHTML = `<tr><td colspan="8" class="text-dim">Aucune intervention à afficher.</td></tr>`;
+      refs.tableBody.innerHTML = `<tr><td colspan="9" class="text-dim">Aucune intervention à afficher.</td></tr>`;
       refs.cards.innerHTML = `<div class="alert" style="margin:0;">Aucune intervention à afficher.</div>`;
+      renderVehicleStatus();
+      renderStats();
       return;
     }
 
     refs.tableBody.innerHTML = list.map((inter) => {
       const crew = flattenCrew(inter);
+      const priority = inter.priorite || "P2";
+      const priorityClass = getPriorityClass(priority);
+      const isP1 = priority === "P1";
       return `
-        <tr class="${inter.statut === "cloturee" ? "cloturee" : ""}">
+        <tr class="${inter.statut === "cloturee" ? "cloturee" : ""} ${isP1 ? "priority-p1-row" : ""}">
           <td>
             <span class="line-number">${escapeHtml(inter.numero || "-")}${inter.statut === "cloturee" ? '<span class="closed">CLÔTURÉE</span>' : ""}</span>
           </td>
+          <td style="text-align:center;">
+            <span class="priority-badge ${priorityClass}">${escapeHtml(priority)}</span>
+          </td>
           <td>${escapeHtml(inter.motif || "-")}</td>
           <td>${escapeHtml(inter.lieu || "-")}</td>
-          <td class="mono">${formatTime(inter.createdAt)}</td>
+          <td class="mono">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span>${formatTime(inter.createdAt)}</span>
+              <span class="live-timer text-dim" data-created-at="${asDate(inter.createdAt)?.toISOString() || ""}" data-statut="${inter.statut}" data-fin="${asDate(inter.jalons?.disponible || inter.jalons?.arrivee_hopital || null)?.toISOString() || ""}" style="font-size:11px;"></span>
+            </div>
+          </td>
           <td><div class="stack-list">${joinVehicules(inter).split(" | ").map((v) => `<span class="chip-row">${escapeHtml(v)}</span>`).join("")}</div></td>
           <td>
             <div class="stack-list">
@@ -1256,9 +1344,14 @@
 
     refs.cards.innerHTML = list.map((inter) => {
       const crew = flattenCrew(inter);
+      const priority = inter.priorite || "P2";
+      const priorityClass = getPriorityClass(priority);
       return `
         <article class="inter-card ${inter.statut === "cloturee" ? "cloturee" : ""}">
-          <div class="line-number">${escapeHtml(inter.numero || "-")}${inter.statut === "cloturee" ? '<span class="closed">CLÔTURÉE</span>' : ""}</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="line-number">${escapeHtml(inter.numero || "-")}${inter.statut === "cloturee" ? '<span class="closed">CLÔTURÉE</span>' : ""}</div>
+            <span class="priority-badge ${priorityClass}" style="width:28px;height:28px;">${escapeHtml(priority)}</span>
+          </div>
           <div><strong>Motif:</strong> ${escapeHtml(inter.motif || "-")}</div>
           <div><strong>Lieu:</strong> ${escapeHtml(inter.lieu || "-")}</div>
           <div><strong>Déclenchement:</strong> <span class="mono">${formatTime(inter.createdAt)}</span></div>
@@ -1270,6 +1363,148 @@
         </article>
       `;
     }).join("");
+
+    renderVehicleStatus();
+    renderStats();
+  }
+
+  function renderVehicleStatus() {
+    if (!state.vehicules.length) {
+      refs.vehicleStatusGrid.innerHTML = `<div class="alert" style="margin:0;">Aucun véhicule configuré.</div>`;
+      return;
+    }
+
+    const engagedVehicles = new Map();
+    state.interventions
+      .filter((i) => i.statut === "en_cours")
+      .forEach((inter) => {
+        (inter.equipages || []).forEach((eq) => {
+          if (eq.vehiculeId && !engagedVehicles.has(eq.vehiculeId)) {
+            engagedVehicles.set(eq.vehiculeId, { numero: inter.numero, motif: inter.motif });
+          }
+        });
+      });
+
+    refs.vehicleStatusGrid.innerHTML = state.vehicules.map((v) => {
+      const engaged = engagedVehicles.has(v.id);
+      const engagement = engagedVehicles.get(v.id);
+      return `
+        <div class="vehicle-card ${engaged ? "engaged" : ""}">
+          <div class="vehicle-card-name">${escapeHtml(v.nom || "Véhicule")}</div>
+          <div class="vehicle-card-type">${v.type ? escapeHtml(`(${v.type})`) : ""}</div>
+          <span class="vehicle-card-status ${engaged ? "engaged" : "available"}">
+            ${engaged ? "ENGAGÉ" : "DISPONIBLE"}
+          </span>
+          ${engaged && engagement ? `<div class="vehicle-card-detail">${escapeHtml(engagement.numero)} — ${escapeHtml(engagement.motif)}</div>` : ""}
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderStats() {
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+    const todayInters = state.interventions.filter((i) => {
+      const ts = asDate(i.createdAt);
+      return ts >= startOfDay && ts <= endOfDay;
+    });
+
+    const enCours = todayInters.filter((i) => i.statut === "en_cours").length;
+    const cloturees = todayInters.filter((i) => i.statut === "cloturee").length;
+
+    let avgClosureTime = 0;
+    const closedWithTiming = todayInters.filter((i) => i.statut === "cloturee" && i.jalons?.disponible && i.createdAt);
+    if (closedWithTiming.length > 0) {
+      const totalMs = closedWithTiming.reduce((sum, i) => {
+        const startTime = asDate(i.createdAt);
+        const endTime = asDate(i.jalons.disponible);
+        if (startTime && endTime) {
+          return sum + (endTime.getTime() - startTime.getTime());
+        }
+        return sum;
+      }, 0);
+      avgClosureTime = totalMs / closedWithTiming.length;
+    }
+
+    const vehiculeEngagements = new Map();
+    todayInters.forEach((inter) => {
+      (inter.equipages || []).forEach((eq) => {
+        if (eq.vehiculeNom) {
+          vehiculeEngagements.set(eq.vehiculeNom, (vehiculeEngagements.get(eq.vehiculeNom) || 0) + 1);
+        }
+      });
+    });
+    let mostEngagedVehicle = "-";
+    if (vehiculeEngagements.size > 0) {
+      mostEngagedVehicle = [...vehiculeEngagements.entries()].reduce((a, b) => a[1] > b[1] ? a : b)[0];
+    }
+
+    const priorityCounts = { P1: 0, P2: 0, P3: 0 };
+    todayInters.forEach((i) => {
+      const p = i.priorite || "P2";
+      priorityCounts[p]++;
+    });
+
+    refs.statsRow.innerHTML = `
+      <div class="stat-block">
+        <div class="stat-label">Interventions aujourd'hui</div>
+        <div class="stat-value">${todayInters.length}</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">En cours</div>
+        <div class="stat-value">${enCours}</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Clôturées aujourd'hui</div>
+        <div class="stat-value">${cloturees}</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Temps moyen clôture</div>
+        <div class="stat-value mono" style="font-size:14px;">${avgClosureTime > 0 ? formatDuration(avgClosureTime) : "-"}</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Véhicule le plus engagé</div>
+        <div class="stat-value" style="font-size:14px;word-break:break-word;">${escapeHtml(mostEngagedVehicle)}</div>
+      </div>
+    `;
+
+    refs.statsPriority.innerHTML = PRIORITIES.map((p) => {
+      const count = priorityCounts[p.value] || 0;
+      const priorityClass = getPriorityClass(p.value);
+      return `
+        <div class="stat-block" style="flex:1;min-width:80px;">
+          <span class="priority-badge ${priorityClass}" style="display:inline-flex;">${escapeHtml(p.value)}</span>
+          <div class="stat-sub" style="margin-top:8px;">${count}</div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function updateLiveTimers() {
+    document.querySelectorAll(".live-timer").forEach((el) => {
+      const createdAtStr = el.dataset.createdAt;
+      const statut = el.dataset.statut;
+      const finStr = el.dataset.fin;
+
+      if (!createdAtStr) {
+        el.textContent = "—";
+        return;
+      }
+
+      const createdAt = new Date(createdAtStr);
+      let duration = 0;
+
+      if (statut === "en_cours") {
+        duration = new Date().getTime() - createdAt.getTime();
+      } else if (finStr) {
+        const fin = new Date(finStr);
+        duration = fin.getTime() - createdAt.getTime();
+      }
+
+      el.textContent = formatDuration(duration);
+    });
   }
 
   function findPersonnelById(id) {
@@ -1497,6 +1732,7 @@
     return {
       motif: refs.interMotif.value || "",
       lieu: refs.interLieu.value || "",
+      priorite: refs.interPriorite.value || "P2",
       equipages: state.modalEquipages.map((eq) => ({
         vehiculeId: eq.vehiculeId,
         vehiculeNom: findVehiculeById(eq.vehiculeId)?.nom || "",
@@ -1530,6 +1766,7 @@
         numero,
         motif: payload.motif.trim(),
         lieu: payload.lieu.trim(),
+        priorite: payload.priorite,
         createdAt: serverTimestamp(),
         statut: "en_cours",
         jalons: {
@@ -1551,6 +1788,7 @@
 
       refs.interMotif.value = "";
       refs.interLieu.value = "";
+      refs.interPriorite.value = "P2";
       state.modalEquipages = [blankEquipage()];
       closeModal();
     } catch (err) {
@@ -1569,9 +1807,13 @@
       crewLines.push(`${eq.vehiculeNom || "Véhicule"}: ${members || "-"}`);
     });
 
+    const priority = inter.priorite || "P2";
+    const priorityClass = getPriorityClass(priority);
+
     refs.drawerRecap.innerHTML = `
       <div class="recap-item"><div class="recap-label">Motif</div><div class="recap-value">${escapeHtml(inter.motif || "-")}</div></div>
       <div class="recap-item"><div class="recap-label">Lieu</div><div class="recap-value">${escapeHtml(inter.lieu || "-")}</div></div>
+      <div class="recap-item"><div class="recap-label">Priorité</div><div class="recap-value"><span class="priority-badge ${priorityClass}">${escapeHtml(priority)}</span></div></div>
       <div class="recap-item"><div class="recap-label">Déclenchement</div><div class="recap-value mono">${formatDateTime(inter.createdAt)}</div></div>
       <div class="recap-item"><div class="recap-label">Statut</div><div class="recap-value">${inter.statut === "cloturee" ? "Clôturée" : "En cours"}</div></div>
       <div class="recap-item" style="grid-column:1/-1;"><div class="recap-label">Équipages</div><div class="recap-value">${crewLines.length ? crewLines.map((l) => escapeHtml(l)).join("<br>") : "-"}</div></div>
@@ -1609,6 +1851,8 @@
 
     refs.closeInterventionBtn.style.display = inter.statut === "cloturee" ? "none" : "inline-flex";
     refs.closeInterventionBtn.dataset.interId = inter.id;
+    refs.editEquipageDrawerBtn.style.display = inter.statut === "cloturee" ? "none" : "inline-flex";
+    refs.editEquipageDrawerBtn.dataset.editEquipage = inter.id;
     setDrawerNotice(inter.statut === "cloturee" ? "Intervention clôturée - lecture seule" : "");
   }
 
@@ -1666,12 +1910,293 @@
       if (!inter?.jalons?.[j.key]) updates[`jalons.${j.key}`] = serverTimestamp();
     });
 
-    // NOTE: atomicité partielle.
-    // updateDoc() regroupe les opérations mais n'est pas transactionnel.
-    // Si la connexion coupe entre l'arrayUnion (new Date) et les jalons (serverTimestamp),
-    // certains jalons peuvent rester null. Risque très faible en pratique mais mérite attention
-    // si besoin de garantie 100% ACID.
     await updateDoc(doc(db, "interventions", interventionId), updates);
+  }
+
+  function openEditEquipageModal(interventionId) {
+    const inter = state.interventions.find((i) => i.id === interventionId);
+    if (!inter || inter.statut === "cloturee") return;
+
+    state.editingInterventionId = interventionId;
+    state.editEquipages = JSON.parse(JSON.stringify(inter.equipages || []));
+    if (!state.editEquipages.length) state.editEquipages = [blankEquipage()];
+
+    refs.editModalTitle.textContent = `Modifier l'équipage — ${inter.numero}`;
+    refs.editModalError.classList.remove("show");
+    refs.editModalError.textContent = "";
+
+    refs.overlay.classList.add("open");
+    refs.editEquipageModal.classList.add("open");
+    refs.editEquipageModal.setAttribute("aria-hidden", "false");
+
+    renderEditEquipagesEditor();
+  }
+
+  function closeEditEquipageModal() {
+    refs.editEquipageModal.classList.remove("open");
+    refs.editEquipageModal.setAttribute("aria-hidden", "true");
+    if (!refs.drawer.classList.contains("open") && !refs.newInterModal.classList.contains("open") && !refs.historyModal.classList.contains("open")) {
+      refs.overlay.classList.remove("open");
+    }
+    state.editingInterventionId = null;
+    state.editEquipages = [];
+  }
+
+  function renderEditEquipagesEditor() {
+    if (!refs.editEquipageModal.classList.contains("open")) return;
+    
+    recomputeActiveAssignments();
+
+    if (!state.vehicules.length || !state.personnel.length) {
+      const missing = [];
+      if (!state.vehicules.length) missing.push("vehicules");
+      if (!state.personnel.length) missing.push("personnel");
+      refs.editEquipagesContainer.innerHTML = `
+        <div class="alert" style="margin:0;">
+          Données Firestore en attente (${escapeHtml(missing.join(" + "))}). Vérifiez les collections puis réessayez dans quelques secondes.
+        </div>
+      `;
+      return;
+    }
+
+    refs.editEquipagesContainer.innerHTML = state.editEquipages.map((eq, eqIndex) => {
+      const membersHtml = (eq.membres || []).map((m, mIndex) => {
+        const selectedPerson = findPersonnelById(m.personnelId);
+        const possibleRoles = getAvailableRoles(m.personnelId);
+
+        const personnelOptions = state.personnel.map((p) => {
+          const busy = state.activeAssignments.has(p.id) && p.id !== m.personnelId;
+          const selected = p.id === m.personnelId;
+          const fullName = `${(p.nom || "").toUpperCase()} ${p.prenom || ""}`.trim();
+          const grade = p.grade ? `(${p.grade})` : "";
+          return `<option value="${p.id}" ${selected ? "selected" : ""} ${busy ? "disabled" : ""}>${escapeHtml(fullName)} ${escapeHtml(grade)}${busy ? " — déjà engagé" : ""}</option>`;
+        }).join("");
+
+        const roleOptions = possibleRoles.map((role) => {
+          const selected = role === m.role;
+          return `<option value="${role}" ${selected ? "selected" : ""}>${roleLabel(role)}</option>`;
+        }).join("");
+
+        return `
+          <div class="member-row" data-eq-index="${eqIndex}" data-member-index="${mIndex}">
+            <div class="field">
+              <label>Personnel</label>
+              <select data-member-personnel>
+                <option value="">Sélectionner</option>
+                ${personnelOptions}
+              </select>
+              ${selectedPerson ? `<small>Compétences: ${escapeHtml((selectedPerson.competences || []).join(", "))}</small>` : ""}
+            </div>
+            <div class="field">
+              <label>Rôle</label>
+              <select data-member-role ${selectedPerson ? "" : "disabled"}>
+                <option value="">Sélectionner</option>
+                ${roleOptions}
+              </select>
+            </div>
+            <button type="button" class="btn-secondary" data-edit-remove-member>Retirer</button>
+          </div>
+        `;
+      }).join("");
+
+      const vehOptions = state.vehicules.map((v) => {
+        const selected = v.id === eq.vehiculeId;
+        const label = `${v.nom || "Véhicule"} ${v.type ? "(" + v.type + ")" : ""}`;
+        return `<option value="${v.id}" ${selected ? "selected" : ""}>${escapeHtml(label)}</option>`;
+      }).join("");
+
+      return `
+        <article class="equipage-card" data-equipage-index="${eqIndex}">
+          <div class="equipage-head">
+            <div class="equipage-title">Équipage ${eqIndex + 1}</div>
+            <button type="button" class="btn-secondary" data-edit-remove-equipage ${state.editEquipages.length === 1 ? "disabled" : ""}>Supprimer équipage</button>
+          </div>
+          <div class="field">
+            <label>Véhicule</label>
+            <select data-edit-equipage-vehicule>
+              <option value="">Sélectionner un véhicule</option>
+              ${vehOptions}
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">${membersHtml}</div>
+          <div style="display:flex;justify-content:flex-end;">
+            <button type="button" class="btn-secondary" data-edit-add-member>Ajouter un membre</button>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  async function saveEditedEquipage() {
+    refs.editModalError.classList.remove("show");
+    const interId = state.editingInterventionId;
+    if (!interId) return;
+
+    const payload = {
+      equipages: state.editEquipages.map((eq) => ({
+        vehiculeId: eq.vehiculeId,
+        vehiculeNom: findVehiculeById(eq.vehiculeId)?.nom || "",
+        membres: (eq.membres || []).map((m) => {
+          const person = findPersonnelById(m.personnelId);
+          return {
+            personnelId: m.personnelId,
+            nom: person?.nom || "",
+            prenom: person?.prenom || "",
+            role: m.role || ""
+          };
+        })
+      }))
+    };
+
+    const validationError = validateEquipagePayload(payload);
+    if (validationError) {
+      refs.editModalError.textContent = validationError;
+      refs.editModalError.classList.add("show");
+      return;
+    }
+
+    refs.saveEquipageBtn.disabled = true;
+
+    try {
+      await updateDoc(doc(db, "interventions", interId), {
+        equipages: payload.equipages,
+        mainCourante: arrayUnion({
+          timestamp: new Date(),
+          auteur: refs.mcAuteur.value.trim() || "Opérateur",
+          message: "Équipage modifié."
+        })
+      });
+      closeEditEquipageModal();
+    } catch (err) {
+      refs.editModalError.textContent = `Erreur: ${err.message}`;
+      refs.editModalError.classList.add("show");
+    } finally {
+      refs.saveEquipageBtn.disabled = false;
+    }
+  }
+
+  function validateEquipagePayload(payload) {
+    if (!payload.equipages.length) return "Ajoutez au moins un équipage.";
+
+    const seenPersonnel = new Set();
+
+    for (const eq of payload.equipages) {
+      if (!eq.vehiculeId) return "Chaque équipage doit avoir un véhicule.";
+      if (!eq.membres.length) return "Chaque équipage doit avoir au moins un membre.";
+
+      for (const m of eq.membres) {
+        if (!m.personnelId) return "Chaque ligne membre doit sélectionner un agent.";
+        if (!m.role) return "Chaque agent doit avoir un rôle.";
+
+        const person = findPersonnelById(m.personnelId);
+        if (!person) return "Un agent sélectionné est introuvable.";
+        const competences = Array.isArray(person.competences) ? person.competences : [];
+        if (!competences.includes(m.role)) {
+          return `${(person.nom || "Agent")} ne peut pas être affecté au rôle ${roleLabel(m.role)}.`;
+        }
+
+        if (seenPersonnel.has(m.personnelId)) {
+          return "Un même agent ne peut être ajouté qu'une seule fois par équipage.";
+        }
+        seenPersonnel.add(m.personnelId);
+      }
+    }
+
+    return "";
+  }
+
+  let historyCache = null;
+
+  async function loadAndDisplayHistory() {
+    const qInter = query(collection(db, "interventions"), orderBy("createdAt", "desc"));
+    const snap = await getDocs(qInter);
+    historyCache = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+
+    refs.historyModal.classList.add("open");
+    refs.historyModal.setAttribute("aria-hidden", "false");
+    refs.overlay.classList.add("open");
+
+    filterAndRenderHistory(historyCache);
+  }
+
+  function filterAndRenderHistory(allInters) {
+    const searchTerm = (refs.historySearch.value || "").toLowerCase();
+    const selectedDate = refs.historyDate.value;
+    const selectedPriority = refs.historyPriority.value;
+
+    let filtered = allInters;
+
+    if (searchTerm) {
+      filtered = filtered.filter((i) => {
+        const motif = (i.motif || "").toLowerCase();
+        const lieu = (i.lieu || "").toLowerCase();
+        return motif.includes(searchTerm) || lieu.includes(searchTerm);
+      });
+    }
+
+    if (selectedDate) {
+      const date = new Date(selectedDate);
+      const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+      const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+      filtered = filtered.filter((i) => {
+        const ts = asDate(i.createdAt);
+        return ts >= startOfDay && ts <= endOfDay;
+      });
+    }
+
+    if (selectedPriority) {
+      filtered = filtered.filter((i) => (i.priorite || "P2") === selectedPriority);
+    }
+
+    if (!filtered.length) {
+      refs.historyResults.innerHTML = `<div class="alert" style="margin:0;">Aucune intervention ne correspond aux critères.</div>`;
+      return;
+    }
+
+    const table = `
+      <div class="synoptic-table-wrap" style="margin-top:10px;">
+        <table class="synoptic-table">
+          <thead>
+            <tr>
+              <th>N° inter</th>
+              <th>Priorité</th>
+              <th>Motif</th>
+              <th>Lieu</th>
+              <th>Déclenchement</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filtered.map((inter) => {
+              const priority = inter.priorite || "P2";
+              const priorityClass = getPriorityClass(priority);
+              return `
+                <tr>
+                  <td><span class="line-number">${escapeHtml(inter.numero || "-")}</span></td>
+                  <td style="text-align:center;"><span class="priority-badge ${priorityClass}">${escapeHtml(priority)}</span></td>
+                  <td>${escapeHtml(inter.motif || "-")}</td>
+                  <td>${escapeHtml(inter.lieu || "-")}</td>
+                  <td class="mono">${formatDateTime(inter.createdAt)}</td>
+                  <td>${inter.statut === "cloturee" ? "Clôturée" : "En cours"}</td>
+                  <td><button type="button" class="btn-inline" data-history-open-detail="${inter.id}">Voir MC</button></td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+    refs.historyResults.innerHTML = table;
+  }
+
+  function closeHistoryModal() {
+    refs.historyModal.classList.remove("open");
+    refs.historyModal.setAttribute("aria-hidden", "true");
+    if (!refs.drawer.classList.contains("open") && !refs.newInterModal.classList.contains("open") && !refs.editEquipageModal.classList.contains("open")) {
+      refs.overlay.classList.remove("open");
+    }
   }
 
   function bindEvents() {
@@ -1694,9 +2219,13 @@
 
     document.querySelectorAll("[data-close-modal]").forEach((btn) => btn.addEventListener("click", closeModal));
     document.querySelectorAll("[data-close-drawer]").forEach((btn) => btn.addEventListener("click", closeDrawer));
+    document.querySelectorAll("[data-close-edit-modal]").forEach((btn) => btn.addEventListener("click", closeEditEquipageModal));
+    document.querySelectorAll("[data-close-history]").forEach((btn) => btn.addEventListener("click", closeHistoryModal));
     refs.overlay.addEventListener("click", () => {
       closeModal();
       closeDrawer();
+      closeEditEquipageModal();
+      closeHistoryModal();
     });
 
     refs.equipagesContainer.addEventListener("click", (event) => {
@@ -1760,7 +2289,92 @@
       }
     });
 
+    refs.editEquipagesContainer.addEventListener("click", (event) => {
+      const equipageEl = event.target.closest("[data-equipage-index]");
+      if (!equipageEl) return;
+      const eqIndex = Number(equipageEl.dataset.equipageIndex);
+      if (!Number.isInteger(eqIndex)) return;
+
+      if (event.target.matches("[data-edit-add-member]")) {
+        state.editEquipages[eqIndex].membres.push(blankMember());
+        renderEditEquipagesEditor();
+        return;
+      }
+
+      if (event.target.matches("[data-edit-remove-equipage]")) {
+        state.editEquipages.splice(eqIndex, 1);
+        if (!state.editEquipages.length) state.editEquipages = [blankEquipage()];
+        renderEditEquipagesEditor();
+        return;
+      }
+
+      const row = event.target.closest("[data-member-index]");
+      if (row && event.target.matches("[data-edit-remove-member]")) {
+        const mIndex = Number(row.dataset.memberIndex);
+        state.editEquipages[eqIndex].membres.splice(mIndex, 1);
+        if (!state.editEquipages[eqIndex].membres.length) state.editEquipages[eqIndex].membres.push(blankMember());
+        renderEditEquipagesEditor();
+      }
+    });
+
+    refs.editEquipagesContainer.addEventListener("change", (event) => {
+      const equipageEl = event.target.closest("[data-equipage-index]");
+      if (!equipageEl) return;
+      const eqIndex = Number(equipageEl.dataset.equipageIndex);
+
+      if (event.target.matches("[data-edit-equipage-vehicule]")) {
+        state.editEquipages[eqIndex].vehiculeId = event.target.value;
+        return;
+      }
+
+      const row = event.target.closest("[data-member-index]");
+      if (!row) return;
+      const mIndex = Number(row.dataset.memberIndex);
+      const member = state.editEquipages[eqIndex].membres[mIndex];
+
+      if (event.target.matches("[data-member-personnel]")) {
+        member.personnelId = event.target.value;
+        const allowedRoles = getAvailableRoles(member.personnelId);
+        if (!allowedRoles.includes(member.role)) member.role = "";
+        renderEditEquipagesEditor();
+      }
+
+      if (event.target.matches("[data-member-role]")) {
+        member.role = event.target.value;
+      }
+    });
+
+    refs.saveEquipageBtn.addEventListener("click", saveEditedEquipage);
+    refs.addEditEquipageBtn.addEventListener("click", () => {
+      state.editEquipages.push(blankEquipage());
+      renderEditEquipagesEditor();
+    });
+
+    refs.historyBtn.addEventListener("click", loadAndDisplayHistory);
+    refs.historySearch.addEventListener("input", () => {
+      if (historyCache) filterAndRenderHistory(historyCache);
+    });
+    refs.historyDate.addEventListener("change", () => {
+      if (historyCache) filterAndRenderHistory(historyCache);
+    });
+    refs.historyPriority.addEventListener("change", () => {
+      if (historyCache) filterAndRenderHistory(historyCache);
+    });
+
     document.body.addEventListener("click", async (event) => {
+      const historyOpenBtn = event.target.closest("[data-history-open-detail]");
+      if (historyOpenBtn) {
+        closeHistoryModal();
+        openDrawer(historyOpenBtn.dataset.historyOpenDetail);
+        return;
+      }
+
+      const editEquipageBtn = event.target.closest("[data-edit-equipage]");
+      if (editEquipageBtn) {
+        openEditEquipageModal(editEquipageBtn.dataset.editEquipage);
+        return;
+      }
+
       const openDetailBtn = event.target.closest("[data-open-detail]");
       if (openDetailBtn) {
         openDrawer(openDetailBtn.dataset.openDetail);
@@ -1804,6 +2418,11 @@
         refs.closeInterventionBtn.disabled = false;
       }
     });
+
+    refs.editEquipageDrawerBtn.addEventListener("click", () => {
+      const interId = refs.editEquipageDrawerBtn.dataset.editEquipage;
+      if (interId) openEditEquipageModal(interId);
+    });
   }
 
   function startRealtime() {
@@ -1819,11 +2438,24 @@
 
     const qInter = query(collection(db, "interventions"), orderBy("createdAt", "desc"));
     onSnapshot(qInter, (snap) => {
+      const prevIds = new Set(state.interventions.map((i) => i.id));
       state.interventions = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      
+      // Détection des nouvelles interventions
+      const newOnes = state.interventions.filter((i) => !prevIds.has(i.id) && i.statut === "en_cours");
+      if (newOnes.length && prevIds.size > 0) {
+        newOnes.forEach((i) => triggerNewInterNotification(i));
+      }
+
       recomputeActiveAssignments();
       renderInterventions();
       if (isModalOpen() && !state.modalTouched) renderEquipagesEditor();
+      updateLiveTimers();
     });
+
+    // Démarrer le chronomètre live global
+    if (state.tickInterval) clearInterval(state.tickInterval);
+    state.tickInterval = setInterval(updateLiveTimers, 1000);
   }
 
   bindEvents();
