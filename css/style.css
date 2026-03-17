@@ -1024,14 +1024,14 @@ button:hover,
   background: rgba(34, 197, 94, 0.18);
 }
 
-.smur-vsav {
+.smur-ambulance {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   position: relative;
 }
 
-.smur-vsav::before {
+.smur-ambulance::before {
   content: "";
   position: absolute;
   left: 50%;
@@ -1042,7 +1042,7 @@ button:hover,
   transform: translateX(-1px);
 }
 
-.smur-vsav ul {
+.smur-ambulance ul {
   margin: 8px 0 0;
   padding-left: 16px;
   font-size: 13px;
@@ -1130,11 +1130,11 @@ button:hover,
 @media (max-width: 720px) {
   .tree-branches,
   .check-columns,
-  .smur-vsav {
+  .smur-ambulance {
     grid-template-columns: 1fr;
   }
 
-  .smur-vsav::before {
+  .smur-ambulance::before {
     display: none;
   }
 }
