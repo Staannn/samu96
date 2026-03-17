@@ -1,662 +1,255 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SAMU 96 · Portail Intranet</title>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore, collection, doc,
-      getDocs, addDoc, setDoc, updateDoc, deleteDoc,
-      query, orderBy
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDa27t7jEnvsGNOHUvr9SRw10gS90qX7Ow",
-      authDomain: "sau96-urgences.firebaseapp.com",
-      projectId: "sau96-urgences",
-      storageBucket: "sau96-urgences.firebasestorage.app",
-      messagingSenderId: "807568498412",
-      appId: "1:807568498412:web:1a83fef33301ef1f604fc9"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
-
-    window._db = db;
-    window._fs = { collection, doc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, query, orderBy };
-    window._pharmacieReady = false;
-
-    async function initPharmacie() {
-      try {
-        const { collection, getDocs, query, orderBy } = window._fs;
-
-        const snapStocks = await getDocs(collection(db, 'intranet_stocks'));
-        DATA.pharmacie.stocks = [];
-        snapStocks.forEach(d => DATA.pharmacie.stocks.push({ _id: d.id, ...d.data() }));
-
-        const snapCmd = await getDocs(query(collection(db, 'intranet_commandes'), orderBy('date', 'desc')));
-        DATA.pharmacie.commandes = [];
-        snapCmd.forEach(d => DATA.pharmacie.commandes.push({ _id: d.id, ...d.data() }));
-
-        const snapMvt = await getDocs(query(collection(db, 'intranet_mouvements'), orderBy('date', 'desc')));
-        DATA.pharmacie.mouvements = [];
-        snapMvt.forEach(d => DATA.pharmacie.mouvements.push({ _id: d.id, ...d.data() }));
-
-        window._pharmacieReady = true;
-        if (typeof state !== 'undefined' && state.activeTab === 'pharmacie') renderPharmacie();
-        else if (typeof renderPharmacie === 'function') renderPharmacie();
-      } catch(e) {
-        console.error('Firebase pharmacie init error:', e);
-        window._pharmacieReady = true;
-        if (typeof renderPharmacie === 'function') renderPharmacie();
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => { initPharmacie(); });
-  </script>
-
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-    :root { --bg:#f0f4f8; --surface:#ffffff; --border:#dde3ec; --accent:#0ea5e9; --accent-2:#6366f1; --ok:#16a34a; --danger:#dc2626; --warn:#d97706; --text:#1e293b; --muted:#64748b; --radius:16px; --shadow:0 0 0 1px var(--border),0 2px 12px rgba(14,165,233,.07); --shadow-strong:0 0 0 1px rgba(14,165,233,.3),0 6px 24px rgba(14,165,233,.13); }
-    *{box-sizing:border-box} html,body{margin:0;background:#f0f4f8;color:var(--text);font-family:'Inter',sans-serif;min-height:100%} body{overflow-y:scroll}
-    body[data-role="admin"] .admin-only{display:inline-flex!important}body[data-role="pharma"] .pharma-only{display:inline-flex!important}.admin-only,.pharma-only{display:none!important}
-    ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(14,165,233,.7),rgba(99,102,241,.7));border-radius:999px;border:2px solid #e2e8f0}::-webkit-scrollbar-track{background:#e8edf4}
-    .topbar{height:52px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#0284c7 0%,#4f46e5 100%);box-shadow:0 1px 0 rgba(0,0,0,.12),0 2px 12px rgba(14,165,233,.18);position:sticky;top:0;z-index:40}
-    .topbar-inner{width:min(1280px,100%);padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:800;letter-spacing:.05em;font-size:1rem;color:#f8fbff;text-shadow:0 1px 8px rgba(7,9,15,.3);white-space:nowrap;user-select:none}
-    .topbar-right{display:flex;align-items:center;gap:12px}.clock{font-variant-numeric:tabular-nums;font-weight:700;color:#ecfeff;font-size:.92rem;text-shadow:0 1px 8px rgba(7,9,15,.3);white-space:nowrap}
-    .container{width:min(1280px,100%);margin:0 auto;padding:18px 32px 44px}
-    .tabs{background:rgba(255,255,255,.9);border:1px solid var(--border);border-radius:999px;display:inline-flex;padding:5px;gap:6px;box-shadow:var(--shadow);position:sticky;top:64px;z-index:20;backdrop-filter:blur(10px)}
-    .tab-btn{border:0;background:#f1f5f9;color:var(--muted);padding:10px 16px;border-radius:999px;font-weight:600;cursor:pointer;transition:all 200ms ease;position:relative;isolation:isolate}.tab-btn::after{content:'';position:absolute;left:14px;right:14px;bottom:3px;height:2px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transform:scaleX(0);transform-origin:center;transition:transform 200ms ease}.tab-btn:hover{color:#1e40af;transform:translateY(-1px)}.tab-btn.active{background:linear-gradient(90deg,var(--accent),#2ea4ee);color:#fff;box-shadow:0 8px 20px rgba(14,165,233,.28)}.tab-btn.active::after{transform:scaleX(1)}
-    .tab-panel{margin-top:22px;display:none}.tab-panel.active{display:block;animation:fadeIn 220ms ease}@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-    .section{margin-top:20px;background:#ffffff;border-radius:18px;padding:16px;border:1px solid rgba(203,213,225,.8)}.section-title{margin:0 0 14px;border-left:3px solid var(--accent);padding-left:12px;font-size:1.05rem;font-weight:700;letter-spacing:.02em}.separator{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:14px 0}
-    .card,.mini-card,.table-wrap,.filters{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);transition:transform 200ms ease,box-shadow 200ms ease}.card:hover,.mini-card:hover,.table-wrap:hover,.filters:hover{transform:translateY(-2px);box-shadow:var(--shadow-strong)}
-    .filters{padding:14px;display:grid;grid-template-columns:1fr 220px auto auto;gap:12px;align-items:center}
-    .input,.select,.btn{border:1px solid var(--border);border-radius:12px;background:#f8fafc;color:var(--text);min-height:40px;padding:0 12px;font:inherit;transition:border-color 180ms ease,box-shadow 180ms ease}.input:focus,.select:focus{border-color:var(--accent);outline:0;box-shadow:0 0 0 3px rgba(14,165,233,.2)}
-    .count{color:var(--muted);font-size:.94rem;font-weight:600;text-align:right;padding-right:6px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:600;padding:0 14px;white-space:nowrap}.btn:hover{border-color:rgba(14,165,233,.75)}.btn.primary{border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff}.btn.danger{border-color:rgba(239,68,68,.45);color:#fecaca;background:rgba(127,29,29,.18)}.btn.ghost{background:transparent;color:var(--muted)}
-    .auth-wrap{display:flex;align-items:center;gap:8px}.admin-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 10px;font-size:.8rem;font-weight:700;color:#ecfdf5;background:rgba(34,197,94,.22);border:1px solid rgba(34,197,94,.45)}
-    .grid-members{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.member-card{padding:14px;display:flex;flex-direction:column;gap:10px}.member-top{display:flex;gap:12px;align-items:flex-start}
-    .avatar{width:52px;height:52px;border-radius:50%;border:1px solid rgba(14,165,233,.4);background:linear-gradient(135deg,rgba(14,165,233,.28),rgba(99,102,241,.3));display:inline-flex;align-items:center;justify-content:center;font-weight:800;letter-spacing:.04em;color:#e0f2fe;overflow:hidden;flex:0 0 auto}.avatar img{width:100%;height:100%;object-fit:cover}
-    .name{margin:0;font-size:1.06rem;font-weight:800}.grade-badge{border-radius:999px;padding:4px 10px;font-size:.75rem;font-weight:700;color:#fff;letter-spacing:.02em}.meta{color:var(--muted);font-size:.9rem}
-    .status{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:4px 10px;font-size:.73rem;font-weight:700;letter-spacing:.03em;width:fit-content;border:1px solid transparent}.status .dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 0 0 currentColor}
-    .status.actif{color:#86efac;background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.42)}.status.actif .dot{animation:pulse 1.8s infinite}.status.inactif{color:#94a3b8;background:rgba(100,116,139,.2);border-color:rgba(100,116,139,.4)}.status.en_formation{color:#fcd34d;background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.42)}
-    .status.disponible{color:#86efac;background:rgba(34,197,94,.13);border-color:rgba(34,197,94,.45)}.status.en_intervention{color:#93c5fd;background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.4)}.status.hs{color:#fca5a5;background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.42)}
-    @keyframes pulse{0%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
-    .sub-title{margin:0;font-size:.82rem;letter-spacing:.03em;text-transform:uppercase;color:#94a3b8;font-weight:700}.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{border-radius:999px;font-size:.76rem;font-weight:600;padding:4px 8px;border:1px solid rgba(100,116,139,.35);color:#cbd5e1;background:rgba(100,116,139,.14)}.chip.on{color:#dcfce7;border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.18)}
-    .formations-list{display:flex;flex-direction:column;gap:6px;margin-top:2px}.formation-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px;border-radius:10px;background:#f8fafc;border:1px solid rgba(203,213,225,.8);font-size:.84rem}.formation-item small{color:var(--muted);font-variant-numeric:tabular-nums}
-    .card-actions{margin-top:auto;display:flex;justify-content:flex-end;gap:8px;padding-top:4px}.vehicle-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.mini-card{padding:12px}.mini-card .label{color:var(--muted);font-size:.84rem;margin-bottom:6px}.mini-card .value{font-size:1.42rem;font-weight:800;line-height:1}
-    .vehicle-grid{margin-top:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.vehicle-card{overflow:hidden;padding:0;display:flex;flex-direction:column}.vehicle-head{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .vehicle-head.disponible{background:linear-gradient(135deg,rgba(220,252,231,.9),rgba(34,197,94,.25))}.vehicle-head.en_intervention{background:linear-gradient(135deg,rgba(224,242,254,.9),rgba(14,165,233,.26))}.vehicle-head.hs{background:linear-gradient(135deg,rgba(254,226,226,.9),rgba(239,68,68,.28))}
-    .veh-name{margin:0;font-size:1.04rem;font-weight:800;display:flex;align-items:center;gap:8px}.veh-type{border-radius:999px;padding:4px 8px;font-size:.72rem;border:1px solid rgba(226,232,240,.3);background:rgba(7,9,15,.3);color:#e2e8f0;font-weight:700}
-    .vehicle-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px;flex:1}.plate{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.91rem;color:#334155;background:#f1f5f9;border:1px solid rgba(100,116,139,.3);border-radius:10px;padding:7px 10px;width:fit-content}
-    .table-wrap{overflow:auto;margin-top:14px}table{width:100%;border-collapse:collapse;min-width:680px}th,td{padding:11px 10px;text-align:left;border-bottom:1px solid var(--border);font-size:.89rem}th{color:#93a4bc;font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:.77rem;background:#f8fafc;position:sticky;top:0;z-index:1}
-    tbody tr:nth-child(odd){background:#ffffff}tbody tr:nth-child(even){background:#f8fafc}.empty{color:var(--muted);text-align:center;padding:16px;border:1px dashed rgba(100,116,139,.4);border-radius:12px;background:rgba(11,17,29,.35)}
-    .modal-overlay{position:fixed;inset:0;background:rgba(5,8,14,.72);backdrop-filter:blur(2px);display:grid;place-items:center;z-index:100;opacity:0;visibility:hidden;transition:opacity 200ms ease,visibility 200ms ease;padding:16px}.modal-overlay.open{opacity:1;visibility:visible}
-    .modal{width:min(720px,100%);max-height:min(86vh,900px);overflow:auto;border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow-strong);background:#ffffff;transform:scale(.96);opacity:0;transition:transform 200ms ease,opacity 200ms ease}.modal-overlay.open .modal{transform:scale(1);opacity:1}
-    .modal-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;align-items:center;position:sticky;top:0;background:#ffffff;z-index:1}.modal-title{margin:0;font-size:1.02rem;font-weight:800}.modal-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{color:#9fb0c8;font-size:.8rem;font-weight:600;letter-spacing:.02em}
-    .check-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:2px}.checkbox{display:inline-flex;align-items:center;gap:8px;padding:8px;border-radius:10px;border:1px solid rgba(100,116,139,.35);background:rgba(100,116,139,.1);font-size:.86rem;color:#d1d9e5}
-    .inline-list{display:flex;flex-direction:column;gap:8px}.line-item{display:grid;grid-template-columns:1fr 128px 96px 32px;gap:8px;align-items:center}.line-item.vehicle{grid-template-columns:1fr 32px}
-    .error{color:#fca5a5;font-size:.85rem;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.35);padding:9px 10px;border-radius:10px;display:none}.error.show{display:block}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:2px}
-    @media (max-width:1024px){.filters{grid-template-columns:1fr 1fr}.count{text-align:left;padding-right:0}.grid-members,.vehicle-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.vehicle-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media (max-width:767px){.topbar-inner,.container{padding-left:14px;padding-right:14px}.clock{font-size:.82rem}.topbar-right{gap:8px}.tabs{width:100%;justify-content:space-between}.tab-btn{flex:1}.filters,.grid-members,.vehicle-grid,.vehicle-summary,.form-grid,.check-grid,.line-item,.line-item.vehicle{grid-template-columns:1fr}.modal-overlay{padding:0}.modal{width:100%;max-height:100vh;height:100vh;border-radius:0}.modal-actions{position:sticky;bottom:0;background:#0b111d;padding-top:8px}table{min-width:620px}}
-
-    /* Sous-onglets pharmacie */
-    .sub-tabs { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
-    .sub-tab-btn { border:1px solid var(--border); border-radius:8px;
-      background:var(--surface); color:var(--muted); padding:6px 14px;
-      font-size:.82rem; font-weight:600; cursor:pointer; transition:all 150ms; }
-    .sub-tab-btn:hover { border-color:var(--accent); color:var(--accent); }
-    .sub-tab-btn.active { background:var(--accent); color:#fff;
-      border-color:var(--accent); box-shadow:0 2px 8px rgba(14,165,233,.25); }
-    .sub-panel { display:none; }
-    .sub-panel.active { display:block; }
-
-    /* Barres de progression maintenance */
-    .maint-bar-wrap { margin:4px 0; }
-    .maint-bar-label { font-size:.74rem; color:var(--muted); margin-bottom:3px; }
-    .maint-bar { height:5px; background:#e2e8f0; border-radius:3px; overflow:hidden; }
-    .maint-bar-fill { height:100%; border-radius:3px; transition:width .3s; }
-    .maint-bar-fill.ok { background:#16a34a; }
-    .maint-bar-fill.warn { background:#d97706; }
-    .maint-bar-fill.danger { background:#dc2626; }
-
-    /* Badges CT / péremption */
-    .badge-ct { display:inline-block; border-radius:6px; padding:2px 8px;
-      font-size:.72rem; font-weight:700; }
-    .badge-ct.ok { background:#dcfce7; color:#15803d; }
-    .badge-ct.warn { background:#fef3c7; color:#92400e; }
-    .badge-ct.danger { background:#fee2e2; color:#b91c1c; }
-
-    /* Incidents card */
-    .incident-item { display:flex; align-items:flex-start; gap:8px; padding:6px 8px;
-      border-radius:6px; background:#f8fafc; border:1px solid var(--border);
-      margin-bottom:4px; font-size:.78rem; }
-    .incident-gravite { border-radius:4px; padding:1px 6px; font-weight:700;
-      font-size:.7rem; white-space:nowrap; }
-    .incident-gravite.mineur { background:#dbeafe; color:#1d4ed8; }
-    .incident-gravite.modere { background:#fef3c7; color:#92400e; }
-    .incident-gravite.grave { background:#fee2e2; color:#b91c1c; }
-
-    /* Stock badge */
-    .stock-badge { display:inline-flex; align-items:center; gap:4px;
-      padding:2px 8px; border-radius:6px; font-size:.76rem; font-weight:700; }
-    .stock-badge.ok { background:#dcfce7; color:#15803d; }
-    .stock-badge.warn { background:#fef3c7; color:#92400e; }
-    .stock-badge.danger { background:#fee2e2; color:#b91c1c; }
-
-    /* Commentaire véhicule */
-    .veh-comment { font-style:italic; font-size:.78rem; color:var(--muted);
-      background:#f8fafc; border-left:3px solid var(--border); padding:6px 10px;
-      border-radius:0 4px 4px 0; margin-top:4px; }
-
-    /* Séparateur section modale */
-    .modal-section-title { font-size:.78rem; font-weight:700; color:var(--accent);
-      text-transform:uppercase; letter-spacing:.06em; padding:4px 0 2px;
-      border-bottom:1px solid var(--border); margin:6px 0 8px; grid-column:1/-1; }
-
-    /* Mouvement badge */
-    .mouvement-type { border-radius:4px; padding:2px 8px; font-size:.73rem;
-      font-weight:700; }
-    .mouvement-type.entree { background:#dcfce7; color:#15803d; }
-    .mouvement-type.sortie { background:#fee2e2; color:#b91c1c; }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intranet — SAMU 96</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,.85);font-size:.82rem;font-weight:600;text-decoration:none;padding:5px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);transition:background 180ms;">← Retour au site</a>
-      <div class="brand">96 · SAMU</div>
-      <div class="topbar-right">
-        <div id="clock" class="clock">--:--:--</div>
-        <div id="authArea" class="auth-wrap"></div>
-      </div>
-    </div>
-  </header>
 
-  <main class="container">
-    <nav class="tabs" aria-label="Navigation principale">
-      <button type="button" class="tab-btn active" data-tab="personnel">👥 Gestion du Personnel</button>
-      <button type="button" class="tab-btn" data-tab="vehicules">🚑 Gestion des Véhicules</button>
-      <button type="button" class="tab-btn" data-tab="pharmacie">💊 Pharmacie</button>
-    </nav>
-
-    <section id="panelPersonnel" class="tab-panel active"></section>
-    <section id="panelVehicules" class="tab-panel"></section>
-    <section id="panelPharmacie" class="tab-panel"></section>
-  </main>
-
-  <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head">
-        <h2 id="modalTitle" class="modal-title"></h2>
-        <button type="button" class="btn ghost" data-action="close-modal">✕</button>
-      </div>
-      <div id="modalBody" class="modal-body"></div>
-    </div>
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="logo">
+      <img src="assets/logo-samu96.png" alt="Logo SAMU 96" class="logo-img">
+      <span class="logo-name"><span>96</span> · SUPPORT</span>
+    </a>
   </div>
+  <nav class="topbar-nav"></nav>
+  <div class="topbar-right">
+    <span class="topbar-clock"></span>
+    <button class="hamburger">☰</button>
+  </div>
+</header>
 
-  <script>
-    // ==============================
-    // Données initiales
-    // ==============================
-    const DATA = {
-      membres: [
-        { id: 1, nom: 'Dr. Elias Morel', grade: 'Chef de service', role: 'Coordination médicale et supervision opérationnelle', discord: '@EliasMorel96', statut: 'actif', photo: '', competences: { regulation: true, smur: true, acls: true, trauma: true, 'pédiatrie': true }, formations: [{ nom: 'Régulation avancée', date: '2025-02-10', 'validé': true }, { nom: 'Trauma command', date: '2024-11-21', 'validé': true }, { nom: 'Pédiatrie critique', date: '2025-06-04', 'validé': false }] },
-        { id: 2, nom: 'Léa Garnier', grade: 'IDE SMUR', role: 'Référente soins infirmiers préhospitaliers', discord: '@LeaGarnier_IDE', statut: 'en_formation', photo: '', competences: { regulation: false, smur: true, acls: true, trauma: true, 'pédiatrie': false }, formations: [{ nom: 'ACLS Provider', date: '2024-09-15', 'validé': true }, { nom: 'SMUR tactique', date: '2025-03-19', 'validé': true }, { nom: 'Pédiatrie préhospitalière', date: '2025-07-12', 'validé': false }] },
-        { id: 3, nom: 'Noah Dervaux', grade: 'Ambulancier', role: 'Conduite VSAV et logistique embarquée', discord: '@NoahDrive96', statut: 'inactif', photo: '', competences: { regulation: false, smur: true, acls: false, trauma: true, 'pédiatrie': false }, formations: [{ nom: 'Conduite urgente', date: '2024-08-30', 'validé': true }, { nom: 'Bilan primaire RP', date: '2025-01-27', 'validé': true }, { nom: 'Trauma extraction', date: '2025-05-10', 'validé': false }] }
-      ],
-      vehicules: [
-        { id: 1, nom: 'SMUR 96-Alpha', type: 'SMUR', immatriculation: 'SMU-9601-FR', statut: 'disponible', affectation: 'Base Centrale', km_actuel: 87420, km_achat: 0, date_achat: '2022-03-15', date_derniere_vidange: '2025-01-10', km_derniere_vidange: 82000, intervalle_vidange_km: 15000, date_prochain_ct: '2026-03-15', date_dernier_ct: '2024-03-15', date_prochaine_revision: '2025-09-01', km_prochaine_revision: 90000, equipements: ['Monitorage multiparamétrique', 'Respirateur', 'Kit ACLS', 'Pompe perfusion'], incidents: [{ id: 1, date: '2025-04-02', description: 'Fuite circuit de refroidissement', gravite: 'modéré', resolu: true, date_resolution: '2025-04-05' }], commentaire: 'Véhicule en bon état général. Contrôle pneus à prévoir.' },
-        { id: 2, nom: 'VSAV 96-Bravo', type: 'VSAV', immatriculation: 'VSA-9634-FR', statut: 'en_intervention', affectation: 'Secteur Nord', km_actuel: 124300, km_achat: 12000, date_achat: '2020-06-01', date_derniere_vidange: '2024-11-20', km_derniere_vidange: 118000, intervalle_vidange_km: 10000, date_prochain_ct: '2025-06-01', date_dernier_ct: '2023-06-01', date_prochaine_revision: '2025-07-15', km_prochaine_revision: 130000, equipements: ['Brancard', 'Oxygénothérapie', 'Sac trauma', 'Aspirateur de mucosités'], incidents: [{ id: 1, date: '2025-02-14', description: 'Voyant moteur allumé — diagnostic OK', gravite: 'mineur', resolu: true, date_resolution: '2025-02-15' }, { id: 2, date: '2025-05-30', description: 'Portière arrière gauche ne ferme pas', gravite: 'modéré', resolu: false, date_resolution: '' }], commentaire: 'CT à renouveler en urgence. Portière en attente de réparation.' },
-        { id: 3, nom: 'VLM 96-Charlie', type: 'VLM', immatriculation: 'VLM-9688-FR', statut: 'hs', affectation: 'Secteur Ouest', km_actuel: 43100, km_achat: 5000, date_achat: '2023-11-08', date_derniere_vidange: '2025-03-01', km_derniere_vidange: 41000, intervalle_vidange_km: 20000, date_prochain_ct: '2027-11-08', date_dernier_ct: '2025-11-08', date_prochaine_revision: '2025-12-01', km_prochaine_revision: 50000, equipements: ['Radio longue portée', 'Défibrillateur', 'Sac médical léger'], incidents: [], commentaire: 'Hors service suite à impact latéral. En attente expertise assurance.' }
-      ],
-      pharmacie: {
-        stocks: [
-          { id: 1, nom: 'Adrénaline 1mg/mL', famille: 'Vasopresseur', forme: 'Ampoule IV', dci: 'Épinéphrine', stock_actuel: 24, stock_min: 10, stock_max: 50, unite: 'ampoules', peremption: '2026-09-30', fournisseur: 'Aguettant', ref_fournisseur: 'AG-ADR-001', localisation: 'Armoire A — Tiroir 1', commentaire: 'Stocker entre 15 et 25°C, à l\'abri de la lumière.' },
-          { id: 2, nom: 'Morphine 10mg/mL', famille: 'Antalgique opioïde', forme: 'Ampoule IV', dci: 'Chlorhydrate de morphine', stock_actuel: 8, stock_min: 10, stock_max: 30, unite: 'ampoules', peremption: '2025-12-31', fournisseur: 'Lavoisier', ref_fournisseur: 'LV-MOR-010', localisation: 'Armoire B — Coffre stupéfiants', commentaire: 'Stupéfiant. Registre obligatoire à chaque sortie.' },
-          { id: 3, nom: 'Naloxone 0.4mg/mL', famille: 'Antidote opioïde', forme: 'Ampoule IV', dci: 'Chlorhydrate de naloxone', stock_actuel: 15, stock_min: 6, stock_max: 24, unite: 'ampoules', peremption: '2026-06-30', fournisseur: 'Aguettant', ref_fournisseur: 'AG-NAL-004', localisation: 'Armoire A — Tiroir 2', commentaire: '' },
-          { id: 4, nom: 'Paracétamol 10mg/mL', famille: 'Antalgique', forme: 'Flacon perfusion', dci: 'Paracétamol', stock_actuel: 20, stock_min: 8, stock_max: 40, unite: 'flacons', peremption: '2026-03-15', fournisseur: 'Fresenius', ref_fournisseur: 'FRK-PAR-500', localisation: 'Armoire A — Tiroir 3', commentaire: '' },
-          { id: 5, nom: 'Biafine émulsion', famille: 'Dermatologie', forme: 'Tube cutané', dci: 'Tréthanolamine', stock_actuel: 3, stock_min: 5, stock_max: 20, unite: 'tubes', peremption: '2025-08-31', fournisseur: 'Johnson & Johnson', ref_fournisseur: 'JJ-BIA-200', localisation: 'Armoire C — Étagère 1', commentaire: 'Stock critique. Commander.' },
-          { id: 6, nom: 'Sérum physiologique 0.9%', famille: 'Soluté', forme: 'Poche 500mL', dci: 'Chlorure de sodium', stock_actuel: 35, stock_min: 20, stock_max: 80, unite: 'poches', peremption: '2026-11-01', fournisseur: 'Baxter', ref_fournisseur: 'BX-NaCl-500', localisation: 'Armoire D — Bas', commentaire: '' }
-        ],
-        commandes: [
-          { id: 1, date: '2025-06-01', produit_id: 2, produit_nom: 'Morphine 10mg/mL', quantite: 15, statut: 'en_attente', fournisseur: 'Lavoisier', demandeur: 'Gérant Pharma', commentaire: 'Stock critique stupéfiants.' },
-          { id: 2, date: '2025-05-28', produit_id: 5, produit_nom: 'Biafine émulsion', quantite: 20, statut: 'livree', fournisseur: 'Johnson & Johnson', demandeur: 'Gérant Pharma', commentaire: '' }
-        ],
-        mouvements: [
-          { id: 1, date: '2025-06-02T10:14', produit_id: 1, produit_nom: 'Adrénaline 1mg/mL', type: 'sortie', quantite: 2, motif: 'Intervention SMUR 96-Alpha', operateur: 'Dr. Morel' },
-          { id: 2, date: '2025-05-30T09:00', produit_id: 6, produit_nom: 'Sérum physiologique 0.9%', type: 'entree', quantite: 20, motif: 'Réapprovisionnement livraison', operateur: 'Gérant Pharma' }
-        ]
-      }
-    };
+<div class="layout">
+  <aside class="sidebar"></aside>
+  <main class="main">
 
-    // ==============================
-    // Constantes et état UI
-    // ==============================
-    const PASSWORDS = {
-      admin: 'samu96admin',
-      pharma: 'samu96pharma'
-    };
-    const GRADES = ['Chef de service', 'Adjoint', 'Médecin', 'IDE SMUR', 'Ambulancier'];
-    const VEH_TYPES = ['SMUR', 'VSAV', 'VLM', 'VLI'];
-    const MEMBER_STATUS = ['actif', 'inactif', 'en_formation'];
-    const VEH_STATUS = ['disponible', 'en_intervention', 'hs'];
-    const COMP_KEYS = [{ key: 'regulation', label: 'Régulation' }, { key: 'smur', label: 'SMUR' }, { key: 'acls', label: 'ACLS' }, { key: 'trauma', label: 'Trauma' }, { key: 'pédiatrie', label: 'Pédiatrie' }];
-    const state = {
-      activeTab: 'personnel',
-      role: null,
-      filters: { search: '', grade: 'Tous', vehType: 'Tous', vehStatut: 'Tous' },
-      modal: { type: null, id: null }
-    };
-    const pharmaState = { subTab: 'stocks', search: '', famille: 'Toutes', alerte: 'Tous' };
-    const $ = (sel) => document.querySelector(sel);
+    <div class="page-header">
+      <div class="breadcrumb">/ <span>INTRANET</span></div>
+      <h1 class="page-title">Intranet <span>SAMU 96</span></h1>
+      <p class="page-subtitle">Annonces internes, organigramme, règlement et informations de connexion opérationnelles.</p>
+    </div>
 
-    // ==============================
-    // Persistance localStorage (Personnel & Véhicules uniquement)
-    // ==============================
-    const STORAGE_KEY = 'samu96_intranet_v1';
-    function persistData() {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ membres: DATA.membres, vehicules: DATA.vehicules })); } catch(e) {}
-    }
+    <section id="annonces" style="scroll-margin-top: 84px;">
+      <div class="section-title">Annonces / News internes</div>
+      <div class="panel">
+        <div class="panel-header">📌 Tableau d'affichage opérationnel</div>
+        <div class="panel-body">
+          <ul class="doc-list">
+            <li class="doc-item">
+              <span class="badge badge-dim">[DATE]</span>
+              <div style="flex:1;">
+                <div class="doc-name">Ouverture du portail support SAMU 96</div>
+                <div class="text-dim">Le portail support est désormais en ligne. Tous les membres sont invités à consulter les sections formations, spécialités et procédures.</div>
+                <div class="mono text-dim" style="margin-top:6px;">Auteur : Dr. Marc-Aurèle Vésale — Chef de service</div>
+              </div>
+            </li>
+            <li class="doc-item">
+              <span class="badge badge-dim">[DATE]</span>
+              <div style="flex:1;">
+                <div class="doc-name">Aucune annonce — à venir</div>
+                <div class="text-dim">Contenu à renseigner.</div>
+                <div class="mono text-dim" style="margin-top:6px;">Auteur : —</div>
+              </div>
+            </li>
+            <li class="doc-item" style="margin-bottom:0;">
+              <span class="badge badge-dim">[DATE]</span>
+              <div style="flex:1;">
+                <div class="doc-name">Aucune annonce — à venir</div>
+                <div class="text-dim">Contenu à renseigner.</div>
+                <div class="mono text-dim" style="margin-top:6px;">Auteur : —</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-    // ==============================
-    // Helpers
-    // ==============================
-    function escapeHtml(value = '') { return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-    function initials(nom) { return nom.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0].toUpperCase()).join(''); }
-    function gradeColor(grade) { return ({ 'Chef de service': '#003087', 'Adjoint': '#6366f1', 'Médecin': '#0ea5e9', 'IDE SMUR': '#22c55e', 'Ambulancier': '#64748b' }[grade] || '#64748b'); }
-    function statusLabel(statut) { return ({ actif: 'ACTIF', inactif: 'INACTIF', en_formation: 'EN FORMATION', disponible: 'DISPONIBLE', en_intervention: 'EN INTERVENTION', hs: 'HORS SERVICE' }[statut] || statut); }
-    function statusBadge(statut) { return `<span class="status ${statut}"><span class="dot"></span>${statusLabel(statut)}</span>`; }
-    function todayClock() { const now = new Date(); return `${now.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' })} · ${now.toLocaleTimeString('fr-FR', { hour12: false })}`; }
-    function formatDateFR(dateStr) { return dateStr ? new Date(dateStr).toLocaleDateString('fr-FR') : '—'; }
-    function trunc(value = '', max = 60) { return value.length > max ? `${value.slice(0, max - 1)}…` : value; }
-    function graviteClass(value = '') { return value === 'modéré' ? 'modere' : value; }
-    function ctBadgeClass(dateStr) {
-      const now = new Date();
-      const target = new Date(dateStr);
-      const diff = target - now;
-      const oneMonth = 30 * 24 * 3600 * 1000;
-      const sixMonths = 180 * 24 * 3600 * 1000;
-      if (diff < oneMonth) return 'danger';
-      if (diff < sixMonths) return 'warn';
-      return 'ok';
-    }
-    function pharmaExpiryFlags(peremption) {
-      const msIn3Months = 90 * 24 * 3600 * 1000;
-      const isExpiringSoon = (new Date(peremption) - new Date()) < msIn3Months && new Date(peremption) > new Date();
-      const isExpired = new Date(peremption) < new Date();
-      return { isExpiringSoon, isExpired };
-    }
+    <section id="equipe" style="scroll-margin-top: 84px; margin-top: 28px;">
+      <div class="section-title">Équipe SAMU 96 — Organigramme &amp; Contacts</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-meta" style="margin-top:0; padding-top:0; border-top:none; margin-bottom:10px;">
+            <span class="card-tag" style="background:#003087; color:#fff; border-color:#003087;">CHEF DE SERVICE</span>
+          </div>
+          <div class="card-title">Dr. Marc-Aurèle Vésale</div>
+          <div class="card-desc"><strong>Rôle :</strong> Chef de service SAMU 96</div>
+          <div class="card-desc" style="margin-top:8px;"><strong>Responsabilités :</strong> Direction opérationnelle, validation protocoles, gestion des effectifs</div>
+          <div class="card-desc" style="margin-top:8px;"><strong>Discord :</strong> [à renseigner]</div>
+          <div class="card-meta">
+            <span class="topbar-status" style="padding:3px 10px;"><span class="status-dot"></span>ACTIF</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-meta" style="margin-top:0; padding-top:0; border-top:none; margin-bottom:10px;">
+            <span class="badge badge-yellow" style="font-size:10px;">ADJOINT</span>
+          </div>
+          <div class="card-title">Dr. Jeremie Piffeteau</div>
+          <div class="card-desc"><strong>Rôle :</strong> Adjoint au chef de service</div>
+          <div class="card-desc" style="margin-top:8px;"><strong>Responsabilités :</strong> Régulation médicale, supervision formations, remplaçant chef de service</div>
+          <div class="card-desc" style="margin-top:8px;"><strong>Discord :</strong> [à renseigner]</div>
+          <div class="card-meta">
+            <span class="topbar-status" style="padding:3px 10px;"><span class="status-dot"></span>ACTIF</span>
+          </div>
+        </div>
+      </div>
 
-    // ==============================
-    // Topbar, auth et onglets
-    // ==============================
-    function renderAuth() {
-      if (state.role === 'admin') $('#authArea').innerHTML = '<span class="admin-badge">🔑 ADMIN</span><button type="button" class="btn" data-action="logout">Déconnexion</button>';
-      else if (state.role === 'pharma') $('#authArea').innerHTML = '<span class="admin-badge" style="background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.45);color:#fff7ed;">🧪 GÉRANT PHARMA</span><button type="button" class="btn" data-action="logout">Déconnexion</button>';
-      else $('#authArea').innerHTML = '<button type="button" class="btn" data-action="open-auth">🔐 Connexion</button>';
-      document.body.dataset.role = state.role || '';
-    }
-    function renderTabs() {
-      document.querySelectorAll('.tab-btn').forEach((btn) => {
-        btn.style.opacity = '1';
-        btn.style.pointerEvents = 'auto';
-        btn.classList.toggle('active', btn.dataset.tab === state.activeTab);
+      <div class="section-title">Postes à pourvoir</div>
+      <ul class="doc-list">
+        <li class="doc-item">
+          <span class="badge badge-yellow">RECRUTEMENT OUVERT</span>
+          <span class="doc-name">Médecin régulateur</span>
+        </li>
+        <li class="doc-item">
+          <span class="badge badge-yellow">RECRUTEMENT OUVERT</span>
+          <span class="doc-name">IDE SMUR</span>
+        </li>
+        <li class="doc-item" style="margin-bottom:0;">
+          <span class="badge badge-yellow">RECRUTEMENT OUVERT</span>
+          <span class="doc-name">Ambulancier</span>
+        </li>
+      </ul>
+    </section>
+
+    <section id="reglement" style="scroll-margin-top: 84px; margin-top: 28px;">
+      <div class="section-title">Règlement intérieur</div>
+      <div class="panel">
+        <div class="panel-header">SAMU 96 — Règlement Intérieur</div>
+        <div class="panel-body">
+          <p class="mono text-dim" style="margin-bottom:6px;">Approuvé par : Dr. Marc-Aurèle Vésale</p>
+          <p class="mono text-dim" style="margin-bottom:18px;">Version 1.0 — 2025</p>
+
+          <div class="section-title">Article 1 — Valeurs et esprit du SAMU 96</div>
+          <p style="margin-bottom:16px;">Le SAMU 96 repose sur un esprit RP médical sérieux, une immersion crédible, et une cohésion d'équipe constante. Chaque membre agit avec respect, professionnalisme et bienveillance afin de garantir une qualité de prise en charge élevée. Le respect mutuel est une base non négociable de notre fonctionnement collectif. Le dialogue est toujours privilégié avant toute mesure disciplinaire.</p>
+
+          <div class="section-title">Article 2 — Hiérarchie</div>
+          <p style="margin-bottom:16px;">L'ordre hiérarchique est défini comme suit : Chef de service → Adjoint → Médecins → IDE/IADE → Ambulanciers. En intervention, les décisions du chef de service et de l'adjoint sont à respecter sans discussion afin d'assurer la sécurité et l'efficacité opérationnelle. Hors intervention, tout membre peut exprimer un désaccord via Discord de manière respectueuse et constructive.</p>
+
+          <div class="section-title">Article 3 — Tenue et équipement</div>
+          <p style="margin-bottom:16px;">La tenue réglementaire SAMU est obligatoire sur toute intervention (uniforme configuré dans l'arsenal). L'équipement ACE+KAT complet doit être vérifié avant chaque départ. Aucune intervention n'est autorisée sans kit médical complet. Les interventions se font uniquement avec un véhicule SAMU ; l'usage d'un véhicule personnel est interdit, sauf autorisation explicite du chef de service.</p>
+
+          <div class="section-title">Article 4 — Communication radio</div>
+          <p style="margin-bottom:16px;">Toute communication en intervention passe par la radio. Le format obligatoire est : indicatif + message + « terminé ». Exemple : « SAMU 96-1 de SAMU Régulation, départ pour intervention rue des Lilas, terminé. » Les communications hors rôle (OOC) sont interdites sur les fréquences opérationnelles. Un salon Discord vocal dédié est utilisé hors intervention.</p>
+
+          <div class="section-title">Article 5 — Règles opérationnelles</div>
+          <p style="margin-bottom:16px;">Aucune intervention n'est engagée sans bilan radio au régulateur. Les protocoles ACE+KAT sont obligatoires : aucune improvisation n'est acceptée. Les niveaux de priorité P0 à P4 doivent être appliqués strictement. Chaque rôle respecte son champ de compétences : un ambulancier ne réalise pas d'IOT, un IDE ne prescrit pas sans médecin. En cas de doute sur un geste, il est obligatoire de demander validation au médecin de l'équipe ou au régulateur avant d'agir.</p>
+
+          <div class="section-title">Article 6 — Présence et astreintes</div>
+          <p style="margin-bottom:16px;">Une présence minimale d'une session par semaine est souhaitée pour maintenir la cohésion et la continuité du service. Toute absence prolongée (supérieure à 2 semaines) doit être signalée sur Discord. Les astreintes de régulation sont planifiées à l'avance ; en cas d'impossibilité, l'adjoint doit être prévenu au minimum 24 heures avant.</p>
+
+          <div class="section-title">Article 7 — Sanctions</div>
+          <p>Le cadre disciplinaire est progressif et appliqué avec souplesse, dans un esprit de dialogue avant tout. L'échelle est la suivante : 1) discussion privée sur Discord (rappel à l'ordre), 2) avertissement oral consigné, 3) avertissement écrit (2 maximum), 4) rétrogradation de grade temporaire, 5) exclusion temporaire (durée définie), 6) exclusion définitive pour fautes graves uniquement (RDM, toxicité envers l'équipe, triche répétée). Aucune sanction n'est prononcée sans échange préalable avec le membre concerné.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="liens" style="scroll-margin-top: 84px; margin-top: 28px;">
+      <div class="section-title">Liens &amp; Connexion</div>
+      <div class="grid-2">
+        <div class="card">
+          <span class="card-icon">💬</span>
+          <div class="card-title">Serveur Discord SAMU 96</div>
+          <div class="card-desc">Rejoins le Discord officiel pour les annonces, la coordination et les debriefs.</div>
+          <div class="card-meta">
+            <a href="https://discord.gg/QYfqFNSYcf" target="_blank" class="sidebar-link active" style="margin:0;">Rejoindre le Discord</a>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-icon">🩺</span>
+          <div class="card-title">SMFU</div>
+          <div class="card-desc">Références et recommandations de médecine d'urgence.</div>
+          <div class="card-meta">
+            <a href="https://www.sfmu.org" target="_blank" class="sidebar-link active" style="margin:0;">Ouvrir SMFU</a>
+          </div>
+        </div>
+        <div class="card">
+          <span class="card-icon">🎮</span>
+          <div class="card-title">Serveur Arma 3</div>
+          <div class="card-desc">IP et port de connexion au serveur de jeu. Vérifiez le launcher pour les mods requis.</div>
+          <div class="card-meta">
+            <span class="badge badge-yellow">IP — DISPONIBLE PROCHAINEMENT</span>
+            <span class="card-count text-dim">En attente de configuration serveur</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="historique" style="scroll-margin-top: 84px; margin-top: 28px;">
+      <div class="section-title">Historique interventions</div>
+      <div class="alert alert-yellow">
+        <strong>Journal d'intervention</strong>
+        Aucune intervention enregistrée pour le moment. Les interventions notables seront consignées ici par le chef de service.
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type d'intervention</th>
+            <th>Équipe engagée</th>
+            <th>Résumé</th>
+            <th>Niveau P</th>
+            <th>Observations</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="6" class="text-dim" style="text-align:center;">Aucune donnée pour le moment.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <span>SAMU 96 · Portail Support · Usage interne uniquement</span>
+  <span class="topbar-clock"></span>
+</footer>
+
+<script src="nav.js"></script>
+<script src="main.js"></script>
+<script>
+  renderNav('intranet.html');
+
+  const intranetSidebar = document.querySelector('.sidebar');
+  if (intranetSidebar) {
+    intranetSidebar.insertAdjacentHTML('beforeend', `
+      <div class="sidebar-section">
+        <div class="sidebar-label">Intranet</div>
+        <a href="#annonces" class="sidebar-link"><span class="icon">📌</span>Annonces</a>
+        <a href="#equipe" class="sidebar-link"><span class="icon">👥</span>Équipe</a>
+        <a href="#reglement" class="sidebar-link"><span class="icon">📘</span>Règlement</a>
+        <a href="#liens" class="sidebar-link"><span class="icon">🔗</span>Liens & Connexion</a>
+        <a href="#historique" class="sidebar-link"><span class="icon">🗂️</span>Historique</a>
+      </div>
+    `);
+
+    const anchorLinks = Array.from(intranetSidebar.querySelectorAll('a.sidebar-link[href^="#"]'));
+    const sections = anchorLinks
+      .map((link) => document.querySelector(link.getAttribute('href')))
+      .filter(Boolean);
+
+    function setActiveAnchor() {
+      const probe = window.scrollY + 120;
+      let activeSection = sections[0];
+
+      sections.forEach((section) => {
+        if (section.offsetTop <= probe) activeSection = section;
       });
-      $('#panelPersonnel').classList.toggle('active', state.activeTab === 'personnel');
-      $('#panelVehicules').classList.toggle('active', state.activeTab === 'vehicules');
-      $('#panelPharmacie').classList.toggle('active', state.activeTab === 'pharmacie');
-    }
-    function updateClock() { $('#clock').textContent = todayClock(); }
 
-    // ==============================
-    // Rendu Personnel
-    // ==============================
-    function filteredMembers() { const search = state.filters.search.toLowerCase().trim(); return DATA.membres.filter((m) => (!search || m.nom.toLowerCase().includes(search)) && (state.filters.grade === 'Tous' || m.grade === state.filters.grade)); }
-    function renderPersonnel() {
-      const members = filteredMembers();
-      $('#panelPersonnel').innerHTML = `<div class="section"><h2 class="section-title">Gestion du Personnel</h2><div class="filters"><input id="searchMember" class="input" type="text" placeholder="Rechercher par nom..." value="${escapeHtml(state.filters.search)}" /><select id="gradeFilter" class="select"><option ${state.filters.grade === 'Tous' ? 'selected' : ''}>Tous</option>${GRADES.map((g) => `<option ${state.filters.grade === g ? 'selected' : ''}>${escapeHtml(g)}</option>`).join('')}</select><div class="count">${members.length} membre(s) affiché(s)</div><button type="button" class="btn primary admin-only" data-action="add-member">+ Ajouter un membre</button></div><div class="separator"></div><div class="grid-members">${members.map((m) => { const comps = COMP_KEYS.map((c) => `<span class="chip ${m.competences[c.key] ? 'on' : ''}">${c.label}</span>`).join(''); const forms = m.formations.map((f, i) => `<div class="formation-item"><span>${f['validé'] ? '✅' : '⬜'} ${escapeHtml(f.nom)}</span><small>${f['validé'] && f.date ? escapeHtml(f.date) : '—'}</small><button type="button" class="btn ghost admin-only" data-action="toggle-formation" data-id="${m.id}" data-form-index="${i}">${f['validé'] ? 'Dévalider' : 'Valider'}</button></div>`).join(''); return `<article class="card member-card"><div class="member-top"><div class="avatar">${m.photo ? `<img src="${escapeHtml(m.photo)}" alt="${escapeHtml(m.nom)}">` : escapeHtml(initials(m.nom))}</div><div><h3 class="name">${escapeHtml(m.nom)}</h3><span class="grade-badge" style="background:${gradeColor(m.grade)}">${escapeHtml(m.grade)}</span><div class="meta" style="margin-top:6px;">${escapeHtml(m.role)}</div><div class="meta">Discord : ${escapeHtml(m.discord)}</div></div></div>${statusBadge(m.statut)}<div class="separator"></div><p class="sub-title">Compétences</p><div class="chips">${comps}</div><p class="sub-title" style="margin-top:4px;">Formations validées</p><div class="formations-list">${forms}</div><div class="card-actions"><button type="button" class="btn admin-only" data-action="edit-member" data-id="${m.id}">✏️ Modifier</button><button type="button" class="btn danger admin-only" data-action="delete-member" data-id="${m.id}">🗑️ Supprimer</button></div></article>`; }).join('')}</div>${members.length ? '' : '<div class="empty">Aucun membre ne correspond aux filtres.</div>'}</div>`;
-    }
-
-    // ==============================
-    // Rendu Véhicules
-    // ==============================
-    function renderVehicules() {
-      const total = DATA.vehicules.length, dispo = DATA.vehicules.filter((v) => v.statut === 'disponible').length, hs = DATA.vehicules.filter((v) => v.statut === 'hs').length;
-      $('#panelVehicules').innerHTML = `<div class="section"><h2 class="section-title">Gestion des Véhicules</h2><div class="vehicle-summary"><div class="mini-card"><div class="label">Total véhicules</div><div class="value">${total}</div></div><div class="mini-card"><div class="label">Disponibles</div><div class="value" style="color:var(--ok)">${dispo}</div></div><div class="mini-card"><div class="label">Hors service</div><div class="value" style="color:var(--danger)">${hs}</div></div><div class="mini-card" style="display:flex;align-items:center;justify-content:center;"><button type="button" class="btn primary admin-only" data-action="add-vehicle">+ Ajouter un véhicule</button></div></div><div class="separator"></div><div class="vehicle-grid">${DATA.vehicules.map((v) => {
-        const kmDepuis = Math.max(0, Number(v.km_actuel || 0) - Number(v.km_derniere_vidange || 0));
-        const pctVidange = Math.min(100, Math.round((kmDepuis / Math.max(1, Number(v.intervalle_vidange_km || 1))) * 100));
-        const barClass = pctVidange >= 90 ? 'danger' : pctVidange >= 70 ? 'warn' : 'ok';
-        const ctClass = ctBadgeClass(v.date_prochain_ct);
-        const incidentsOuverts = (v.incidents || []).filter((i) => !i.resolu);
-        return `<article class="card vehicle-card"><div class="vehicle-head ${v.statut}"><h3 class="veh-name">🚑 ${escapeHtml(v.nom)}</h3><span class="veh-type">${escapeHtml(v.type)}</span></div><div class="vehicle-body"><div class="plate">${escapeHtml(v.immatriculation)}</div><div><p class="sub-title">Suivi kilométrique</p><div style="font-weight:800;">${Number(v.km_actuel || 0).toLocaleString('fr-FR')} km</div><div class="maint-bar-wrap"><div class="maint-bar-label">Vidange : ${kmDepuis.toLocaleString('fr-FR')}km / ${Number(v.intervalle_vidange_km || 0).toLocaleString('fr-FR')}km (${pctVidange}%)</div><div class="maint-bar"><div class="maint-bar-fill ${barClass}" style="width:${pctVidange}%;"></div></div></div><div><span class="badge-ct ${ctClass}">Prochain CT : ${formatDateFR(v.date_prochain_ct)}</span></div></div><div><p class="sub-title">Affectation</p><div>${escapeHtml(v.affectation || '—')}</div></div>${incidentsOuverts.length ? `<div><p class="sub-title">Incidents non résolus</p>${incidentsOuverts.map((i) => `<div class="incident-item"><span class="incident-gravite ${graviteClass(i.gravite)}">${escapeHtml(i.gravite)}</span><div><strong>${formatDateFR(i.date)}</strong> · ${escapeHtml(trunc(i.description || '', 60))}</div></div>`).join('')}</div>` : ''}${statusBadge(v.statut)}<div class="separator" style="margin:2px 0;"></div><p class="sub-title">Équipements embarqués</p><div class="chips">${(v.equipements || []).map((e) => `<span class="chip">${escapeHtml(e)}</span>`).join('')}</div>${v.commentaire ? `<div class="veh-comment">${escapeHtml(v.commentaire)}</div>` : ''}<div class="card-actions"><button type="button" class="btn admin-only" data-action="edit-vehicle" data-id="${v.id}">✏️ Modifier</button><button type="button" class="btn danger admin-only" data-action="delete-vehicle" data-id="${v.id}">🗑️ Supprimer</button></div></div></article>`;
-      }).join('')}</div><div class="separator"></div><div class="table-wrap"><table><thead><tr><th>Nom</th><th>Type</th><th>Immatriculation</th><th>Affectation</th><th>Statut</th><th>Km actuel</th><th>Prochain CT</th><th>Incidents ouverts</th></tr></thead><tbody>${DATA.vehicules.map((v) => { const openCount = (v.incidents || []).filter((i) => !i.resolu).length; return `<tr><td>${escapeHtml(v.nom)}</td><td>${escapeHtml(v.type)}</td><td>${escapeHtml(v.immatriculation)}</td><td>${escapeHtml(v.affectation || '—')}</td><td><span style="font-weight:700;color:${v.statut === 'disponible' ? '#22c55e' : v.statut === 'en_intervention' ? '#0ea5e9' : '#ef4444'}">${statusLabel(v.statut)}</span></td><td>${Number(v.km_actuel || 0).toLocaleString('fr-FR')}</td><td><span class="badge-ct ${ctBadgeClass(v.date_prochain_ct)}">${formatDateFR(v.date_prochain_ct)}</span></td><td>${openCount > 0 ? `<span class="badge-ct danger">${openCount}</span>` : '0'}</td></tr>`; }).join('')}</tbody></table></div></div>`;
-    }
-
-    // ==============================
-    // CRUD Firebase — Pharmacie
-    // ==============================
-    async function fsAddStock(stockObj) {
-      const { collection, addDoc } = window._fs;
-      const ref = await addDoc(collection(window._db, 'intranet_stocks'), stockObj);
-      stockObj._id = ref.id;
-      DATA.pharmacie.stocks.push(stockObj);
-      renderPharmacie();
-    }
-    async function fsUpdateStock(stockObj) {
-      const { doc, updateDoc } = window._fs;
-      const ref = doc(window._db, 'intranet_stocks', stockObj._id);
-      const { _id, ...data } = stockObj;
-      await updateDoc(ref, data);
-      const idx = DATA.pharmacie.stocks.findIndex(s => s._id === stockObj._id);
-      if (idx >= 0) DATA.pharmacie.stocks[idx] = stockObj;
-      renderPharmacie();
-    }
-    async function fsDeleteStock(id) {
-      const { doc, deleteDoc } = window._fs;
-      await deleteDoc(doc(window._db, 'intranet_stocks', id));
-      DATA.pharmacie.stocks = DATA.pharmacie.stocks.filter(s => s._id !== id);
-      renderPharmacie();
-    }
-    async function fsAddCommande(cmdObj) {
-      const { collection, addDoc } = window._fs;
-      const ref = await addDoc(collection(window._db, 'intranet_commandes'), cmdObj);
-      cmdObj._id = ref.id;
-      DATA.pharmacie.commandes.unshift(cmdObj);
-      renderPharmacie();
-    }
-    async function fsUpdateCommande(cmdObj) {
-      const { doc, updateDoc } = window._fs;
-      const ref = doc(window._db, 'intranet_commandes', cmdObj._id);
-      const { _id, ...data } = cmdObj;
-      await updateDoc(ref, data);
-      const idx = DATA.pharmacie.commandes.findIndex(c => c._id === cmdObj._id);
-      if (idx >= 0) DATA.pharmacie.commandes[idx] = cmdObj;
-      renderPharmacie();
-    }
-    async function fsDeleteCommande(id) {
-      const { doc, deleteDoc } = window._fs;
-      await deleteDoc(doc(window._db, 'intranet_commandes', id));
-      DATA.pharmacie.commandes = DATA.pharmacie.commandes.filter(c => c._id !== id);
-      renderPharmacie();
-    }
-    async function fsAddMouvement(mvtObj) {
-      const { collection, addDoc } = window._fs;
-      const ref = await addDoc(collection(window._db, 'intranet_mouvements'), mvtObj);
-      mvtObj._id = ref.id;
-      DATA.pharmacie.mouvements.unshift(mvtObj);
-      renderPharmacie();
-    }
-
-    function renderPharmacie() {
-      if (!window._pharmacieReady) {
-        document.getElementById('panelPharmacie').innerHTML = `
-          <div style="display:flex;align-items:center;justify-content:center;padding:60px;color:#64748b;font-size:.95rem;gap:12px;">
-            <span style="display:inline-block;width:20px;height:20px;border:3px solid #cbd5e1;border-top-color:#0ea5e9;border-radius:50%;animation:spin 0.8s linear infinite;"></span>
-            Chargement des données pharmacie…
-          </div>`;
-        return;
-      }
-      const familles = ['Toutes', ...new Set(DATA.pharmacie.stocks.map((s) => s.famille).filter(Boolean))];
-      const filteredStocks = DATA.pharmacie.stocks.filter((s) => {
-        const txt = pharmaState.search.toLowerCase().trim();
-        const inSearch = !txt || [s.nom, s.dci, s.famille].join(' ').toLowerCase().includes(txt);
-        const inFamille = pharmaState.famille === 'Toutes' || s.famille === pharmaState.famille;
-        const flags = pharmaExpiryFlags(s.peremption);
-        const inAlerte = pharmaState.alerte === 'Tous'
-          || (pharmaState.alerte === 'Stock critique' && s.stock_actuel < s.stock_min)
-          || (pharmaState.alerte === 'Péremption proche' && flags.isExpiringSoon)
-          || (pharmaState.alerte === 'Péremption dépassée' && flags.isExpired);
-        return inSearch && inFamille && inAlerte;
+      anchorLinks.forEach((link) => {
+        const isActive = link.getAttribute('href') === `#${activeSection.id}`;
+        link.classList.toggle('active', isActive);
       });
-      const critical = DATA.pharmacie.stocks.filter((s) => s.stock_actuel < s.stock_min).length;
-      const expSoon = DATA.pharmacie.stocks.filter((s) => pharmaExpiryFlags(s.peremption).isExpiringSoon).length;
-      const expired = DATA.pharmacie.stocks.filter((s) => pharmaExpiryFlags(s.peremption).isExpired).length;
-
-      $('#panelPharmacie').innerHTML = `<div class="section"><h2 class="section-title">Pharmacie</h2><div class="sub-tabs"><button type="button" class="sub-tab-btn ${pharmaState.subTab === 'stocks' ? 'active' : ''}" data-action="pharma-subtab" data-subtab="stocks">📦 Stocks</button><button type="button" class="sub-tab-btn ${pharmaState.subTab === 'commandes' ? 'active' : ''}" data-action="pharma-subtab" data-subtab="commandes">📋 Commandes</button><button type="button" class="sub-tab-btn ${pharmaState.subTab === 'mouvements' ? 'active' : ''}" data-action="pharma-subtab" data-subtab="mouvements">📜 Mouvements</button></div>
-      <div class="sub-panel ${pharmaState.subTab === 'stocks' ? 'active' : ''}"><div class="vehicle-summary"><div class="mini-card"><div class="label">Total références</div><div class="value">${DATA.pharmacie.stocks.length}</div></div><div class="mini-card"><div class="label">Stocks critiques</div><div class="value" style="color:var(--danger)">${critical}</div></div><div class="mini-card"><div class="label">Péremptions &lt; 3 mois</div><div class="value" style="color:var(--warn)">${expSoon}</div></div><div class="mini-card"><div class="label">Péremptions dépassées</div><div class="value" style="color:var(--danger)">${expired}</div></div></div><div class="separator"></div><div class="filters"><input id="pharmaSearch" class="input" type="text" placeholder="Rechercher (nom / DCI / famille)..." value="${escapeHtml(pharmaState.search)}" /><select id="pharmaFamille" class="select">${familles.map((f) => `<option ${pharmaState.famille === f ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('')}</select><select id="pharmaAlerte" class="select"><option ${pharmaState.alerte === 'Tous' ? 'selected' : ''}>Tous</option><option ${pharmaState.alerte === 'Stock critique' ? 'selected' : ''}>Stock critique</option><option ${pharmaState.alerte === 'Péremption proche' ? 'selected' : ''}>Péremption proche</option><option ${pharmaState.alerte === 'Péremption dépassée' ? 'selected' : ''}>Péremption dépassée</option></select><button type="button" class="btn primary admin-only pharma-only" data-action="add-pharma-product">+ Ajouter un médicament</button></div><div class="table-wrap"><table><thead><tr><th>Nom</th><th>DCI</th><th>Forme</th><th>Stock</th><th>Min/Max</th><th>Péremption</th><th>Localisation</th><th>Actions</th></tr></thead><tbody>${filteredStocks.map((s) => { const stClass = s.stock_actuel < s.stock_min ? 'danger' : s.stock_actuel < s.stock_min * 1.3 ? 'warn' : 'ok'; const flags = pharmaExpiryFlags(s.peremption); const expClass = flags.isExpired ? 'danger' : flags.isExpiringSoon ? 'warn' : 'ok'; return `<tr><td>${escapeHtml(s.nom)}</td><td>${escapeHtml(s.dci)}</td><td>${escapeHtml(s.forme)}</td><td><span class="stock-badge ${stClass}">${s.stock_actuel} ${escapeHtml(s.unite)} ${stClass === 'danger' ? '⚠️' : ''}</span></td><td>${s.stock_min} / ${s.stock_max}</td><td><span class="badge-ct ${expClass}">${formatDateFR(s.peremption)}</span></td><td>${escapeHtml(s.localisation || '—')}</td><td><button type="button" class="btn admin-only pharma-only" data-action="edit-pharma-product" data-id="${s.id}">✏️ Modifier</button> <button type="button" class="btn danger admin-only" data-action="delete-pharma-product" data-id="${s.id}">🗑️ Supprimer</button> <button type="button" class="btn admin-only pharma-only" data-action="add-pharma-order" data-product-id="${s.id}">📦 Commander</button></td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">Aucune référence.</td></tr>'}</tbody></table></div></div>
-      <div class="sub-panel ${pharmaState.subTab === 'commandes' ? 'active' : ''}"><div style="display:flex;justify-content:flex-end;"><button type="button" class="btn primary admin-only pharma-only" data-action="add-pharma-order">+ Nouvelle commande</button></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Produit</th><th>Qté</th><th>Fournisseur</th><th>Demandeur</th><th>Statut</th><th>Commentaire</th><th>Actions</th></tr></thead><tbody>${DATA.pharmacie.commandes.map((c) => { const cid = c._id || String(c.id || ''); const badge = c.statut === 'livree' ? '<span class="badge-ct ok">livree</span>' : c.statut === 'en_attente' ? '<span class="badge-ct warn">en_attente</span>' : '<span class="badge-ct" style="background:#e2e8f0;color:#475569;">annulee</span>'; return `<tr><td>${formatDateFR(c.date)}</td><td>${escapeHtml(c.produit_nom)}</td><td>${c.quantite}</td><td>${escapeHtml(c.fournisseur || '—')}</td><td>${escapeHtml(c.demandeur || '—')}</td><td>${badge}</td><td>${escapeHtml(c.commentaire || '')}</td><td>${c.statut === 'en_attente' ? '<button type="button" class="btn admin-only pharma-only" data-action="deliver-pharma-order" data-id="' + cid + '">Marquer livré</button>' : ''} <button type="button" class="btn admin-only" data-action="cancel-pharma-order" data-id="${cid}">Annuler</button> <button type="button" class="btn danger admin-only" data-action="delete-pharma-order" data-id="${cid}">🗑️</button></td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">Aucune commande.</td></tr>'}</tbody></table></div></div>
-      <div class="sub-panel ${pharmaState.subTab === 'mouvements' ? 'active' : ''}"><div style="display:flex;justify-content:flex-end;"><button type="button" class="btn primary admin-only pharma-only" data-action="add-pharma-movement">+ Enregistrer un mouvement</button></div><div class="table-wrap"><table><thead><tr><th>Date/heure</th><th>Produit</th><th>Type</th><th>Quantité</th><th>Motif</th><th>Opérateur</th></tr></thead><tbody>${DATA.pharmacie.mouvements.map((m) => `<tr><td>${new Date(m.date).toLocaleString('fr-FR')}</td><td>${escapeHtml(m.produit_nom)}</td><td><span class="mouvement-type ${m.type}">${m.type === 'entree' ? 'ENTRÉE' : 'SORTIE'}</span></td><td>${m.quantite}</td><td>${escapeHtml(m.motif || '')}</td><td>${escapeHtml(m.operateur || '')}</td></tr>`).join('') || '<tr><td colspan="6" class="empty">Aucun mouvement.</td></tr>'}</tbody></table></div></div></div>`;
     }
 
-    // ==============================
-    // Modales
-    // ==============================
-    function formationRowHtml(form = { nom: '', date: '', 'validé': false }, idx = Date.now()) { return `<div class="line-item" data-row="formation" data-idx="${idx}"><input class="input" data-f="nom" placeholder="Nom formation" value="${escapeHtml(form.nom || '')}"><input class="input" data-f="date" type="date" value="${escapeHtml(form.date || '')}"><label class="checkbox" style="justify-content:center;"><input type="checkbox" data-f="valide" ${form['validé'] ? 'checked' : ''}> Validé</label><button type="button" class="btn ghost" data-action="remove-row">✕</button></div>`; }
-    function equipmentRowHtml(value = '') { return `<div class="line-item vehicle" data-row="equip"><input class="input" data-equip placeholder="Équipement" value="${escapeHtml(value)}"><button type="button" class="btn ghost" data-action="remove-row">✕</button></div>`; }
-    function incidentRowHtml(incident = { id: 0, date: '', description: '', gravite: 'mineur', resolu: false, date_resolution: '' }, idx = Date.now()) {
-      return `<div class="line-item" data-row="incident" data-idx="${idx}" data-incident-id="${incident.id || 0}" style="grid-template-columns:128px 1fr 120px 100px 128px 32px;"><input class="input" data-i="date" type="date" value="${escapeHtml(incident.date || '')}"><input class="input" data-i="description" placeholder="Description incident" value="${escapeHtml(incident.description || '')}"><select class="select" data-i="gravite"><option ${incident.gravite === 'mineur' ? 'selected' : ''}>mineur</option><option ${incident.gravite === 'modéré' ? 'selected' : ''}>modéré</option><option ${incident.gravite === 'grave' ? 'selected' : ''}>grave</option></select><label class="checkbox" style="justify-content:center;"><input type="checkbox" data-i="resolu" ${incident.resolu ? 'checked' : ''}> Résolu</label><input class="input" data-i="date_resolution" type="date" value="${escapeHtml(incident.date_resolution || '')}" style="display:${incident.resolu ? 'block' : 'none'};"><button type="button" class="btn ghost" data-action="remove-row">✕</button></div>`;
-    }
-    function openModal(type, id = null) {
-      state.modal = { type, id }; const overlay = $('#modalOverlay'); const body = $('#modalBody'); const title = $('#modalTitle');
-      if (type === 'auth') { title.textContent = 'Connexion'; body.innerHTML = '<div class="form-grid"><div class="field"><label for="authUsername">Utilisateur</label><select id="authUsername" class="select"><option value="admin">Administrateur</option><option value="pharma">Gérant Pharmacie</option></select></div><div class="field"><label for="authPassword">Mot de passe</label><input id="authPassword" type="password" class="input" placeholder="Mot de passe" /></div></div><div id="authError" class="error">Identifiants incorrects.</div><div class="modal-actions"><button type="button" class="btn ghost" data-action="close-modal">Annuler</button><button type="button" class="btn primary" data-action="validate-auth">Valider</button></div>'; }
-      if (type === 'member') { const m = id ? DATA.membres.find((x) => x.id === id) : null; const formations = m ? m.formations : [{ nom: 'ACLS Provider', date: '2025-01-01', 'validé': false }, { nom: 'Trauma command', date: '2025-01-01', 'validé': false }]; title.textContent = id ? 'Modifier un membre' : 'Ajouter un membre'; body.innerHTML = `<div class="form-grid"><div class="field"><label for="mNom">Nom</label><input id="mNom" class="input" value="${escapeHtml(m?.nom || '')}" /></div><div class="field"><label for="mGrade">Grade</label><select id="mGrade" class="select">${GRADES.map((g) => `<option ${m?.grade === g ? 'selected' : ''}>${escapeHtml(g)}</option>`).join('')}</select></div><div class="field full"><label for="mRole">Rôle</label><input id="mRole" class="input" value="${escapeHtml(m?.role || '')}" /></div><div class="field"><label for="mDiscord">Discord</label><input id="mDiscord" class="input" value="${escapeHtml(m?.discord || '')}" /></div><div class="field"><label for="mStatut">Statut</label><select id="mStatut" class="select">${MEMBER_STATUS.map((s) => `<option value="${s}" ${m?.statut === s ? 'selected' : ''}>${statusLabel(s)}</option>`).join('')}</select></div><div class="field full"><label>Compétences</label><div class="check-grid">${COMP_KEYS.map((c) => `<label class="checkbox"><input type="checkbox" data-comp="${c.key}" ${m?.competences?.[c.key] ? 'checked' : ''}>${c.label}</label>`).join('')}</div></div><div class="field full"><label>Formations (toggle validé + date)</label><div id="formationRows" class="inline-list">${formations.map((f, i) => formationRowHtml(f, i)).join('')}</div><button type="button" class="btn" data-action="add-formation-row">+ Ajouter formation</button></div></div><div class="modal-actions"><button type="button" class="btn ghost" data-action="close-modal">Annuler</button><button type="button" class="btn primary" data-action="save-member">Enregistrer</button></div>`; }
-      if (type === 'vehicle') {
-        const v = id ? DATA.vehicules.find((x) => x.id === id) : null;
-        const equips = v ? v.equipements : ['Défibrillateur'];
-        const incidents = v ? (v.incidents || []) : [];
-        title.textContent = id ? 'Modifier un véhicule' : 'Ajouter un véhicule';
-        body.innerHTML = `<div class="form-grid"><div class="modal-section-title">Informations générales</div><div class="field"><label for="vNom">Nom</label><input id="vNom" class="input" value="${escapeHtml(v?.nom || '')}" /></div><div class="field"><label for="vType">Type</label><select id="vType" class="select">${VEH_TYPES.map((t) => `<option ${v?.type === t ? 'selected' : ''}>${t}</option>`).join('')}</select></div><div class="field"><label for="vImmat">Immatriculation</label><input id="vImmat" class="input" value="${escapeHtml(v?.immatriculation || '')}" /></div><div class="field"><label for="vStatut">Statut</label><select id="vStatut" class="select">${VEH_STATUS.map((s) => `<option value="${s}" ${v?.statut === s ? 'selected' : ''}>${statusLabel(s)}</option>`).join('')}</select></div><div class="field full"><label for="vAffectation">Affectation</label><input id="vAffectation" class="input" value="${escapeHtml(v?.affectation || '')}" /></div><div class="modal-section-title">Données d'achat</div><div class="field"><label for="vDateAchat">Date d'achat</label><input id="vDateAchat" type="date" class="input" value="${escapeHtml(v?.date_achat || '')}" /></div><div class="field"><label for="vKmAchat">Kilométrage à l'achat</label><input id="vKmAchat" type="number" class="input" value="${Number(v?.km_achat || 0)}" /></div><div class="field"><label for="vKmActuel">Kilométrage actuel</label><input id="vKmActuel" type="number" class="input" value="${Number(v?.km_actuel || 0)}" /></div><div></div><div class="modal-section-title">Entretien et maintenance</div><div class="field"><label for="vDateDerniereVidange">Date dernière vidange</label><input id="vDateDerniereVidange" type="date" class="input" value="${escapeHtml(v?.date_derniere_vidange || '')}" /></div><div class="field"><label for="vKmDerniereVidange">Kilométrage dernière vidange</label><input id="vKmDerniereVidange" type="number" class="input" value="${Number(v?.km_derniere_vidange || 0)}" /></div><div class="field"><label for="vIntervalleVidange">Intervalle vidange (km)</label><input id="vIntervalleVidange" type="number" class="input" value="${Number(v?.intervalle_vidange_km || 0)}" /></div><div class="field"><label for="vDateDernierCt">Date dernier CT</label><input id="vDateDernierCt" type="date" class="input" value="${escapeHtml(v?.date_dernier_ct || '')}" /></div><div class="field"><label for="vDateProchainCt">Date prochain CT</label><input id="vDateProchainCt" type="date" class="input" value="${escapeHtml(v?.date_prochain_ct || '')}" /></div><div class="field"><label for="vDateProchaineRevision">Date prochaine révision</label><input id="vDateProchaineRevision" type="date" class="input" value="${escapeHtml(v?.date_prochaine_revision || '')}" /></div><div class="field"><label for="vKmProchaineRevision">Kilométrage prochaine révision</label><input id="vKmProchaineRevision" type="number" class="input" value="${Number(v?.km_prochaine_revision || 0)}" /></div><div></div><div class="modal-section-title">Équipements embarqués</div><div class="field full"><div id="equipRows" class="inline-list">${equips.map((e) => equipmentRowHtml(e)).join('')}</div><button type="button" class="btn" data-action="add-equipment-row">+ Ajouter équipement</button></div><div class="modal-section-title">Incidents</div><div class="field full"><div id="incidentRows" class="inline-list">${incidents.map((i, idx) => incidentRowHtml(i, idx)).join('')}</div><button type="button" class="btn" data-action="add-incident-row">+ Ajouter un incident</button></div><div class="modal-section-title">Commentaire interne</div><div class="field full"><label for="vCommentaire">Commentaire interne</label><textarea id="vCommentaire" class="input" style="min-height:86px;padding:10px 12px;">${escapeHtml(v?.commentaire || '')}</textarea></div></div><div class="modal-actions"><button type="button" class="btn ghost" data-action="close-modal">Annuler</button><button type="button" class="btn primary" data-action="save-vehicle">Enregistrer</button></div>`;
-      }
-      if (type === 'pharma-product') {
-        const p = id ? DATA.pharmacie.stocks.find((x) => x.id === id) : null;
-        title.textContent = id ? 'Modifier un médicament' : 'Ajouter un médicament';
-        body.innerHTML = `<div class="form-grid"><div class="field"><label for="pNom">Nom</label><input id="pNom" class="input" value="${escapeHtml(p?.nom || '')}" /></div><div class="field"><label for="pFamille">Famille</label><input id="pFamille" class="input" value="${escapeHtml(p?.famille || '')}" /></div><div class="field"><label for="pForme">Forme</label><input id="pForme" class="input" value="${escapeHtml(p?.forme || '')}" /></div><div class="field"><label for="pDci">DCI</label><input id="pDci" class="input" value="${escapeHtml(p?.dci || '')}" /></div><div class="field"><label for="pStockActuel">Stock actuel</label><input id="pStockActuel" type="number" class="input" value="${Number(p?.stock_actuel || 0)}" /></div><div class="field"><label for="pStockMin">Stock min</label><input id="pStockMin" type="number" class="input" value="${Number(p?.stock_min || 0)}" /></div><div class="field"><label for="pStockMax">Stock max</label><input id="pStockMax" type="number" class="input" value="${Number(p?.stock_max || 0)}" /></div><div class="field"><label for="pUnite">Unité</label><input id="pUnite" class="input" value="${escapeHtml(p?.unite || '')}" /></div><div class="field"><label for="pPeremption">Péremption</label><input id="pPeremption" type="date" class="input" value="${escapeHtml(p?.peremption || '')}" /></div><div class="field"><label for="pFournisseur">Fournisseur</label><input id="pFournisseur" class="input" value="${escapeHtml(p?.fournisseur || '')}" /></div><div class="field"><label for="pRef">Réf fournisseur</label><input id="pRef" class="input" value="${escapeHtml(p?.ref_fournisseur || '')}" /></div><div class="field"><label for="pLoc">Localisation</label><input id="pLoc" class="input" value="${escapeHtml(p?.localisation || '')}" /></div><div class="field full"><label for="pComment">Commentaire</label><textarea id="pComment" class="input" style="min-height:86px;padding:10px 12px;">${escapeHtml(p?.commentaire || '')}</textarea></div></div><div class="modal-actions"><button type="button" class="btn ghost" data-action="close-modal">Annuler</button><button type="button" class="btn primary" data-action="save-pharma-product">Enregistrer</button></div>`;
-      }
-      if (type === 'pharma-order') {
-        const selected = id ? DATA.pharmacie.stocks.find((x) => x.id === Number(id)) : DATA.pharmacie.stocks[0];
-        title.textContent = 'Nouvelle commande';
-        body.innerHTML = `<div class="form-grid"><div class="field"><label for="oProduit">Produit</label><select id="oProduit" class="select">${DATA.pharmacie.stocks.map((s) => `<option value="${s.id}" ${selected?.id === s.id ? 'selected' : ''}>${escapeHtml(s.nom)}</option>`).join('')}</select></div><div class="field"><label for="oQuantite">Quantité</label><input id="oQuantite" type="number" class="input" value="1" min="1" /></div><div class="field"><label for="oFournisseur">Fournisseur</label><input id="oFournisseur" class="input" value="${escapeHtml(selected?.fournisseur || '')}" /></div><div class="field full"><label for="oCommentaire">Commentaire</label><textarea id="oCommentaire" class="input" style="min-height:86px;padding:10px 12px;"></textarea></div></div><div class="modal-actions"><button type="button" class="btn ghost" data-action="close-modal">Annuler</button><button type="button" class="btn primary" data-action="save-pharma-order">Enregistrer</button></div>`;
-      }
-      if (type === 'pharma-movement') {
-        title.textContent = 'Nouveau mouvement';
-        body.innerHTML = `<div class="form-grid"><div class="field"><label for="mvProduit">Produit</label><select id="mvProduit" class="select">${DATA.pharmacie.stocks.map((s) => `<option value="${s.id}">${escapeHtml(s.nom)}</option>`).join('')}</select></div><div class="field"><label for="mvType">Type</label><select id="mvType" class="select"><option value="entree">entrée</option><option value="sortie">sortie</option></select></div><div class="field"><label for="mvQuantite">Quantité</label><input id="mvQuantite" type="number" class="input" value="1" min="1" /></div><div class="field"><label for="mvOperateur">Opérateur</label><input id="mvOperateur" class="input" value="${state.role === 'admin' ? 'Administrateur' : 'Gérant Pharma'}" readonly /></div><div class="field full"><label for="mvMotif">Motif</label><input id="mvMotif" class="input" value="" /></div></div><div class="modal-actions"><button type="button" class="btn ghost" data-action="close-modal">Annuler</button><button type="button" class="btn primary" data-action="save-pharma-movement">Enregistrer</button></div>`;
-      }
-      overlay.classList.add('open'); overlay.setAttribute('aria-hidden', 'false'); const firstInput = overlay.querySelector('input, select, button'); if (firstInput) firstInput.focus();
-    }
-    function closeModal() { const overlay = $('#modalOverlay'); overlay.classList.remove('open'); overlay.setAttribute('aria-hidden', 'true'); state.modal = { type: null, id: null }; }
-
-    // ==============================
-    // Actions CRUD
-    // ==============================
-    function saveMemberFromModal() {
-      const nom = $('#mNom').value.trim(), grade = $('#mGrade').value, role = $('#mRole').value.trim(), discord = $('#mDiscord').value.trim(), statut = $('#mStatut').value; if (!nom || !role || !discord) return;
-      const competences = {}; COMP_KEYS.forEach((c) => { competences[c.key] = Boolean(document.querySelector(`[data-comp="${c.key}"]`)?.checked); });
-      const formations = [...document.querySelectorAll('[data-row="formation"]')].map((row) => ({ nom: row.querySelector('[data-f="nom"]')?.value.trim() || '', date: row.querySelector('[data-f="date"]')?.value || '', 'validé': Boolean(row.querySelector('[data-f="valide"]')?.checked) })).filter((f) => f.nom);
-      if (state.modal.id) { const idx = DATA.membres.findIndex((m) => m.id === state.modal.id); if (idx >= 0) DATA.membres[idx] = { ...DATA.membres[idx], nom, grade, role, discord, statut, competences, formations }; }
-      else DATA.membres.push({ id: Math.max(0, ...DATA.membres.map((m) => m.id)) + 1, nom, grade, role, discord, statut, photo: '', competences, formations });
-      persistData(); renderPersonnel(); closeModal();
-    }
-    function saveVehicleFromModal() {
-      const nom = $('#vNom').value.trim(), type = $('#vType').value, immatriculation = $('#vImmat').value.trim(), statut = $('#vStatut').value; if (!nom || !immatriculation) return;
-      const affectation = $('#vAffectation')?.value.trim() || '';
-      const date_achat = $('#vDateAchat')?.value || '';
-      const km_achat = Number($('#vKmAchat')?.value || 0);
-      const km_actuel = Number($('#vKmActuel')?.value || 0);
-      const date_derniere_vidange = $('#vDateDerniereVidange')?.value || '';
-      const km_derniere_vidange = Number($('#vKmDerniereVidange')?.value || 0);
-      const intervalle_vidange_km = Number($('#vIntervalleVidange')?.value || 0);
-      const date_dernier_ct = $('#vDateDernierCt')?.value || '';
-      const date_prochain_ct = $('#vDateProchainCt')?.value || '';
-      const date_prochaine_revision = $('#vDateProchaineRevision')?.value || '';
-      const km_prochaine_revision = Number($('#vKmProchaineRevision')?.value || 0);
-      const commentaire = $('#vCommentaire')?.value.trim() || '';
-      const equipements = [...document.querySelectorAll('[data-row="equip"] [data-equip]')].map((input) => input.value.trim()).filter(Boolean);
-      const incidents = [...document.querySelectorAll('[data-row="incident"]')].map((row, idx) => ({ id: Number(row.dataset.incidentId || idx + 1), date: row.querySelector('[data-i="date"]')?.value || '', description: row.querySelector('[data-i="description"]')?.value.trim() || '', gravite: row.querySelector('[data-i="gravite"]')?.value || 'mineur', resolu: Boolean(row.querySelector('[data-i="resolu"]')?.checked), date_resolution: row.querySelector('[data-i="date_resolution"]')?.value || '' })).filter((i) => i.description || i.date);
-      if (state.modal.id) { const idx = DATA.vehicules.findIndex((v) => v.id === state.modal.id); if (idx >= 0) DATA.vehicules[idx] = { ...DATA.vehicules[idx], nom, type, immatriculation, statut, affectation, km_actuel, km_achat, date_achat, date_derniere_vidange, km_derniere_vidange, intervalle_vidange_km, date_prochain_ct, date_dernier_ct, date_prochaine_revision, km_prochaine_revision, equipements, incidents, commentaire }; }
-      else DATA.vehicules.push({ id: Math.max(0, ...DATA.vehicules.map((v) => v.id)) + 1, nom, type, immatriculation, statut, affectation, km_actuel, km_achat, date_achat, date_derniere_vidange, km_derniere_vidange, intervalle_vidange_km, date_prochain_ct, date_dernier_ct, date_prochaine_revision, km_prochaine_revision, equipements, incidents, commentaire });
-      persistData(); renderVehicules(); closeModal();
-    }
-    async function savePharmaProductFromModal() {
-      const item = {
-        nom: $('#pNom')?.value.trim() || '', famille: $('#pFamille')?.value.trim() || '', forme: $('#pForme')?.value.trim() || '', dci: $('#pDci')?.value.trim() || '',
-        stock_actuel: Number($('#pStockActuel')?.value || 0), stock_min: Number($('#pStockMin')?.value || 0), stock_max: Number($('#pStockMax')?.value || 0),
-        unite: $('#pUnite')?.value.trim() || '', peremption: $('#pPeremption')?.value || '', fournisseur: $('#pFournisseur')?.value.trim() || '',
-        ref_fournisseur: $('#pRef')?.value.trim() || '', localisation: $('#pLoc')?.value.trim() || '', commentaire: $('#pComment')?.value.trim() || ''
-      };
-      if (!item.nom) return;
-      closeModal();
-      if (state.modal.id || (state.modal.id === null && false)) {
-        // never — handled below
-      }
-      // Récupérer l'_id de l'objet en cours de modification
-      const editId = state.modal.id;
-      if (editId) {
-        const existing = DATA.pharmacie.stocks.find(s => s._id === editId || String(s.id) === String(editId));
-        if (existing) await fsUpdateStock({ ...existing, ...item });
-      } else {
-        await fsAddStock(item);
-      }
-    }
-    async function savePharmaOrderFromModal() {
-      const produit_id = $('#oProduit')?.value || '';
-      const product = DATA.pharmacie.stocks.find((s) => s._id === produit_id || String(s.id) === String(produit_id));
-      if (!product) return;
-      const cmdObj = {
-        date: new Date().toISOString().slice(0, 10),
-        produit_id: product._id || String(product.id),
-        produit_nom: product.nom,
-        quantite: Number($('#oQuantite')?.value || 1),
-        statut: 'en_attente',
-        fournisseur: $('#oFournisseur')?.value.trim() || product.fournisseur || '',
-        demandeur: state.role === 'admin' ? 'Administrateur' : 'Gérant Pharma',
-        commentaire: $('#oCommentaire')?.value.trim() || ''
-      };
-      pharmaState.subTab = 'commandes';
-      closeModal();
-      await fsAddCommande(cmdObj);
-    }
-    async function savePharmaMovementFromModal() {
-      const produit_id = $('#mvProduit')?.value || '';
-      const product = DATA.pharmacie.stocks.find((s) => s._id === produit_id || String(s.id) === String(produit_id));
-      const type = $('#mvType')?.value || 'entree';
-      const quantite = Number($('#mvQuantite')?.value || 1);
-      if (!product || quantite <= 0) return;
-      if (!window.confirm('Confirmer le mouvement et la mise à jour du stock ?')) return;
-      const updatedStock = { ...product };
-      if (type === 'sortie') updatedStock.stock_actuel = Math.max(0, updatedStock.stock_actuel - quantite);
-      else updatedStock.stock_actuel += quantite;
-      const mvtObj = {
-        date: new Date().toISOString().slice(0, 16),
-        produit_id: product._id || String(product.id),
-        produit_nom: product.nom,
-        type, quantite,
-        motif: $('#mvMotif')?.value.trim() || '',
-        operateur: $('#mvOperateur')?.value || (state.role === 'admin' ? 'Administrateur' : 'Gérant Pharma')
-      };
-      pharmaState.subTab = 'mouvements';
-      closeModal();
-      await fsUpdateStock(updatedStock);
-      await fsAddMouvement(mvtObj);
-    }
-
-    // ==============================
-    // Events globaux
-    // ==============================
-    document.addEventListener('input', (event) => {
-      if (event.target.id === 'searchMember') { state.filters.search = event.target.value; renderPersonnel(); }
-      if (event.target.id === 'pharmaSearch') { pharmaState.search = event.target.value; renderPharmacie(); }
-    });
-    document.addEventListener('change', (event) => {
-      if (event.target.id === 'gradeFilter') { state.filters.grade = event.target.value; renderPersonnel(); }
-      if (event.target.id === 'pharmaFamille') { pharmaState.famille = event.target.value; renderPharmacie(); }
-      if (event.target.id === 'pharmaAlerte') { pharmaState.alerte = event.target.value; renderPharmacie(); }
-      if (event.target.id === 'oProduit') {
-        const product = DATA.pharmacie.stocks.find((s) => s.id === Number(event.target.value));
-        if ($('#oFournisseur') && product) $('#oFournisseur').value = product.fournisseur || '';
-      }
-      if (event.target.matches('[data-i="resolu"]')) {
-        const row = event.target.closest('[data-row="incident"]');
-        const dateRes = row?.querySelector('[data-i="date_resolution"]');
-        if (dateRes) dateRes.style.display = event.target.checked ? 'block' : 'none';
-      }
-    });
-    document.addEventListener('click', (event) => {
-      const target = event.target.closest('[data-action], [data-tab]'); if (!target) return;
-      if (target.dataset.tab) { state.activeTab = target.dataset.tab; renderTabs(); return; }
-      const action = target.dataset.action;
-      const isAdmin = state.role === 'admin';
-      const canPharma = state.role === 'admin' || state.role === 'pharma';
-      if (action === 'open-auth') return openModal('auth');
-      if (action === 'logout') { state.role = null; renderAuth(); renderTabs(); renderPersonnel(); renderVehicules(); renderPharmacie(); return; }
-      if (action === 'validate-auth') {
-        const username = $('#authUsername')?.value || '';
-        const pass = $('#authPassword')?.value || '';
-        if (username === 'admin' && pass === PASSWORDS.admin) state.role = 'admin';
-        else if (username === 'pharma' && pass === PASSWORDS.pharma) state.role = 'pharma';
-        else { $('#authError')?.classList.add('show'); return; }
-        if (state.role === 'pharma') state.activeTab = 'pharmacie';
-        renderAuth(); renderTabs(); renderPersonnel(); renderVehicules(); renderPharmacie(); closeModal();
-        return;
-      }
-      if (action === 'close-modal') return closeModal();
-      if (!isAdmin && ['add-member', 'edit-member', 'delete-member', 'add-vehicle', 'edit-vehicle', 'delete-vehicle', 'toggle-formation', 'save-member', 'save-vehicle'].includes(action)) return;
-      if (action === 'add-member') return openModal('member');
-      if (action === 'edit-member') return openModal('member', Number(target.dataset.id));
-      if (action === 'delete-member') { const id = Number(target.dataset.id); if (window.confirm('Supprimer ce membre ?')) { DATA.membres = DATA.membres.filter((m) => m.id !== id); persistData(); renderPersonnel(); } return; }
-      if (action === 'toggle-formation') { const id = Number(target.dataset.id), idx = Number(target.dataset.formIndex), member = DATA.membres.find((m) => m.id === id); if (!member || !member.formations[idx]) return; member.formations[idx]['validé'] = !member.formations[idx]['validé']; if (!member.formations[idx]['validé']) member.formations[idx].date = ''; if (member.formations[idx]['validé'] && !member.formations[idx].date) member.formations[idx].date = new Date().toISOString().slice(0, 10); persistData(); renderPersonnel(); return; }
-      if (action === 'save-member') return saveMemberFromModal();
-      if (action === 'add-vehicle') return openModal('vehicle');
-      if (action === 'edit-vehicle') return openModal('vehicle', Number(target.dataset.id));
-      if (action === 'delete-vehicle') { const id = Number(target.dataset.id); if (window.confirm('Supprimer ce véhicule ?')) { DATA.vehicules = DATA.vehicules.filter((v) => v.id !== id); persistData(); renderVehicules(); } return; }
-      if (action === 'save-vehicle') return saveVehicleFromModal();
-      if (action === 'pharma-subtab') { pharmaState.subTab = target.dataset.subtab; renderPharmacie(); return; }
-      if (action === 'add-pharma-product' && canPharma) return openModal('pharma-product');
-      if (action === 'edit-pharma-product' && canPharma) return openModal('pharma-product', Number(target.dataset.id));
-      if (action === 'delete-pharma-product' && isAdmin) { const id = target.dataset.id; if (window.confirm('Supprimer ce produit ?')) { fsDeleteStock(id); } return; }
-      if (action === 'save-pharma-product' && canPharma) return savePharmaProductFromModal();
-      if (action === 'add-pharma-order' && canPharma) return openModal('pharma-order', Number(target.dataset.productId || 0) || null);
-      if (action === 'save-pharma-order' && canPharma) return savePharmaOrderFromModal();
-      if (action === 'deliver-pharma-order' && canPharma) {
-        const id = target.dataset.id;
-        const order = DATA.pharmacie.commandes.find((c) => c._id === id || String(c.id) === id);
-        if (!order || order.statut !== 'en_attente') return;
-        (async () => {
-          if (window.confirm('Ajouter la quantité livrée au stock actuel du produit ?')) {
-            const product = DATA.pharmacie.stocks.find((s) => s._id === order.produit_id || String(s.id) === order.produit_id);
-            if (product) {
-              const updatedStock = { ...product, stock_actuel: product.stock_actuel + Number(order.quantite || 0) };
-              await fsUpdateStock(updatedStock);
-            }
-          }
-          const updatedOrder = { ...order, statut: 'livree' };
-          await fsUpdateCommande(updatedOrder);
-        })();
-        return;
-      }
-      if (action === 'cancel-pharma-order' && isAdmin) { const id = target.dataset.id; const order = DATA.pharmacie.commandes.find((c) => c._id === id || String(c.id) === id); if (order) { const upd = { ...order, statut: 'annulee' }; fsUpdateCommande(upd); } return; }
-      if (action === 'delete-pharma-order' && isAdmin) { const id = target.dataset.id; if (window.confirm('Supprimer cette commande ?')) { fsDeleteCommande(id); } return; }
-      if (action === 'add-pharma-movement' && canPharma) return openModal('pharma-movement');
-      if (action === 'save-pharma-movement' && canPharma) return savePharmaMovementFromModal();
-      if (action === 'add-formation-row') { const wrap = $('#formationRows'); if (wrap) wrap.insertAdjacentHTML('beforeend', formationRowHtml({ nom: '', date: '', 'validé': false }, Date.now())); return; }
-      if (action === 'add-equipment-row') { const wrap = $('#equipRows'); if (wrap) wrap.insertAdjacentHTML('beforeend', equipmentRowHtml('')); return; }
-      if (action === 'add-incident-row') { const wrap = $('#incidentRows'); if (wrap) wrap.insertAdjacentHTML('beforeend', incidentRowHtml({ id: 0, date: '', description: '', gravite: 'mineur', resolu: false, date_resolution: '' }, Date.now())); return; }
-      if (action === 'remove-row') { const row = target.closest('[data-row]'); if (row) row.remove(); }
-    });
-    $('#modalOverlay').addEventListener('click', (event) => { if (event.target.id === 'modalOverlay') closeModal(); });
-    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && $('#modalOverlay').classList.contains('open')) closeModal(); });
-
-    // ==============================
-    // Initialisation
-    // ==============================
-    function boot() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (parsed.membres) DATA.membres = parsed.membres;
-          if (parsed.vehicules) DATA.vehicules = parsed.vehicules;
-        }
-      } catch(e) {}
-      updateClock(); setInterval(updateClock, 1000); renderAuth(); renderTabs(); renderPersonnel(); renderVehicules(); renderPharmacie();
-    }
-    boot();
-  </script>
+    window.addEventListener('scroll', setActiveAnchor, { passive: true });
+    window.addEventListener('resize', setActiveAnchor);
+    setActiveAnchor();
+  }
+</script>
 </body>
 </html>
