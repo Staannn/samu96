@@ -235,7 +235,7 @@
       membres: [
         { id: 1, nom: 'Dr. Elias Morel', grade: 'Chef de service', role: 'Coordination médicale et supervision opérationnelle', discord: '@EliasMorel96', statut: 'actif', photo: '', competences: { regulation: true, smur: true, acls: true, trauma: true, 'pédiatrie': true }, formations: [{ nom: 'Régulation avancée', date: '2025-02-10', 'validé': true }, { nom: 'Trauma command', date: '2024-11-21', 'validé': true }, { nom: 'Pédiatrie critique', date: '2025-06-04', 'validé': false }] },
         { id: 2, nom: 'Léa Garnier', grade: 'IDE SMUR', role: 'Référente soins infirmiers préhospitaliers', discord: '@LeaGarnier_IDE', statut: 'en_formation', photo: '', competences: { regulation: false, smur: true, acls: true, trauma: true, 'pédiatrie': false }, formations: [{ nom: 'ACLS Provider', date: '2024-09-15', 'validé': true }, { nom: 'SMUR tactique', date: '2025-03-19', 'validé': true }, { nom: 'Pédiatrie préhospitalière', date: '2025-07-12', 'validé': false }] },
-        { id: 3, nom: 'Noah Dervaux', grade: 'Ambulancier', role: 'Conduite VSAV et logistique embarquée', discord: '@NoahDrive96', statut: 'inactif', photo: '', competences: { regulation: false, smur: true, acls: false, trauma: true, 'pédiatrie': false }, formations: [{ nom: 'Conduite urgente', date: '2024-08-30', 'validé': true }, { nom: 'Bilan primaire RP', date: '2025-01-27', 'validé': true }, { nom: 'Trauma extraction', date: '2025-05-10', 'validé': false }] }
+        { id: 3, nom: 'Noah Dervaux', grade: 'Ambulancier', role: 'Conduite ambulance SAMU et logistique embarquée', discord: '@NoahDrive96', statut: 'inactif', photo: '', competences: { regulation: false, smur: true, acls: false, trauma: true, 'pédiatrie': false }, formations: [{ nom: 'Conduite urgente', date: '2024-08-30', 'validé': true }, { nom: 'Bilan primaire RP', date: '2025-01-27', 'validé': true }, { nom: 'Trauma extraction', date: '2025-05-10', 'validé': false }] }
       ],
       vehicules: [
         { id: 1, nom: 'VLM 96-1 AMBROISE', type: 'SMUR', immatriculation: 'Skoda Kodiaq', statut: 'disponible', affectation: 'PRIMAIRE - CHU SAINT PIERRE', km_actuel: 0, km_achat: 0, date_achat: '', date_derniere_vidange: '', km_derniere_vidange: 0, intervalle_vidange_km: 0, date_prochain_ct: '', date_dernier_ct: '', date_prochaine_revision: '', km_prochaine_revision: 0, equipements: [], incidents: [], commentaire: '' },
@@ -272,7 +272,7 @@
       pharma: 'samu96pharma'
     };
     const GRADES = ['Chef de service', 'Adjoint', 'Médecin', 'IDE SMUR', 'Ambulancier'];
-    const VEH_TYPES = ['SMUR', 'VSAV', 'VLM', 'VLI'];
+    const VEH_TYPES = ['SMUR', 'AMBULANCE SAMU', 'VLM', 'VLI'];
     const MEMBER_STATUS = ['actif', 'inactif', 'en_formation'];
     const VEH_STATUS = ['disponible', 'en_intervention', 'hs'];
     const COMP_KEYS = [{ key: 'regulation', label: 'Régulation' }, { key: 'smur', label: 'SMUR' }, { key: 'acls', label: 'ACLS' }, { key: 'trauma', label: 'Trauma' }, { key: 'pédiatrie', label: 'Pédiatrie' }];

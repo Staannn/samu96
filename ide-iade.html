@@ -820,8 +820,8 @@
             <thead><tr><th>Badge</th><th>Signification médicale</th><th>Critères d'attribution</th><th>Traduction IG Arma 3</th></tr></thead>
             <tbody>
               <tr><td><span class="badge badge-red">IE</span></td><td>Immédiat/Extrême</td><td>Détresse vitale immédiate, ACR ou risque d'ACR</td><td>P0, UMH/HELISMUR</td></tr>
-              <tr><td><span class="badge badge-yellow">UR</span></td><td>Urgence Relative</td><td>Urgence potentielle, constantes limites</td><td>P1–P2, VSAV + médecin</td></tr>
-              <tr><td><span class="badge badge-green">UV</span></td><td>Urgence Vraie</td><td>Patient stable avec pathologie réelle</td><td>P2–P3, VSAV</td></tr>
+              <tr><td><span class="badge badge-yellow">UR</span></td><td>Urgence Relative</td><td>Urgence potentielle, constantes limites</td><td>P1–P2, ambulance SAMU + médecin</td></tr>
+              <tr><td><span class="badge badge-green">UV</span></td><td>Urgence Vraie</td><td>Patient stable avec pathologie réelle</td><td>P2–P3, ambulance SAMU</td></tr>
               <tr><td><span class="badge badge-dim">DCD</span></td><td>Décès constaté / réanimation futile</td><td>noFlow &gt; 800 ou constat clinique médical</td><td>Aucun moyen engagé</td></tr>
             </tbody>
           </table>
@@ -971,7 +971,7 @@
               stages: [
                 {
                   id: 's1_e1', type: 'choice',
-                  context: "GOLF-96 de Régulation — VSAV en route, vous arrivez sur place. Homme 58 ans, retrouvé au sol par sa femme. Pas de pouls, apnée confirmée. L'appelante dit qu'il est 'comme mort depuis 3 minutes'. Vous sortez du VSAV.",
+                  context: "GOLF-96 de Régulation — ambulance SAMU en route, vous arrivez sur place. Homme 58 ans, retrouvé au sol par sa femme. Pas de pouls, apnée confirmée. L'appelante dit qu'il est 'comme mort depuis 3 minutes'. Vous sortez de l'ambulance SAMU.",
                   vars: 'noflow_score = 498 | reviving_score = 0 / needed = 62 | life% = 0',
                   choices: [
                     { label: "Poser l'O2 en premier", correct: true, feedback: "✅ Bonne décision. L'O2 est prioritaire : elle réduit massivement le noflow et ralentit son évolution. Vous gagnez du temps pour les étapes suivantes.", next: 's1_e2_ok' },
@@ -1212,7 +1212,7 @@
                   { label: 'Corriger conduite : stop Biafine visage + assistance IOT + triage actif', correct: true, feedback: '✅ Vous revenez au cadre médical approprié.', next: 's6_e4_bad' },
                   { label: 'Maintenir stratégie inadaptée', correct: false, feedback: '❌ Retard critique sur VAS.', next: 'death' }
                 ] },
-                { id: 's6_e4_ok', type: 'success', context: 'IOT Victime A réussie, SpO2 99% sous ventilation. Victime B antalgée, badge UV. HELISMUR déclenché pour Victime A. VSAV transport pour Victime B.', message: '🟢 DOUBLE TRANSPORT — Triage → IE/UV → O2 → IOT assistée → Paracétamol → HELISMUR + VSAV.' },
+                { id: 's6_e4_ok', type: 'success', context: 'IOT Victime A réussie, SpO2 99% sous ventilation. Victime B antalgée, badge UV. HELISMUR déclenché pour Victime A. Ambulance SAMU pour Victime B.', message: '🟢 DOUBLE TRANSPORT — Triage → IE/UV → O2 → IOT assistée → Paracétamol → HELISMUR + ambulance SAMU.' },
                 { id: 's6_e4_bad', type: 'choice', context: 'Situation rattrapée partiellement, mais toujours tendue.', vars: 'Victime A SpO2 93% | Victime B EVA 6', choices: [
                   { label: 'Prioriser encore VAS A + antalgie B + double évacuation coordonnée', correct: true, feedback: '✅ Fin de prise en charge sécurisée.', next: 'success' },
                   { label: 'Désorganiser la priorisation finale', correct: false, feedback: '❌ Asphyxie non anticipée.', next: 'death' }
