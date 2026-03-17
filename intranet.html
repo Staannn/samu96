@@ -28,6 +28,7 @@
     window._db = db;
     window._fs = { collection, doc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, query, orderBy };
     window._pharmacieReady = false;
+    window._vehiculesReady = false;
 
     async function initPharmacie() {
       try {
@@ -55,7 +56,32 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', () => { initPharmacie(); });
+    async function initVehicules() {
+      try {
+        const { collection, getDocs } = window._fs;
+        const snapVehicules = await getDocs(collection(db, 'intranet_vehicules'));
+        const vehicules = [];
+        snapVehicules.forEach((d, index) => {
+          const data = d.data() || {};
+          vehicules.push({
+            _id: d.id,
+            ...data,
+            id: Number(data.id || index + 1)
+          });
+        });
+        if (vehicules.length) DATA.vehicules = vehicules;
+      } catch (e) {
+        console.error('Firebase vehicules init error:', e);
+      } finally {
+        window._vehiculesReady = true;
+        if (typeof renderVehicules === 'function') renderVehicules();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initPharmacie();
+      initVehicules();
+    });
   </script>
 
   <style>
@@ -212,9 +238,11 @@
         { id: 3, nom: 'Noah Dervaux', grade: 'Ambulancier', role: 'Conduite VSAV et logistique embarquée', discord: '@NoahDrive96', statut: 'inactif', photo: '', competences: { regulation: false, smur: true, acls: false, trauma: true, 'pédiatrie': false }, formations: [{ nom: 'Conduite urgente', date: '2024-08-30', 'validé': true }, { nom: 'Bilan primaire RP', date: '2025-01-27', 'validé': true }, { nom: 'Trauma extraction', date: '2025-05-10', 'validé': false }] }
       ],
       vehicules: [
-        { id: 1, nom: 'SMUR 96-Alpha', type: 'SMUR', immatriculation: 'SMU-9601-FR', statut: 'disponible', affectation: 'Base Centrale', km_actuel: 87420, km_achat: 0, date_achat: '2022-03-15', date_derniere_vidange: '2025-01-10', km_derniere_vidange: 82000, intervalle_vidange_km: 15000, date_prochain_ct: '2026-03-15', date_dernier_ct: '2024-03-15', date_prochaine_revision: '2025-09-01', km_prochaine_revision: 90000, equipements: ['Monitorage multiparamétrique', 'Respirateur', 'Kit ACLS', 'Pompe perfusion'], incidents: [{ id: 1, date: '2025-04-02', description: 'Fuite circuit de refroidissement', gravite: 'modéré', resolu: true, date_resolution: '2025-04-05' }], commentaire: 'Véhicule en bon état général. Contrôle pneus à prévoir.' },
-        { id: 2, nom: 'VSAV 96-Bravo', type: 'VSAV', immatriculation: 'VSA-9634-FR', statut: 'en_intervention', affectation: 'Secteur Nord', km_actuel: 124300, km_achat: 12000, date_achat: '2020-06-01', date_derniere_vidange: '2024-11-20', km_derniere_vidange: 118000, intervalle_vidange_km: 10000, date_prochain_ct: '2025-06-01', date_dernier_ct: '2023-06-01', date_prochaine_revision: '2025-07-15', km_prochaine_revision: 130000, equipements: ['Brancard', 'Oxygénothérapie', 'Sac trauma', 'Aspirateur de mucosités'], incidents: [{ id: 1, date: '2025-02-14', description: 'Voyant moteur allumé — diagnostic OK', gravite: 'mineur', resolu: true, date_resolution: '2025-02-15' }, { id: 2, date: '2025-05-30', description: 'Portière arrière gauche ne ferme pas', gravite: 'modéré', resolu: false, date_resolution: '' }], commentaire: 'CT à renouveler en urgence. Portière en attente de réparation.' },
-        { id: 3, nom: 'VLM 96-Charlie', type: 'VLM', immatriculation: 'VLM-9688-FR', statut: 'hs', affectation: 'Secteur Ouest', km_actuel: 43100, km_achat: 5000, date_achat: '2023-11-08', date_derniere_vidange: '2025-03-01', km_derniere_vidange: 41000, intervalle_vidange_km: 20000, date_prochain_ct: '2027-11-08', date_dernier_ct: '2025-11-08', date_prochaine_revision: '2025-12-01', km_prochaine_revision: 50000, equipements: ['Radio longue portée', 'Défibrillateur', 'Sac médical léger'], incidents: [], commentaire: 'Hors service suite à impact latéral. En attente expertise assurance.' }
+        { id: 1, nom: 'VLM 96-1 AMBROISE', type: 'SMUR', immatriculation: 'Skoda Kodiaq', statut: 'disponible', affectation: 'PRIMAIRE - CHU SAINT PIERRE', km_actuel: 0, km_achat: 0, date_achat: '', date_derniere_vidange: '', km_derniere_vidange: 0, intervalle_vidange_km: 0, date_prochain_ct: '', date_dernier_ct: '', date_prochaine_revision: '', km_prochaine_revision: 0, equipements: [], incidents: [], commentaire: '' },
+        { id: 2, nom: 'VLM 96-2 GALIEN', type: 'SMUR', immatriculation: 'VW T6', statut: 'disponible', affectation: 'SECOND DEPART / LOGISTIQUE - CHU SAINT PIERRE', km_actuel: 0, km_achat: 0, date_achat: '', date_derniere_vidange: '', km_derniere_vidange: 0, intervalle_vidange_km: 0, date_prochain_ct: '', date_dernier_ct: '', date_prochaine_revision: '', km_prochaine_revision: 0, equipements: [], incidents: [], commentaire: '' },
+        { id: 3, nom: 'VLM 96-3 AVICENNE', type: 'SMUR', immatriculation: 'Skoda Enyaq', statut: 'disponible', affectation: 'SECONDAIRE - RESERVE', km_actuel: 0, km_achat: 0, date_achat: '', date_derniere_vidange: '', km_derniere_vidange: 0, intervalle_vidange_km: 0, date_prochain_ct: '', date_dernier_ct: '', date_prochaine_revision: '', km_prochaine_revision: 0, equipements: [], incidents: [], commentaire: '' },
+        { id: 4, nom: 'AR 96-1 LARREY', type: 'SMUR', immatriculation: 'Mercedes Sprinter', statut: 'disponible', affectation: 'Réanimation Primaire - CHU SAINT PIERRE', km_actuel: 0, km_achat: 0, date_achat: '', date_derniere_vidange: '', km_derniere_vidange: 0, intervalle_vidange_km: 0, date_prochain_ct: '', date_dernier_ct: '', date_prochaine_revision: '', km_prochaine_revision: 0, equipements: [], incidents: [], commentaire: '' },
+        { id: 5, nom: 'AR 96-2 PERCY', type: 'SMUR', immatriculation: 'Renault Master', statut: 'disponible', affectation: 'Réanimation Secondaire - CHU SAINT PIERRE', km_actuel: 0, km_achat: 0, date_achat: '', date_derniere_vidange: '', km_derniere_vidange: 0, intervalle_vidange_km: 0, date_prochain_ct: '', date_dernier_ct: '', date_prochaine_revision: '', km_prochaine_revision: 0, equipements: [], incidents: [], commentaire: '' }
       ],
       pharmacie: {
         stocks: [
@@ -394,6 +422,51 @@
       renderPharmacie();
     }
 
+    async function fsAddVehicle(vehicleObj) {
+      const { collection, addDoc } = window._fs;
+      const ref = await addDoc(collection(window._db, 'intranet_vehicules'), vehicleObj);
+      vehicleObj._id = ref.id;
+      DATA.vehicules.push(vehicleObj);
+      persistData();
+      renderVehicules();
+    }
+
+    async function fsUpdateVehicle(vehicleObj) {
+      if (!vehicleObj?._id) {
+        const { collection, addDoc } = window._fs;
+        const ref = await addDoc(collection(window._db, 'intranet_vehicules'), vehicleObj);
+        const savedVehicle = { ...vehicleObj, _id: ref.id };
+        const idxNoId = DATA.vehicules.findIndex((v) => v.id === vehicleObj.id);
+        if (idxNoId >= 0) DATA.vehicules[idxNoId] = savedVehicle;
+        else DATA.vehicules.push(savedVehicle);
+        persistData();
+        renderVehicules();
+        return;
+      }
+      const { doc, updateDoc } = window._fs;
+      const ref = doc(window._db, 'intranet_vehicules', vehicleObj._id);
+      const { _id, ...data } = vehicleObj;
+      await updateDoc(ref, data);
+      const idx = DATA.vehicules.findIndex((v) => v._id === vehicleObj._id);
+      if (idx >= 0) DATA.vehicules[idx] = vehicleObj;
+      persistData();
+      renderVehicules();
+    }
+
+    async function fsDeleteVehicle(vehicleObj) {
+      if (!vehicleObj?._id) {
+        DATA.vehicules = DATA.vehicules.filter((v) => v.id !== vehicleObj?.id);
+        persistData();
+        renderVehicules();
+        return;
+      }
+      const { doc, deleteDoc } = window._fs;
+      await deleteDoc(doc(window._db, 'intranet_vehicules', vehicleObj._id));
+      DATA.vehicules = DATA.vehicules.filter((v) => v._id !== vehicleObj._id);
+      persistData();
+      renderVehicules();
+    }
+
     function renderPharmacie() {
       if (!window._pharmacieReady) {
         document.getElementById('panelPharmacie').innerHTML = `
@@ -473,7 +546,7 @@
       else DATA.membres.push({ id: Math.max(0, ...DATA.membres.map((m) => m.id)) + 1, nom, grade, role, discord, statut, photo: '', competences, formations });
       persistData(); renderPersonnel(); closeModal();
     }
-    function saveVehicleFromModal() {
+    async function saveVehicleFromModal() {
       const nom = $('#vNom').value.trim(), type = $('#vType').value, immatriculation = $('#vImmat').value.trim(), statut = $('#vStatut').value; if (!nom || !immatriculation) return;
       const affectation = $('#vAffectation')?.value.trim() || '';
       const date_achat = $('#vDateAchat')?.value || '';
@@ -489,9 +562,26 @@
       const commentaire = $('#vCommentaire')?.value.trim() || '';
       const equipements = [...document.querySelectorAll('[data-row="equip"] [data-equip]')].map((input) => input.value.trim()).filter(Boolean);
       const incidents = [...document.querySelectorAll('[data-row="incident"]')].map((row, idx) => ({ id: Number(row.dataset.incidentId || idx + 1), date: row.querySelector('[data-i="date"]')?.value || '', description: row.querySelector('[data-i="description"]')?.value.trim() || '', gravite: row.querySelector('[data-i="gravite"]')?.value || 'mineur', resolu: Boolean(row.querySelector('[data-i="resolu"]')?.checked), date_resolution: row.querySelector('[data-i="date_resolution"]')?.value || '' })).filter((i) => i.description || i.date);
-      if (state.modal.id) { const idx = DATA.vehicules.findIndex((v) => v.id === state.modal.id); if (idx >= 0) DATA.vehicules[idx] = { ...DATA.vehicules[idx], nom, type, immatriculation, statut, affectation, km_actuel, km_achat, date_achat, date_derniere_vidange, km_derniere_vidange, intervalle_vidange_km, date_prochain_ct, date_dernier_ct, date_prochaine_revision, km_prochaine_revision, equipements, incidents, commentaire }; }
-      else DATA.vehicules.push({ id: Math.max(0, ...DATA.vehicules.map((v) => v.id)) + 1, nom, type, immatriculation, statut, affectation, km_actuel, km_achat, date_achat, date_derniere_vidange, km_derniere_vidange, intervalle_vidange_km, date_prochain_ct, date_dernier_ct, date_prochaine_revision, km_prochaine_revision, equipements, incidents, commentaire });
-      persistData(); renderVehicules(); closeModal();
+      try {
+        if (state.modal.id) {
+          const existing = DATA.vehicules.find((v) => v.id === state.modal.id);
+          if (!existing) return;
+          await fsUpdateVehicle({ ...existing, nom, type, immatriculation, statut, affectation, km_actuel, km_achat, date_achat, date_derniere_vidange, km_derniere_vidange, intervalle_vidange_km, date_prochain_ct, date_dernier_ct, date_prochaine_revision, km_prochaine_revision, equipements, incidents, commentaire });
+        } else {
+          const newVehicle = {
+            id: Math.max(0, ...DATA.vehicules.map((v) => Number(v.id || 0))) + 1,
+            nom, type, immatriculation, statut, affectation, km_actuel, km_achat, date_achat,
+            date_derniere_vidange, km_derniere_vidange, intervalle_vidange_km,
+            date_prochain_ct, date_dernier_ct, date_prochaine_revision, km_prochaine_revision,
+            equipements, incidents, commentaire
+          };
+          await fsAddVehicle(newVehicle);
+        }
+        closeModal();
+      } catch (e) {
+        console.error('Erreur sauvegarde véhicule Firestore:', e);
+        window.alert('Erreur de sauvegarde Firestore pour le véhicule. Vérifie la connexion et les règles de sécurité.');
+      }
     }
     async function savePharmaProductFromModal() {
       const item = {
@@ -604,7 +694,21 @@
       if (action === 'save-member') return saveMemberFromModal();
       if (action === 'add-vehicle') return openModal('vehicle');
       if (action === 'edit-vehicle') return openModal('vehicle', Number(target.dataset.id));
-      if (action === 'delete-vehicle') { const id = Number(target.dataset.id); if (window.confirm('Supprimer ce véhicule ?')) { DATA.vehicules = DATA.vehicules.filter((v) => v.id !== id); persistData(); renderVehicules(); } return; }
+      if (action === 'delete-vehicle') {
+        const id = Number(target.dataset.id);
+        if (!window.confirm('Supprimer ce véhicule ?')) return;
+        const vehicle = DATA.vehicules.find((v) => v.id === id);
+        if (!vehicle) return;
+        (async () => {
+          try {
+            await fsDeleteVehicle(vehicle);
+          } catch (e) {
+            console.error('Erreur suppression véhicule Firestore:', e);
+            window.alert('Erreur de suppression Firestore pour le véhicule.');
+          }
+        })();
+        return;
+      }
       if (action === 'save-vehicle') return saveVehicleFromModal();
       if (action === 'pharma-subtab') { pharmaState.subTab = target.dataset.subtab; renderPharmacie(); return; }
       if (action === 'add-pharma-product' && canPharma) return openModal('pharma-product');
