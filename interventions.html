@@ -595,6 +595,184 @@
 
     .inter-card.cloturee { opacity: 0.65; }
 
+    /* === PRIORITÉ / GRAVITÉ === */
+    .priority-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border: 2px solid;
+    }
+
+    .priority-p1 {
+      background: rgba(220, 38, 38, 0.12);
+      color: #991b1b;
+      border-color: rgba(220, 38, 38, 0.35);
+    }
+
+    .priority-p2 {
+      background: rgba(234, 88, 12, 0.12);
+      color: #b45309;
+      border-color: rgba(234, 88, 12, 0.35);
+    }
+
+    .priority-p3 {
+      background: rgba(22, 163, 74, 0.12);
+      color: #15803d;
+      border-color: rgba(22, 163, 74, 0.35);
+    }
+
+    .synoptic-table tbody tr.priority-p1-row {
+      border-left: 3px solid #dc2626;
+    }
+
+    /* === CHRONOMÈTRE LIVE === */
+    .live-timer {
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    /* === TABLEAU VÉHICULES === */
+    .vehicle-status-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .vehicle-card {
+      border-radius: 10px;
+      border: 1px solid rgba(0, 48, 135, 0.16);
+      padding: 10px 12px;
+      background: #fff;
+      min-width: 160px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .vehicle-card.engaged {
+      border-color: rgba(220, 38, 38, 0.4);
+      background: rgba(220, 38, 38, 0.04);
+    }
+
+    .vehicle-card-name {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text-bright);
+      text-transform: uppercase;
+    }
+
+    .vehicle-card-type {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .vehicle-card-status {
+      display: inline-flex;
+      width: fit-content;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .vehicle-card-status.available {
+      background: rgba(22, 163, 74, 0.15);
+      color: #15803d;
+      border: 1px solid rgba(22, 163, 74, 0.3);
+    }
+
+    .vehicle-card-status.engaged {
+      background: rgba(220, 38, 38, 0.15);
+      color: #991b1b;
+      border: 1px solid rgba(220, 38, 38, 0.3);
+    }
+
+    .vehicle-card-detail {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 3px;
+    }
+
+    /* === STATISTIQUES === */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    .stat-block {
+      border: 1px solid rgba(0, 48, 135, 0.14);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--red-strong);
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* === NOTIFICATIONS === */
+    @keyframes pulse-alert {
+      0%, 100% { background: var(--red); border-color: var(--red); }
+      50% { background: rgba(220, 38, 38, 0.7); border-color: rgba(220, 38, 38, 0.7); }
+    }
+
+    .topbar-status.flash-alert {
+      animation: pulse-alert 0.5s ease 3;
+    }
+
+    .toast {
+      position: fixed;
+      top: 70px;
+      right: 16px;
+      z-index: 300;
+      background: #dc2626;
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: var(--mono);
+      font-size: 12px;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.32);
+    }
+
+    .toast.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     @media (max-width: 980px) {
       .member-row { grid-template-columns: 1fr; }
       .mc-inputs { grid-template-columns: 1fr; }
@@ -640,6 +818,21 @@
       <p class="page-subtitle">Suivi en temps réel des véhicules engagés, affectation des équipages et main courante opérationnelle.</p>
     </div>
 
+    <section class="panel" id="vehicleStatusPanel">
+      <div class="panel-header">DISPONIBILITÉ DES VÉHICULES</div>
+      <div class="panel-body">
+        <div id="vehicleStatusGrid" class="vehicle-status-grid"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="statsPanel">
+      <div class="panel-header">STATISTIQUES DU JOUR</div>
+      <div class="panel-body">
+        <div class="stats-row" id="statsRow"></div>
+        <div id="statsPriority" style="display:flex;gap:8px;margin-top:12px;"></div>
+      </div>
+    </section>
+
     <section class="panel">
       <div class="panel-header">CAD OPÉRATIONNEL</div>
       <div class="panel-body">
@@ -650,6 +843,7 @@
             <button type="button" data-filter="cloturee">Clôturées</button>
           </div>
           <div class="mono text-dim" id="interCount">0 intervention</div>
+          <button type="button" id="historyBtn" class="btn-inline">📋 Historique</button>
         </div>
 
         <div class="synoptic-table-wrap">
@@ -657,9 +851,10 @@
             <thead>
               <tr>
                 <th>N° inter</th>
+                <th>Priorité</th>
                 <th>Motif</th>
                 <th>Lieu</th>
-                <th>Heure déclenchement</th>
+                <th>Déclenchement / Durée</th>
                 <th>Véhicule(s)</th>
                 <th>Équipage</th>
                 <th>Statut jalons</th>
@@ -699,6 +894,14 @@
         <label for="interLieu">Lieu</label>
         <input type="text" id="interLieu" placeholder="Ex: Place de la Liberté">
       </div>
+      <div class="field">
+        <label for="interPriorite">Priorité</label>
+        <select id="interPriorite">
+          <option value="P2" selected>P2 — Orange</option>
+          <option value="P1">P1 — Rouge</option>
+          <option value="P3">P3 — Vert</option>
+        </select>
+      </div>
       <div class="field full">
         <label>Équipages</label>
         <div id="equipagesContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
@@ -708,6 +911,47 @@
       <button type="button" id="addEquipageBtn" class="btn-secondary">Ajouter un équipage</button>
       <button type="button" id="createInterBtn" class="btn-main">Créer l'intervention</button>
     </div>
+  </div>
+</section>
+
+<section id="editEquipageModal" class="modal" aria-hidden="true">
+  <div class="modal-head">
+    <h2 id="editModalTitle" class="modal-title">Modifier l'équipage</h2>
+    <button type="button" class="btn-secondary" data-close-edit-modal>Fermer</button>
+  </div>
+  <div class="modal-body">
+    <div id="editModalError" class="error-box"></div>
+    <div class="field full">
+      <label>Équipages</label>
+      <div id="editEquipagesContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+    <div class="modal-actions" style="justify-content:space-between;">
+      <button type="button" id="addEditEquipageBtn" class="btn-secondary">Ajouter un équipage</button>
+      <button type="button" id="saveEquipageBtn" class="btn-main">Enregistrer</button>
+    </div>
+  </div>
+</section>
+
+<section id="historyModal" class="modal" aria-hidden="true">
+  <div class="modal-head">
+    <h2 class="modal-title">Historique des interventions</h2>
+    <button type="button" class="btn-secondary" data-close-history>Fermer</button>
+  </div>
+  <div class="modal-body">
+    <div class="form-grid" style="grid-template-columns: 1fr 1fr 200px; margin-bottom:10px;">
+      <div class="field"><label>Recherche (motif / lieu)</label>
+        <input type="text" id="historySearch" placeholder="Ex: douleur, place..."></div>
+      <div class="field"><label>Date</label>
+        <input type="date" id="historyDate"></div>
+      <div class="field"><label>Priorité</label>
+        <select id="historyPriority">
+          <option value="">Toutes</option>
+          <option value="P1">P1</option>
+          <option value="P2">P2</option>
+          <option value="P3">P3</option>
+        </select></div>
+    </div>
+    <div id="historyResults"></div>
   </div>
 </section>
 
@@ -801,6 +1045,12 @@
     { key: "disponible", label: "Dispo" }
   ];
 
+  const PRIORITIES = [
+    { value: "P1", label: "P1", color: "#dc2626" },
+    { value: "P2", label: "P2", color: "#ea580c" },
+    { value: "P3", label: "P3", color: "#16a34a" }
+  ];
+
   const state = {
     filter: "toutes",
     personnel: [],
@@ -810,7 +1060,10 @@
     modalEquipages: [],
     modalTouched: false,
     selectedInterventionId: null,
-    selectedInterventionUnsub: null
+    selectedInterventionUnsub: null,
+    editEquipages: [],
+    editingInterventionId: null,
+    tickInterval: null
   };
 
   const STORAGE_KEYS = {
@@ -827,6 +1080,7 @@
     newInterFab: document.getElementById("newInterFab"),
     interMotif: document.getElementById("interMotif"),
     interLieu: document.getElementById("interLieu"),
+    interPriorite: document.getElementById("interPriorite"),
     equipagesContainer: document.getElementById("equipagesContainer"),
     addEquipageBtn: document.getElementById("addEquipageBtn"),
     createInterBtn: document.getElementById("createInterBtn"),
@@ -840,7 +1094,23 @@
     mcAuteur: document.getElementById("mcAuteur"),
     mcMessage: document.getElementById("mcMessage"),
     addMcEntryBtn: document.getElementById("addMcEntryBtn"),
-    closeInterventionBtn: document.getElementById("closeInterventionBtn")
+    closeInterventionBtn: document.getElementById("closeInterventionBtn"),
+    editEquipageModal: document.getElementById("editEquipageModal"),
+    editModalTitle: document.getElementById("editModalTitle"),
+    editEquipagesContainer: document.getElementById("editEquipagesContainer"),
+    editModalError: document.getElementById("editModalError"),
+    addEditEquipageBtn: document.getElementById("addEditEquipageBtn"),
+    saveEquipageBtn: document.getElementById("saveEquipageBtn"),
+    historyModal: document.getElementById("historyModal"),
+    historyBtn: document.getElementById("historyBtn"),
+    historySearch: document.getElementById("historySearch"),
+    historyDate: document.getElementById("historyDate"),
+    historyPriority: document.getElementById("historyPriority"),
+    historyResults: document.getElementById("historyResults"),
+    vehicleStatusGrid: document.getElementById("vehicleStatusGrid"),
+    statsRow: document.getElementById("statsRow"),
+    statsPriority: document.getElementById("statsPriority"),
+    topbarStatus: document.querySelector(".topbar-status")
   };
 
   function escapeHtml(value = "") {
@@ -1537,12 +1807,12 @@
   }
 
   function startRealtime() {
-    onSnapshot(collection(db, "personnel"), (snap) => {
+    onSnapshot(collection(db, "intranet_membres"), (snap) => {
       state.personnel = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       if (isModalOpen() && !state.modalTouched) renderEquipagesEditor();
     });
 
-    onSnapshot(collection(db, "vehicules"), (snap) => {
+    onSnapshot(collection(db, "intranet_vehicules"), (snap) => {
       state.vehicules = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       if (isModalOpen() && !state.modalTouched) renderEquipagesEditor();
     });
