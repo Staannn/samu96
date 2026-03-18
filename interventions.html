@@ -2255,6 +2255,16 @@
     }
   }
 
+  function renderDataLoadError(message) {
+    const safe = escapeHtml(message || "Erreur de chargement des données.");
+    if (isModalOpen()) {
+      refs.equipagesContainer.innerHTML = `<div class="alert" style="margin:0;">${safe}</div>`;
+    }
+    if (refs.editEquipageModal.classList.contains("open")) {
+      refs.editEquipagesContainer.innerHTML = `<div class="alert" style="margin:0;">${safe}</div>`;
+    }
+  }
+
   function bindEvents() {
     refs.filterRoot.addEventListener("click", (event) => {
       const button = event.target.closest("button[data-filter]");
@@ -2492,22 +2502,26 @@
   }
 
   function startRealtime() {
-    onSnapshot(collection(db, "intranet_membres"), (snap) => {
+    const membresRef = collection(db, "intranet_membres");
+    const vehiculesRef = collection(db, "intranet_vehicules");
+    const qInter = query(collection(db, "interventions"), orderBy("createdAt", "desc"));
+
+    const applyPersonnelSnapshot = (snap) => {
       state.personnel = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       if (isModalOpen() && !state.modalTouched) renderEquipagesEditor();
-    });
+      if (refs.editEquipageModal.classList.contains("open")) renderEditEquipagesEditor();
+    };
 
-    onSnapshot(collection(db, "intranet_vehicules"), (snap) => {
+    const applyVehiculesSnapshot = (snap) => {
       state.vehicules = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       if (isModalOpen() && !state.modalTouched) renderEquipagesEditor();
-    });
+      if (refs.editEquipageModal.classList.contains("open")) renderEditEquipagesEditor();
+    };
 
-    const qInter = query(collection(db, "interventions"), orderBy("createdAt", "desc"));
-    onSnapshot(qInter, (snap) => {
+    const applyInterventionsSnapshot = (snap) => {
       const prevIds = new Set(state.interventions.map((i) => i.id));
       state.interventions = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      
-      // Détection des nouvelles interventions
+
       const newOnes = state.interventions.filter((i) => !prevIds.has(i.id) && i.statut === "en_cours");
       if (newOnes.length && prevIds.size > 0) {
         newOnes.forEach((i) => triggerNewInterNotification(i));
@@ -2517,6 +2531,40 @@
       renderInterventions();
       if (isModalOpen() && !state.modalTouched) renderEquipagesEditor();
       updateLiveTimers();
+    };
+
+    onSnapshot(membresRef, applyPersonnelSnapshot, async (err) => {
+      console.error("Realtime membres indisponible:", err);
+      try {
+        const fallbackSnap = await getDocs(membresRef);
+        applyPersonnelSnapshot(fallbackSnap);
+        renderDataLoadError("Connexion temps réel indisponible (membres). Données chargées en mode secours.");
+      } catch (fallbackErr) {
+        console.error("Fallback membres impossible:", fallbackErr);
+        renderDataLoadError("Impossible de charger les membres depuis Firestore. Vérifiez la connexion ou les extensions de filtrage.");
+      }
+    });
+
+    onSnapshot(vehiculesRef, applyVehiculesSnapshot, async (err) => {
+      console.error("Realtime véhicules indisponible:", err);
+      try {
+        const fallbackSnap = await getDocs(vehiculesRef);
+        applyVehiculesSnapshot(fallbackSnap);
+        renderDataLoadError("Connexion temps réel indisponible (véhicules). Données chargées en mode secours.");
+      } catch (fallbackErr) {
+        console.error("Fallback véhicules impossible:", fallbackErr);
+        renderDataLoadError("Impossible de charger les véhicules depuis Firestore. Vérifiez la connexion ou les extensions de filtrage.");
+      }
+    });
+
+    onSnapshot(qInter, applyInterventionsSnapshot, async (err) => {
+      console.error("Realtime interventions indisponible:", err);
+      try {
+        const fallbackSnap = await getDocs(qInter);
+        applyInterventionsSnapshot(fallbackSnap);
+      } catch (fallbackErr) {
+        console.error("Fallback interventions impossible:", fallbackErr);
+      }
     });
 
     // Démarrer le chronomètre live global
