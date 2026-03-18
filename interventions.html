@@ -1160,7 +1160,15 @@
       interne: "Interne",
       medecin: "Médecin"
     };
-    return map[role] || role;
+    return map[normalizeRole(role)] || role;
+  }
+
+  function normalizeRole(role = "") {
+    return String(role)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .trim();
   }
 
   function getPriorityClass(priority) {
@@ -1518,8 +1526,10 @@
   function getAvailableRoles(personnelId) {
     const person = findPersonnelById(personnelId);
     if (!person) return [];
-    const competences = Array.isArray(person.competences) ? person.competences : [];
-    return ROLE_OPTIONS.filter((r) => competences.includes(r));
+    const competences = new Set(
+      (Array.isArray(person.competences) ? person.competences : []).map((c) => normalizeRole(c))
+    );
+    return ROLE_OPTIONS.filter((r) => competences.has(normalizeRole(r)));
   }
 
   function blankMember() {
@@ -1616,7 +1626,7 @@
         }).join("");
 
         const roleOptions = possibleRoles.map((role) => {
-          const selected = role === m.role;
+          const selected = normalizeRole(role) === normalizeRole(m.role);
           return `<option value="${role}" ${selected ? "selected" : ""}>${roleLabel(role)}</option>`;
         }).join("");
 
@@ -1692,8 +1702,10 @@
 
         const person = findPersonnelById(m.personnelId);
         if (!person) return "Un agent sélectionné est introuvable.";
-        const competences = Array.isArray(person.competences) ? person.competences : [];
-        if (!competences.includes(m.role)) {
+        const competences = new Set(
+          (Array.isArray(person.competences) ? person.competences : []).map((c) => normalizeRole(c))
+        );
+        if (!competences.has(normalizeRole(m.role))) {
           return `${(person.nom || "Agent")} ne peut pas être affecté au rôle ${roleLabel(m.role)}.`;
         }
 
@@ -1973,7 +1985,7 @@
         }).join("");
 
         const roleOptions = possibleRoles.map((role) => {
-          const selected = role === m.role;
+          const selected = normalizeRole(role) === normalizeRole(m.role);
           return `<option value="${role}" ${selected ? "selected" : ""}>${roleLabel(role)}</option>`;
         }).join("");
 
@@ -2090,8 +2102,10 @@
 
         const person = findPersonnelById(m.personnelId);
         if (!person) return "Un agent sélectionné est introuvable.";
-        const competences = Array.isArray(person.competences) ? person.competences : [];
-        if (!competences.includes(m.role)) {
+        const competences = new Set(
+          (Array.isArray(person.competences) ? person.competences : []).map((c) => normalizeRole(c))
+        );
+        if (!competences.has(normalizeRole(m.role))) {
           return `${(person.nom || "Agent")} ne peut pas être affecté au rôle ${roleLabel(m.role)}.`;
         }
 
@@ -2279,13 +2293,18 @@
         state.modalTouched = true;
         member.personnelId = event.target.value;
         const allowedRoles = getAvailableRoles(member.personnelId);
-        if (!allowedRoles.includes(member.role)) member.role = "";
+        const normalizedRole = normalizeRole(member.role);
+        if (!allowedRoles.includes(normalizedRole)) {
+          member.role = "";
+        } else {
+          member.role = normalizedRole;
+        }
         renderEquipagesEditor();
       }
 
       if (event.target.matches("[data-member-role]")) {
         state.modalTouched = true;
-        member.role = event.target.value;
+        member.role = normalizeRole(event.target.value);
       }
     });
 
@@ -2335,12 +2354,17 @@
       if (event.target.matches("[data-member-personnel]")) {
         member.personnelId = event.target.value;
         const allowedRoles = getAvailableRoles(member.personnelId);
-        if (!allowedRoles.includes(member.role)) member.role = "";
+        const normalizedRole = normalizeRole(member.role);
+        if (!allowedRoles.includes(normalizedRole)) {
+          member.role = "";
+        } else {
+          member.role = normalizedRole;
+        }
         renderEditEquipagesEditor();
       }
 
       if (event.target.matches("[data-member-role]")) {
-        member.role = event.target.value;
+        member.role = normalizeRole(event.target.value);
       }
     });
 
