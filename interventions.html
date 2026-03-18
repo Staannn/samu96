@@ -1523,13 +1523,54 @@
     return state.vehicules.find((v) => v.id === id) || null;
   }
 
+  function mapRoleFromText(value = "") {
+    const normalized = normalizeRole(value);
+    if (!normalized) return "";
+    if (ROLE_OPTIONS.includes(normalized)) return normalized;
+    if (normalized.includes("iade")) return "iade";
+    if (normalized.includes("interne")) return "interne";
+    if (normalized.includes("medecin") || normalized.includes("docteur") || normalized.startsWith("dr")) return "medecin";
+    if (normalized.includes("chauffeur") || normalized.includes("conducteur")) return "chauffeur";
+    if (normalized.includes("ambulancier")) return "ambulancier";
+    if (normalized.includes("ide")) return "ide";
+    return "";
+  }
+
+  function getInferredRoles(person) {
+    if (!person) return [];
+    const inferred = [];
+    const addRole = (raw) => {
+      const mapped = mapRoleFromText(raw);
+      if (mapped && !inferred.includes(mapped)) inferred.push(mapped);
+    };
+
+    (Array.isArray(person.competences) ? person.competences : []).forEach(addRole);
+    (Array.isArray(person.roles) ? person.roles : []).forEach(addRole);
+    addRole(person.role);
+    addRole(person.grade);
+    return inferred;
+  }
+
+  function getPersonnelCapabilitiesLabel(person) {
+    if (!person) return "";
+    const competences = Array.isArray(person.competences) ? person.competences.filter(Boolean) : [];
+    if (competences.length) return competences.join(", ");
+    const roles = Array.isArray(person.roles) ? person.roles.filter(Boolean) : [];
+    if (roles.length) return roles.join(", ");
+    return person.role || person.grade || "Rôle non renseigné";
+  }
+
   function getAvailableRoles(personnelId) {
     const person = findPersonnelById(personnelId);
     if (!person) return [];
-    const competences = new Set(
-      (Array.isArray(person.competences) ? person.competences : []).map((c) => normalizeRole(c))
-    );
-    return ROLE_OPTIONS.filter((r) => competences.has(normalizeRole(r)));
+    const inferred = getInferredRoles(person);
+    return inferred.length ? inferred : [...ROLE_OPTIONS];
+  }
+
+  function getDefaultRoleForPerson(personnelId) {
+    const person = findPersonnelById(personnelId);
+    const inferred = getInferredRoles(person);
+    return inferred[0] || "";
   }
 
   function blankMember() {
@@ -1619,10 +1660,9 @@
         const personnelOptions = state.personnel.map((p) => {
           const busy = state.activeAssignments.has(p.id);
           const selected = p.id === m.personnelId;
-          const disabled = busy && !selected;
           const fullName = `${(p.nom || "").toUpperCase()} ${p.prenom || ""}`.trim();
           const grade = p.grade ? `(${p.grade})` : "";
-          return `<option value="${p.id}" ${selected ? "selected" : ""} ${disabled ? "disabled" : ""}>${escapeHtml(fullName)} ${escapeHtml(grade)}${disabled ? " — déjà engagé" : ""}</option>`;
+          return `<option value="${p.id}" ${selected ? "selected" : ""}>${escapeHtml(fullName)} ${escapeHtml(grade)}${busy && !selected ? " — déjà engagé" : ""}</option>`;
         }).join("");
 
         const roleOptions = possibleRoles.map((role) => {
@@ -1638,11 +1678,11 @@
                 <option value="">Sélectionner</option>
                 ${personnelOptions}
               </select>
-              ${selectedPerson ? `<small>Compétences: ${escapeHtml((selectedPerson.competences || []).join(", "))}</small>` : ""}
+              ${selectedPerson ? `<small>Compétences: ${escapeHtml(getPersonnelCapabilitiesLabel(selectedPerson))}</small>` : ""}
             </div>
             <div class="field">
               <label>Rôle</label>
-              <select data-member-role ${selectedPerson ? "" : "disabled"}>
+              <select data-member-role ${selectedPerson && possibleRoles.length ? "" : "disabled"}>
                 <option value="">Sélectionner</option>
                 ${roleOptions}
               </select>
@@ -1702,10 +1742,11 @@
 
         const person = findPersonnelById(m.personnelId);
         if (!person) return "Un agent sélectionné est introuvable.";
-        const competences = new Set(
-          (Array.isArray(person.competences) ? person.competences : []).map((c) => normalizeRole(c))
-        );
-        if (!competences.has(normalizeRole(m.role))) {
+        const allowedRoles = getAvailableRoles(m.personnelId);
+        if (!allowedRoles.length) {
+          return `${(person.nom || "Agent")} n'a aucun rôle disponible.`;
+        }
+        if (!allowedRoles.includes(normalizeRole(m.role))) {
           return `${(person.nom || "Agent")} ne peut pas être affecté au rôle ${roleLabel(m.role)}.`;
         }
 
@@ -1981,7 +2022,7 @@
           const selected = p.id === m.personnelId;
           const fullName = `${(p.nom || "").toUpperCase()} ${p.prenom || ""}`.trim();
           const grade = p.grade ? `(${p.grade})` : "";
-          return `<option value="${p.id}" ${selected ? "selected" : ""} ${busy ? "disabled" : ""}>${escapeHtml(fullName)} ${escapeHtml(grade)}${busy ? " — déjà engagé" : ""}</option>`;
+          return `<option value="${p.id}" ${selected ? "selected" : ""}>${escapeHtml(fullName)} ${escapeHtml(grade)}${busy ? " — déjà engagé" : ""}</option>`;
         }).join("");
 
         const roleOptions = possibleRoles.map((role) => {
@@ -1997,11 +2038,11 @@
                 <option value="">Sélectionner</option>
                 ${personnelOptions}
               </select>
-              ${selectedPerson ? `<small>Compétences: ${escapeHtml((selectedPerson.competences || []).join(", "))}</small>` : ""}
+              ${selectedPerson ? `<small>Compétences: ${escapeHtml(getPersonnelCapabilitiesLabel(selectedPerson))}</small>` : ""}
             </div>
             <div class="field">
               <label>Rôle</label>
-              <select data-member-role ${selectedPerson ? "" : "disabled"}>
+              <select data-member-role ${selectedPerson && possibleRoles.length ? "" : "disabled"}>
                 <option value="">Sélectionner</option>
                 ${roleOptions}
               </select>
@@ -2102,10 +2143,11 @@
 
         const person = findPersonnelById(m.personnelId);
         if (!person) return "Un agent sélectionné est introuvable.";
-        const competences = new Set(
-          (Array.isArray(person.competences) ? person.competences : []).map((c) => normalizeRole(c))
-        );
-        if (!competences.has(normalizeRole(m.role))) {
+        const allowedRoles = getAvailableRoles(m.personnelId);
+        if (!allowedRoles.length) {
+          return `${(person.nom || "Agent")} n'a aucun rôle disponible.`;
+        }
+        if (!allowedRoles.includes(normalizeRole(m.role))) {
           return `${(person.nom || "Agent")} ne peut pas être affecté au rôle ${roleLabel(m.role)}.`;
         }
 
@@ -2295,7 +2337,7 @@
         const allowedRoles = getAvailableRoles(member.personnelId);
         const normalizedRole = normalizeRole(member.role);
         if (!allowedRoles.includes(normalizedRole)) {
-          member.role = "";
+          member.role = getDefaultRoleForPerson(member.personnelId);
         } else {
           member.role = normalizedRole;
         }
@@ -2356,7 +2398,7 @@
         const allowedRoles = getAvailableRoles(member.personnelId);
         const normalizedRole = normalizeRole(member.role);
         if (!allowedRoles.includes(normalizedRole)) {
-          member.role = "";
+          member.role = getDefaultRoleForPerson(member.personnelId);
         } else {
           member.role = normalizedRole;
         }
