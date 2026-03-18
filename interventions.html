@@ -1171,6 +1171,11 @@
       .trim();
   }
 
+  function normalizeId(value) {
+    if (value === null || value === undefined) return "";
+    return String(value);
+  }
+
   function getPriorityClass(priority) {
     return `priority-${priority || "p2"}`.toLowerCase();
   }
@@ -1265,7 +1270,7 @@
       .forEach((inter) => {
         (inter.equipages || []).forEach((eq) => {
           (eq.membres || []).forEach((m) => {
-            if (m.personnelId) busy.add(m.personnelId);
+            if (m.personnelId) busy.add(normalizeId(m.personnelId));
           });
         });
       });
@@ -1516,11 +1521,13 @@
   }
 
   function findPersonnelById(id) {
-    return state.personnel.find((p) => p.id === id) || null;
+    const targetId = normalizeId(id);
+    return state.personnel.find((p) => normalizeId(p.id) === targetId) || null;
   }
 
   function findVehiculeById(id) {
-    return state.vehicules.find((v) => v.id === id) || null;
+    const targetId = normalizeId(id);
+    return state.vehicules.find((v) => normalizeId(v.id) === targetId) || null;
   }
 
   function mapRoleFromText(value = "") {
@@ -1658,11 +1665,12 @@
         const possibleRoles = getAvailableRoles(m.personnelId);
 
         const personnelOptions = state.personnel.map((p) => {
-          const busy = state.activeAssignments.has(p.id);
-          const selected = p.id === m.personnelId;
+          const personId = normalizeId(p.id);
+          const busy = state.activeAssignments.has(personId);
+          const selected = personId === normalizeId(m.personnelId);
           const fullName = `${(p.nom || "").toUpperCase()} ${p.prenom || ""}`.trim();
           const grade = p.grade ? `(${p.grade})` : "";
-          return `<option value="${p.id}" ${selected ? "selected" : ""}>${escapeHtml(fullName)} ${escapeHtml(grade)}${busy && !selected ? " — déjà engagé" : ""}</option>`;
+          return `<option value="${personId}" ${selected ? "selected" : ""}>${escapeHtml(fullName)} ${escapeHtml(grade)}${busy && !selected ? " — déjà engagé" : ""}</option>`;
         }).join("");
 
         const roleOptions = possibleRoles.map((role) => {
@@ -1693,9 +1701,10 @@
       }).join("");
 
       const vehOptions = state.vehicules.map((v) => {
-        const selected = v.id === eq.vehiculeId;
+        const vehiculeId = normalizeId(v.id);
+        const selected = vehiculeId === normalizeId(eq.vehiculeId);
         const label = `${v.nom || "Véhicule"} ${v.type ? "(" + v.type + ")" : ""}`;
-        return `<option value="${v.id}" ${selected ? "selected" : ""}>${escapeHtml(label)}</option>`;
+        return `<option value="${vehiculeId}" ${selected ? "selected" : ""}>${escapeHtml(label)}</option>`;
       }).join("");
 
       return `
@@ -1750,14 +1759,15 @@
           return `${(person.nom || "Agent")} ne peut pas être affecté au rôle ${roleLabel(m.role)}.`;
         }
 
-        if (state.activeAssignments.has(m.personnelId)) {
+        if (state.activeAssignments.has(normalizeId(m.personnelId))) {
           return `${(person.nom || "Agent")} est déjà engagé sur une intervention en cours.`;
         }
 
-        if (seenPersonnel.has(m.personnelId)) {
+        const normalizedPersonnelId = normalizeId(m.personnelId);
+        if (seenPersonnel.has(normalizedPersonnelId)) {
           return "Un même agent ne peut être ajouté qu'une seule fois dans la nouvelle intervention.";
         }
-        seenPersonnel.add(m.personnelId);
+        seenPersonnel.add(normalizedPersonnelId);
       }
     }
 
@@ -1787,12 +1797,12 @@
       lieu: refs.interLieu.value || "",
       priorite: refs.interPriorite.value || "P2",
       equipages: state.modalEquipages.map((eq) => ({
-        vehiculeId: eq.vehiculeId,
+        vehiculeId: normalizeId(eq.vehiculeId),
         vehiculeNom: findVehiculeById(eq.vehiculeId)?.nom || "",
         membres: (eq.membres || []).map((m) => {
           const person = findPersonnelById(m.personnelId);
           return {
-            personnelId: m.personnelId,
+            personnelId: normalizeId(m.personnelId),
             nom: person?.nom || "",
             prenom: person?.prenom || "",
             role: m.role || ""
@@ -2018,11 +2028,13 @@
         const possibleRoles = getAvailableRoles(m.personnelId);
 
         const personnelOptions = state.personnel.map((p) => {
-          const busy = state.activeAssignments.has(p.id) && p.id !== m.personnelId;
-          const selected = p.id === m.personnelId;
+          const personId = normalizeId(p.id);
+          const selectedId = normalizeId(m.personnelId);
+          const busy = state.activeAssignments.has(personId) && personId !== selectedId;
+          const selected = personId === selectedId;
           const fullName = `${(p.nom || "").toUpperCase()} ${p.prenom || ""}`.trim();
           const grade = p.grade ? `(${p.grade})` : "";
-          return `<option value="${p.id}" ${selected ? "selected" : ""}>${escapeHtml(fullName)} ${escapeHtml(grade)}${busy ? " — déjà engagé" : ""}</option>`;
+          return `<option value="${personId}" ${selected ? "selected" : ""}>${escapeHtml(fullName)} ${escapeHtml(grade)}${busy ? " — déjà engagé" : ""}</option>`;
         }).join("");
 
         const roleOptions = possibleRoles.map((role) => {
@@ -2053,9 +2065,10 @@
       }).join("");
 
       const vehOptions = state.vehicules.map((v) => {
-        const selected = v.id === eq.vehiculeId;
+        const vehiculeId = normalizeId(v.id);
+        const selected = vehiculeId === normalizeId(eq.vehiculeId);
         const label = `${v.nom || "Véhicule"} ${v.type ? "(" + v.type + ")" : ""}`;
-        return `<option value="${v.id}" ${selected ? "selected" : ""}>${escapeHtml(label)}</option>`;
+        return `<option value="${vehiculeId}" ${selected ? "selected" : ""}>${escapeHtml(label)}</option>`;
       }).join("");
 
       return `
@@ -2087,12 +2100,12 @@
 
     const payload = {
       equipages: state.editEquipages.map((eq) => ({
-        vehiculeId: eq.vehiculeId,
+        vehiculeId: normalizeId(eq.vehiculeId),
         vehiculeNom: findVehiculeById(eq.vehiculeId)?.nom || "",
         membres: (eq.membres || []).map((m) => {
           const person = findPersonnelById(m.personnelId);
           return {
-            personnelId: m.personnelId,
+            personnelId: normalizeId(m.personnelId),
             nom: person?.nom || "",
             prenom: person?.prenom || "",
             role: m.role || ""
@@ -2151,10 +2164,11 @@
           return `${(person.nom || "Agent")} ne peut pas être affecté au rôle ${roleLabel(m.role)}.`;
         }
 
-        if (seenPersonnel.has(m.personnelId)) {
+        const normalizedPersonnelId = normalizeId(m.personnelId);
+        if (seenPersonnel.has(normalizedPersonnelId)) {
           return "Un même agent ne peut être ajouté qu'une seule fois par équipage.";
         }
-        seenPersonnel.add(m.personnelId);
+        seenPersonnel.add(normalizedPersonnelId);
       }
     }
 
@@ -2507,20 +2521,20 @@
     const qInter = query(collection(db, "interventions"), orderBy("createdAt", "desc"));
 
     const applyPersonnelSnapshot = (snap) => {
-      state.personnel = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      state.personnel = snap.docs.map((d) => ({ ...d.data(), id: normalizeId(d.id) }));
       if (isModalOpen() && !state.modalTouched) renderEquipagesEditor();
       if (refs.editEquipageModal.classList.contains("open")) renderEditEquipagesEditor();
     };
 
     const applyVehiculesSnapshot = (snap) => {
-      state.vehicules = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      state.vehicules = snap.docs.map((d) => ({ ...d.data(), id: normalizeId(d.id) }));
       if (isModalOpen() && !state.modalTouched) renderEquipagesEditor();
       if (refs.editEquipageModal.classList.contains("open")) renderEditEquipagesEditor();
     };
 
     const applyInterventionsSnapshot = (snap) => {
       const prevIds = new Set(state.interventions.map((i) => i.id));
-      state.interventions = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      state.interventions = snap.docs.map((d) => ({ ...d.data(), id: normalizeId(d.id) }));
 
       const newOnes = state.interventions.filter((i) => !prevIds.has(i.id) && i.statut === "en_cours");
       if (newOnes.length && prevIds.size > 0) {
