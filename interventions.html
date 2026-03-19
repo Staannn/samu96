@@ -2463,6 +2463,7 @@
     activeAssignments: new Set(),
     modalEquipages: [],
     modalTouched: false,
+    interventionSeed: null,
     selectedInterventionId: null,
     selectedInterventionUnsub: null,
     editEquipages: [],
@@ -3087,11 +3088,86 @@
     return { vehiculeId: "", membres: [blankMember()] };
   }
 
+  function dateFromTodayTime(timeValue, fallback = null) {
+    const parsedFallback = asDate(fallback);
+    const raw = String(timeValue || "").trim();
+    if (!raw) return parsedFallback || new Date();
+    const [hRaw, mRaw] = raw.split(":");
+    const h = Number(hRaw);
+    const m = Number(mRaw);
+    if (!Number.isInteger(h) || !Number.isInteger(m)) return parsedFallback || new Date();
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    return d;
+  }
+
+  function buildSmurInterventionSeedFromAppel18() {
+    const numero = getA18Value("a18CodisNumero") || "Appel 18";
+    const codisMotif = getA18Value("a18CodisMotif") || "Motif non renseigné";
+    const motifConfirme = getA18Value("a18MotifConfirme") || codisMotif;
+    const lieu = getA18Value("a18CodisAdresse") || "Lieu non renseigné";
+    const vecteur = getA18Value("a18CodisVecteur") || "-";
+    const nbVictimes = getA18Value("a18CodisVictimes") || "1";
+    const codisPrecisions = getA18Value("a18CodisPrecisions") || "Aucune précision CODIS";
+    const medecinReg = getA18Value("a18RegMedecin") || "Médecin régulateur";
+    const bilanTexte = (getA18Value("a18BilanPreview") || "").replace(/\s+/g, " ").trim();
+    const victimeNom = getA18Value("a18VictimeNom") || "Victime non identifiée";
+    const victimeAge = getA18Value("a18VictimeAge") || "?";
+    const victimeSexe = getA18Value("a18VictimeSexe") || "Inconnu";
+
+    const codisTs = dateFromTodayTime(getA18Value("a18CodisHeure"), state.appel18.completed?.codis || new Date());
+    const bilanTs = asDate(state.appel18.completed?.bilan) || new Date();
+    const regulationTs = dateFromTodayTime(getA18Value("a18RegHeure"), new Date());
+
+    return {
+      motif: `SMUR — ${motifConfirme}`,
+      lieu,
+      priorite: "P1",
+      source: {
+        type: "appel18",
+        dossierId: state.appel18.dossierId || "",
+        numero
+      },
+      mainCourante: [
+        {
+          timestamp: codisTs,
+          auteur: "CODIS",
+          message: `[${numero}] Réception CODIS: motif ${codisMotif}, lieu ${lieu}, vecteur ${vecteur}, victimes ${nbVictimes}. ${codisPrecisions}`
+        },
+        {
+          timestamp: bilanTs,
+          auteur: "Chef d'agrès VSAV",
+          message: `Bilan VSAV: ${victimeNom} (${victimeAge} ans, ${victimeSexe}). ${bilanTexte || "Bilan non détaillé."}`
+        },
+        {
+          timestamp: regulationTs,
+          auteur: "Régulation médicale",
+          message: `Décision médicale: engagement SMUR validé par ${medecinReg}.`
+        }
+      ]
+    };
+  }
+
+  function openSmurInterventionFromAppel18() {
+    const seed = buildSmurInterventionSeedFromAppel18();
+    state.interventionSeed = seed;
+    refs.interMotif.value = seed.motif;
+    refs.interLieu.value = seed.lieu;
+    refs.interPriorite.value = seed.priorite;
+    state.modalEquipages = [blankEquipage()];
+    state.modalTouched = false;
+    closeAppel18Drawer(true);
+    openModal({ preserveSeed: true });
+    showToast("Intervention SMUR préremplie. Sélectionnez véhicule et personnels.");
+  }
+
   function ensureModalStructure() {
     if (!state.modalEquipages.length) state.modalEquipages = [blankEquipage()];
   }
 
-  function openModal() {
+  function openModal(options = {}) {
+    const { preserveSeed = false } = options;
+    if (!preserveSeed) state.interventionSeed = null;
     ensureModalStructure();
     state.modalTouched = false;
     refs.overlay.classList.add("open");
@@ -3324,6 +3400,17 @@
 
     try {
       const numero = await generateInterventionNumber();
+      const seed = state.interventionSeed || null;
+      const seededMc = Array.isArray(seed?.mainCourante)
+        ? seed.mainCourante
+            .filter((e) => e && e.message)
+            .map((e) => ({
+              timestamp: asDate(e.timestamp) || new Date(),
+              auteur: String(e.auteur || "Système"),
+              message: String(e.message || "")
+            }))
+        : [];
+
       await addDoc(collection(db, "interventions"), {
         numero,
         motif: payload.motif.trim(),
@@ -3331,6 +3418,7 @@
         priorite: payload.priorite,
         createdAt: serverTimestamp(),
         statut: "en_cours",
+        ...(seed?.source ? { origine: seed.source } : {}),
         jalons: {
           depart: null,
           arrivee_scene: null,
@@ -3340,6 +3428,7 @@
         },
         equipages: payload.equipages,
         mainCourante: [
+          ...seededMc,
           {
             timestamp: new Date(),
             auteur: "Système",
@@ -3352,6 +3441,7 @@
       refs.interLieu.value = "";
       refs.interPriorite.value = "P2";
       state.modalEquipages = [blankEquipage()];
+      state.interventionSeed = null;
       closeModal();
     } catch (err) {
       showModalError(`Création impossible: ${err.message}`);
@@ -4527,7 +4617,7 @@
         renderAppel18Step();
         closeAppel18Drawer(true);
       } else {
-        goToAppel18Step(4);
+        openSmurInterventionFromAppel18();
       }
       showAppel18SuccessToast(`Étape 3 enregistrée — ${formatA18Timestamp(new Date())}`);
     } catch (e) {
