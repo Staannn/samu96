@@ -291,6 +291,33 @@ body {
   flex-shrink: 0;
 }
 
+.sidebar-link .nav-icon {
+  width: 18px;
+  text-align: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.sidebar-divider {
+  height: 1px;
+  margin: 8px 14px 10px;
+  background: rgba(0, 48, 135, 0.16);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 14px 16px;
+  border-top: 1px solid rgba(0, 48, 135, 0.1);
+}
+
+.sidebar-footer-text {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  line-height: 1.7;
+}
+
 .main {
   flex: 1;
   width: 100%;
