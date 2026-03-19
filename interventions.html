@@ -540,6 +540,9 @@
       margin: 0;
       padding: 0;
       border-left: 2px solid rgba(0, 48, 135, 0.2);
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
 
     .mc-item {
@@ -593,9 +596,8 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
-      max-height: 260px;
-      overflow-y: auto;
-      padding-right: 4px;
+      max-height: none;
+      overflow: visible;
     }
 
     .jalon-row {
@@ -3606,9 +3608,9 @@
     const interId = state.selectedInterventionId;
     if (!interId) return;
 
-    const auteur = refs.mcAuteur.value.trim();
+    const auteur = refs.mcAuteur.value.trim() || "Opérateur";
     const message = refs.mcMessage.value.trim();
-    if (!auteur || !message) return;
+    if (!message) return;
 
     refs.addMcEntryBtn.disabled = true;
 
@@ -4342,10 +4344,22 @@
   }
 
   function updateAppel18ActionButtons() {
-    refs.a18SaveStep1.disabled = !!validateStep1();
-    refs.a18SaveStep2.disabled = !!validateStep2();
-    refs.a18SaveStep3.disabled = !!validateStep3();
-    refs.a18SaveStep4.disabled = !!validateStep4();
+    const currentStep = Number(state.appel18.step || 1);
+    const currentSection = refs.appel18Drawer.querySelector(`.appel18-section[data-step="${currentStep}"]`);
+    const sampleInput = currentSection ? currentSection.querySelector("input, select, textarea") : null;
+    const currentStepReadOnly = state.appel18.viewReadOnly || !!(sampleInput && sampleInput.disabled);
+
+    const map = {
+      1: refs.a18SaveStep1,
+      2: refs.a18SaveStep2,
+      3: refs.a18SaveStep3,
+      4: refs.a18SaveStep4
+    };
+
+    Object.entries(map).forEach(([step, btn]) => {
+      if (!btn) return;
+      btn.disabled = Number(step) !== currentStep || currentStepReadOnly;
+    });
   }
 
   function setAppel18SectionReadOnly(step, readOnly) {
