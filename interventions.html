@@ -1892,7 +1892,9 @@
   };
 
   const STORAGE_KEYS = {
-    mcAuteur: "samu96_interventions_mc_auteur"
+    mcAuteur: "samu96_interventions_mc_auteur",
+    a18NumeroDate: "samu96_a18_numero_date",
+    a18NumeroSeq: "samu96_a18_numero_seq"
   };
 
   const refs = {
@@ -3187,6 +3189,17 @@
     return `${date.getFullYear()}${pad2(date.getMonth() + 1)}${pad2(date.getDate())}`;
   }
 
+  function getImmediateAppel18Numero() {
+    const today = getDateKey(new Date());
+    const storedDate = localStorage.getItem(STORAGE_KEYS.a18NumeroDate) || "";
+    const rawSeq = Number(localStorage.getItem(STORAGE_KEYS.a18NumeroSeq) || "0");
+    const baseSeq = Number.isFinite(rawSeq) && rawSeq > 0 ? rawSeq : 0;
+    const nextSeq = storedDate === today ? baseSeq + 1 : 1;
+    localStorage.setItem(STORAGE_KEYS.a18NumeroDate, today);
+    localStorage.setItem(STORAGE_KEYS.a18NumeroSeq, String(nextSeq));
+    return `CRAA-${today}-${String(nextSeq).padStart(3, "0")}`;
+  }
+
   function clearAppel18Errors() {
     [refs.appel18ErrorStep1, refs.appel18ErrorStep2, refs.appel18ErrorStep3, refs.appel18ErrorStep4].forEach((el) => {
       if (!el) return;
@@ -3395,11 +3408,13 @@
   }
 
   function resetAppel18Form() {
+    const immediateNumero = getImmediateAppel18Numero();
+
     refs.a18CodisHeure.value = getCurrentTimeValue();
     refs.a18CodisMotif.value = "";
     refs.a18CodisAdresse.value = "";
     refs.a18CodisVecteur.value = "";
-    refs.a18CodisNumero.value = "";
+    refs.a18CodisNumero.value = immediateNumero;
     refs.a18CodisPrecisions.value = "";
 
     refs.a18VictimeNom.value = "";
@@ -3451,7 +3466,7 @@
     refs.a18RegDestination.value = "";
     refs.a18RegJustif.value = "";
 
-    refs.a18SmurNumero.value = "";
+    refs.a18SmurNumero.value = immediateNumero;
     refs.a18SmurLieu.value = "";
     refs.a18SmurVecteur.value = "SMUR";
     refs.a18SmurHeure.value = getCurrentTimeValue();
@@ -3479,15 +3494,21 @@
       state.appel18.open = true;
 
       resetAppel18Form();
+      const numeroAuChargement = refs.a18CodisNumero.value;
       state.appel18.loadingNumero = true;
 
       try {
         const numero = await generateAppel18Numero();
-        refs.a18CodisNumero.value = numero;
-        refs.a18SmurNumero.value = numero;
+        const canOverwrite = !refs.a18CodisNumero.value || refs.a18CodisNumero.value === numeroAuChargement;
+        if (canOverwrite) {
+          refs.a18CodisNumero.value = numero;
+          refs.a18SmurNumero.value = numero;
+        }
       } catch (err) {
-        refs.a18CodisNumero.value = `CRAA-${getDateKey(new Date())}-001`;
-        refs.a18SmurNumero.value = refs.a18CodisNumero.value;
+        if (!refs.a18CodisNumero.value) {
+          refs.a18CodisNumero.value = `CRAA-${getDateKey(new Date())}-001`;
+          refs.a18SmurNumero.value = refs.a18CodisNumero.value;
+        }
       } finally {
         state.appel18.loadingNumero = false;
         refreshBilanPreview(true);
