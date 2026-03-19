@@ -197,6 +197,10 @@
       box-shadow: 0 14px 28px rgba(0, 48, 135, 0.38);
     }
 
+    .fab-appel18 {
+      bottom: 146px;
+    }
+
     .fab-inline {
       position: static;
       border: 1px solid #00215e;
@@ -1434,6 +1438,7 @@
       .synoptic-table-wrap { display: none; }
       .cards-mobile { display: flex; }
       .fab { right: 14px; bottom: 76px; }
+      .fab-appel18 { bottom: 132px; }
       .modal { width: calc(100% - 14px); max-height: calc(100vh - 22px); }
       .form-grid { grid-template-columns: 1fr; }
     }
@@ -2390,6 +2395,7 @@
   </div>
 </aside>
 
+<button id="openAppel18BtnFloating" class="fab fab-appel18" type="button">+ Appel 18</button>
 <button id="newInterFab" class="fab" type="button">+ Nouvelle inter</button>
 
 <script src="nav.js"></script>
@@ -4576,7 +4582,7 @@
     refs.appel18Backdrop.addEventListener("click", () => closeAppel18Drawer(false));
 
     document.body.addEventListener("click", (event) => {
-      const openBtn = event.target.closest("#openAppel18Btn");
+      const openBtn = event.target.closest("#openAppel18Btn, #openAppel18BtnFloating");
       if (!openBtn) return;
       event.preventDefault();
       openAppel18Drawer("new");
