@@ -20,21 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
       sidebar.classList.toggle('open');
     };
   }
-});
 
-// Hamburger sidebar
-// Active nav highlight
-const current = location.pathname.split('/').pop() || 'index.html';
-document.querySelectorAll('.topbar-nav a, .sidebar-link').forEach(a => {
-  if (a.getAttribute('href') === current || a.getAttribute('href') === './' + current) {
-    a.classList.add('active');
-  }
-});
-
-// Active nav highlight
-const current = location.pathname.split('/').pop() || 'index.html';
-document.querySelectorAll('.topbar-nav a, .sidebar-link').forEach(a => {
-  if (a.getAttribute('href') === current || a.getAttribute('href') === './' + current) {
-    a.classList.add('active');
-  }
+  const current = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.topbar-nav a, .sidebar-link').forEach(a => {
+    if (a.getAttribute('href') === current || a.getAttribute('href') === './' + current) {
+      a.classList.add('active');
+    }
+  });
 });

@@ -457,6 +457,7 @@
       transition: transform 0.24s ease;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     .drawer.open {
@@ -484,7 +485,10 @@
 
     .drawer-body {
       padding: 12px 14px 18px;
-      overflow: auto;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -577,6 +581,9 @@
     .mc-msg {
       font-size: 13px;
       color: var(--text-bright);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .mc-inputs {
@@ -596,8 +603,10 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
-      max-height: none;
-      overflow: visible;
+      max-height: 240px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
     }
 
     .jalon-row {
@@ -622,6 +631,8 @@
     .jalon-row .value {
       font-size: 12px;
       color: var(--text-bright);
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .error-box {
