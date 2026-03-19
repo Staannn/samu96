@@ -546,7 +546,7 @@
       padding: 0;
       border-left: 2px solid rgba(0, 48, 135, 0.2);
       flex: 1 1 auto;
-      min-height: 180px;
+      min-height: 0;
       max-height: none;
       overflow-y: auto;
       overflow-x: hidden;
@@ -596,9 +596,6 @@
       grid-template-columns: 220px 1fr auto;
       gap: 8px;
       align-items: end;
-      position: sticky;
-      bottom: 0;
-      z-index: 1;
       background: #fff;
       padding-top: 8px;
       border-top: 1px solid rgba(0, 48, 135, 0.14);
@@ -614,19 +611,24 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
-      max-height: 34dvh;
+      max-height: 26dvh;
       overflow-y: auto;
       overflow-x: hidden;
       padding-bottom: 4px;
       padding-right: 4px;
     }
 
+    .mc-panel {
+      overflow: hidden;
+    }
+
     .mc-panel-body {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
       gap: 10px;
-      min-height: 300px;
-      max-height: 58dvh;
+      min-height: 340px;
+      max-height: 60dvh;
+      overflow: hidden;
       padding-bottom: 10px;
     }
 
@@ -1526,6 +1528,8 @@
       .appel18-grid { grid-template-columns: 1fr; }
       .xabcde-grid-3,
       .xabcde-grid-2 { grid-template-columns: 1fr; }
+      .mc-panel-body { min-height: 300px; max-height: 62dvh; }
+      .jalon-actions { max-height: 22dvh; }
     }
 
     @media (max-width: 860px) {
@@ -1783,7 +1787,7 @@
       </div>
     </section>
 
-    <section class="panel" style="margin:0;">
+    <section class="panel mc-panel" style="margin:0;">
       <div class="panel-header">Main courante</div>
       <div class="panel-body mc-panel-body">
         <ul id="mcList" class="mc-list"></ul>
