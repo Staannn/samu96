@@ -901,6 +901,7 @@
       align-items: center;
       gap: 6px;
       min-width: 0;
+      cursor: pointer;
     }
 
     .appel18-step + .appel18-step::before {
@@ -939,6 +940,15 @@
       overflow: hidden;
       text-overflow: ellipsis;
       font-family: var(--mono);
+    }
+
+    .appel18-step-time {
+      display: block;
+      margin-top: 2px;
+      font-size: 9px;
+      color: #16a34a;
+      font-family: var(--mono);
+      letter-spacing: 0.3px;
     }
 
     .appel18-step.active .appel18-step-dot {
@@ -1013,6 +1023,10 @@
     }
 
     .appel18-inline-error.show {
+      display: block;
+    }
+
+    .appel18-tab-panel {
       display: block;
     }
 
@@ -1185,6 +1199,44 @@
       pointer-events: none;
     }
 
+    .appel18-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 3px 8px;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .appel18-status.ouvert {
+      color: #1d4ed8;
+      border-color: rgba(37, 99, 235, 0.35);
+      background: rgba(37, 99, 235, 0.12);
+    }
+
+    .appel18-status.bilan_recu {
+      color: #92400e;
+      border-color: rgba(217, 119, 6, 0.38);
+      background: rgba(245, 158, 11, 0.18);
+    }
+
+    .appel18-status.regule {
+      color: #9a3412;
+      border-color: rgba(234, 88, 12, 0.38);
+      background: rgba(234, 88, 12, 0.16);
+    }
+
+    .appel18-status.cloture {
+      color: #166534;
+      border-color: rgba(22, 163, 74, 0.4);
+      background: rgba(22, 163, 74, 0.16);
+    }
+
     @media (max-width: 980px) {
       .member-row { grid-template-columns: 1fr; }
       .mc-inputs { grid-template-columns: 1fr; }
@@ -1247,6 +1299,30 @@
       </div>
       <p class="page-subtitle">Suivi en temps réel des véhicules engagés, affectation des équipages et main courante opérationnelle.</p>
     </div>
+
+    <section class="panel">
+      <div class="panel-header">DOSSIERS APPELS 18</div>
+      <div class="panel-body">
+        <div class="synoptic-table-wrap">
+          <table class="synoptic-table" style="min-width: 980px;">
+            <thead>
+              <tr>
+                <th>Numéro</th>
+                <th>Motif</th>
+                <th>Adresse</th>
+                <th>Vecteur</th>
+                <th>Statut</th>
+                <th>Horodatage CODIS</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="appels18TableBody">
+              <tr><td colspan="7" class="text-dim">Aucun dossier Appel 18.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
     <section class="panel" id="vehicleStatusPanel">
       <div class="panel-header">DISPONIBILITÉ DES VÉHICULES</div>
@@ -1441,9 +1517,13 @@
 
   <div class="appel18-body">
     <section id="appel18Step1" class="appel18-section active" data-step="1">
-      <p class="appel18-subtitle">Renseignez les informations initiales transmises par le CODIS.</p>
+      <p class="appel18-subtitle">Étape 1 — Réception info CODIS</p>
       <div id="appel18ErrorStep1" class="appel18-inline-error"></div>
       <div class="appel18-grid">
+        <div class="field">
+          <label for="a18CodisNumero">Numéro dossier</label>
+          <input type="text" id="a18CodisNumero" placeholder="CRAA-YYYYMMDD-001">
+        </div>
         <div class="field">
           <label for="a18CodisHeure">Heure de réception</label>
           <input type="time" id="a18CodisHeure">
@@ -1459,12 +1539,9 @@
             <option value="Trauma">Trauma</option>
             <option value="Noyade">Noyade</option>
             <option value="Incendie/victime">Incendie/victime</option>
+            <option value="Intoxication">Intoxication</option>
             <option value="Autre">Autre</option>
           </select>
-        </div>
-        <div class="field full">
-          <label for="a18CodisAdresse">Adresse / lieu d'intervention</label>
-          <input type="text" id="a18CodisAdresse" placeholder="Ex: Avenue de l'Assemblée Nationale">
         </div>
         <div class="field">
           <label for="a18CodisVecteur">Vecteur engagé</label>
@@ -1477,336 +1554,235 @@
             <option value="AR">AR</option>
           </select>
         </div>
+        <div class="field full">
+          <label for="a18CodisAdresse">Adresse / lieu intervention</label>
+          <input type="text" id="a18CodisAdresse" placeholder="Adresse complète">
+        </div>
         <div class="field">
-          <label for="a18CodisNumero">Numéro de dossier</label>
-          <input type="text" id="a18CodisNumero" placeholder="CRAA-YYYYMMDD-001">
+          <label for="a18CodisVictimes">Nombre de victimes</label>
+          <input type="number" id="a18CodisVictimes" min="1" value="1">
         </div>
         <div class="field full">
           <label for="a18CodisPrecisions">Précisions CODIS</label>
-          <textarea id="a18CodisPrecisions" rows="3" placeholder="Informations complémentaires"></textarea>
+          <textarea id="a18CodisPrecisions" rows="3"></textarea>
         </div>
       </div>
       <div class="appel18-actions">
         <span></span>
-        <button type="button" id="a18Next1" class="btn-main">Suivant →</button>
+        <button type="button" id="a18SaveStep1" class="btn-main">✅ Valider étape 1 — Enregistrer info CODIS</button>
       </div>
     </section>
 
     <section id="appel18Step2" class="appel18-section" data-step="2">
-      <p class="appel18-subtitle">Complétez le bilan chef d'agrès puis ajustez le texte radio si nécessaire.</p>
+      <p class="appel18-subtitle">Étape 2 — Bilan VSAV (Chef d'agrès)</p>
       <div id="appel18ErrorStep2" class="appel18-inline-error"></div>
 
-      <div class="appel18-block">
-        <div class="appel18-grid">
-          <div class="field">
-            <label for="a18VictimeNom">Identité victime (Nom / prénom)</label>
-            <input type="text" id="a18VictimeNom" placeholder="Nom Prénom">
-          </div>
-          <div class="field">
-            <label for="a18VictimeAge">Âge</label>
-            <input type="number" id="a18VictimeAge" min="0" max="120" placeholder="Âge">
-          </div>
-          <div class="field">
-            <label for="a18VictimeSexe">Sexe</label>
-            <select id="a18VictimeSexe">
-              <option value="Inconnu" selected>Inconnu</option>
-              <option value="M">M</option>
-              <option value="F">F</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="a18MotifConfirme">Motif principal confirmé</label>
-            <input type="text" id="a18MotifConfirme" placeholder="Motif principal">
-          </div>
-        </div>
+      <div class="segmented" id="a18Step2Tabs">
+        <button type="button" data-a18-tab="form" class="active">📋 Formulaire</button>
+        <button type="button" data-a18-tab="preview">📄 Aperçu bilan</button>
       </div>
 
-      <details class="appel18-collapse" open>
-        <summary>X — Hémorragie externe</summary>
-        <div class="appel18-collapse-body">
-          <label class="appel18-checkline"><input type="checkbox" id="a18XPresent"> Présente</label>
+      <div id="a18Step2TabForm" class="appel18-tab-panel">
+        <div class="appel18-block">
+          <div class="section-title">Identité victime</div>
           <div class="appel18-grid">
-            <div class="field">
-              <label for="a18XZone">Zone</label>
-              <input type="text" id="a18XZone" placeholder="Ex: membre inférieur droit">
-            </div>
-            <div class="field">
-              <label for="a18XDesc">Description</label>
-              <textarea id="a18XDesc" rows="2" placeholder="Description hémorragie"></textarea>
-            </div>
+            <div class="field"><label for="a18VictimeNom">Nom / prénom</label><input type="text" id="a18VictimeNom"></div>
+            <div class="field"><label for="a18VictimeAge">Âge</label><input type="number" id="a18VictimeAge" min="0" max="120"></div>
+            <div class="field"><label for="a18VictimeSexe">Sexe</label><select id="a18VictimeSexe"><option value="Inconnu">Inconnu</option><option value="M">M</option><option value="F">F</option></select></div>
+            <div class="field"><label for="a18MotifConfirme">Motif confirmé</label><input type="text" id="a18MotifConfirme"></div>
           </div>
         </div>
-      </details>
 
-      <details class="appel18-collapse">
-        <summary>A — Airway</summary>
-        <div class="appel18-collapse-body">
+        <div class="appel18-block">
+          <div class="section-title">Bilan circonstanciel (3S)</div>
           <div class="appel18-grid">
-            <div class="field">
-              <label for="a18AEtat">État</label>
-              <select id="a18AEtat">
-                <option value="libre" selected>libre</option>
-                <option value="obstruée">obstruée</option>
-                <option value="maintenue manuellement">maintenue manuellement</option>
-                <option value="canule en place">canule en place</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="a18ANotes">Notes</label>
-              <textarea id="a18ANotes" rows="2" placeholder="Notes airway"></textarea>
-            </div>
+            <div class="field full"><label for="a18SScene">Scène</label><input type="text" id="a18SScene"></div>
+            <div class="field full"><label for="a18SSecurite">Sécurité</label><input type="text" id="a18SSecurite"></div>
+            <div class="field full"><label for="a18SSituation">Situation</label><input type="text" id="a18SSituation"></div>
           </div>
         </div>
-      </details>
 
-      <details class="appel18-collapse">
-        <summary>B — Breathing</summary>
-        <div class="appel18-collapse-body">
-          <div class="appel18-grid">
-            <div class="field"><label for="a18BFr">FR</label><input type="number" id="a18BFr" min="0" placeholder="/min"></div>
-            <div class="field"><label for="a18BSpO2">SpO2 (%)</label><input type="number" id="a18BSpO2" min="0" max="100" placeholder="%"></div>
-            <div class="field full">
-              <label for="a18BPattern">Pattern</label>
-              <select id="a18BPattern">
-                <option value="normal" selected>normal</option>
-                <option value="polypnée">polypnée</option>
-                <option value="bradypnée">bradypnée</option>
-                <option value="apnée">apnée</option>
-              </select>
+        <details class="appel18-collapse" open>
+          <summary>Rechercher (xABCDE)</summary>
+          <div class="appel18-collapse-body">
+            <div class="appel18-grid">
+              <div class="field"><label for="a18XVisible">X — Hémorragie visible</label><select id="a18XVisible"><option value="non">Non</option><option value="oui">Oui</option></select></div>
+              <div class="field"><label for="a18XLocalisation">X — Localisation</label><input type="text" id="a18XLocalisation"></div>
+              <div class="field"><label for="a18XGeste">X — Geste réalisé</label><select id="a18XGeste"><option value="">-</option><option value="garrot">Garrot</option><option value="packing">Packing</option><option value="compression">Compression</option></select></div>
+              <div class="field"><label for="a18AFree">A — VAS libres</label><select id="a18AFree"><option value="oui">Oui</option><option value="non">Non</option></select></div>
+              <div class="field"><label for="a18ACause">A — Cause si non</label><input type="text" id="a18ACause"></div>
+              <div class="field"><label for="a18AGeste">A — Geste LVA</label><select id="a18AGeste"><option value="">-</option><option value="LVA classique">LVA classique</option><option value="élévation menton">Élévation menton</option><option value="désobstruction">Désobstruction</option></select></div>
+              <label class="appel18-checkline"><input type="checkbox" id="a18ATrauma"> A — Maintien tête si trauma</label>
+              <div class="field"><label for="a18BResp">B — Respiration présente</label><select id="a18BResp"><option value="oui">Oui</option><option value="non">Non</option></select></div>
+              <div class="field"><label for="a18CPoulsRadial">C — Pouls radial</label><select id="a18CPoulsRadial"><option value="présent">Présent</option><option value="filant">Filant</option><option value="absent">Absent</option></select></div>
+              <div class="field"><label for="a18CPoulsCarotidien">C — Pouls carotidien</label><select id="a18CPoulsCarotidien"><option value="présent">Présent</option><option value="absent">Absent</option></select></div>
+              <div class="field"><label for="a18DConscient">D — Conscient</label><select id="a18DConscient"><option value="oui">Oui</option><option value="non">Non</option><option value="agité">Agité</option><option value="somnolent">Somnolent</option></select></div>
+              <div class="field full"><label for="a18ELesions">E — Lésions observées</label><textarea id="a18ELesions" rows="2"></textarea></div>
             </div>
           </div>
-        </div>
-      </details>
+        </details>
 
-      <details class="appel18-collapse">
-        <summary>C — Circulation</summary>
-        <div class="appel18-collapse-body">
-          <div class="appel18-grid">
-            <div class="field"><label for="a18CFc">FC</label><input type="number" id="a18CFc" min="0" placeholder="bpm"></div>
-            <div class="field"><label for="a18CPaSys">PA systolique</label><input type="number" id="a18CPaSys" min="0"></div>
-            <div class="field"><label for="a18CPaDia">PA diastolique</label><input type="number" id="a18CPaDia" min="0"></div>
-            <div class="field">
-              <label for="a18Ctrc">TRC</label>
-              <select id="a18Ctrc">
-                <option value="<2s" selected>&lt;2s</option>
-                <option value=">2s">&gt;2s</option>
-              </select>
-            </div>
-            <div class="field full">
-              <label for="a18CPeau">Peau</label>
-              <select id="a18CPeau">
-                <option value="normale" selected>normale</option>
-                <option value="pâle">pâle</option>
-                <option value="marbrée">marbrée</option>
-                <option value="cyanosée">cyanosée</option>
-              </select>
+        <details class="appel18-collapse">
+          <summary>Apprécier (xABCDE)</summary>
+          <div class="appel18-collapse-body">
+            <div class="appel18-grid">
+              <div class="field"><label for="a18XEvolution">X — Évolution</label><select id="a18XEvolution"><option value="contrôlée">Contrôlée</option><option value="active">Active</option><option value="suintante">Suintante</option></select></div>
+              <div class="field"><label for="a18AEtat">A — État actuel</label><select id="a18AEtat"><option value="libre">Libre</option><option value="maintenue manuellement">Maintenue manuellement</option><option value="canule OPA">Canule OPA</option><option value="canule NPA">Canule NPA</option><option value="intubé">Intubé</option></select></div>
+              <div class="field"><label for="a18BRap">B — Rapidité</label><select id="a18BRap"><option value="normale">Normale</option><option value="rapide">Rapide</option><option value="lente">Lente</option><option value="pause">Pause</option></select></div>
+              <div class="field"><label for="a18BAmp">B — Amplitude</label><select id="a18BAmp"><option value="normale">Normale</option><option value="superficielle">Superficielle</option><option value="profonde">Profonde</option></select></div>
+              <div class="field"><label for="a18BReg">B — Régularité</label><select id="a18BReg"><option value="régulière">Régulière</option><option value="irrégulière">Irrégulière</option></select></div>
+              <div class="field"><label for="a18BPeau">B — Peau/muqueuses</label><select id="a18BPeau"><option value="normale">Normale</option><option value="pâle">Pâle</option><option value="cyanosée">Cyanosée</option><option value="marbrée">Marbrée</option></select></div>
+              <div class="field"><label for="a18CRap">C — Rapidité</label><select id="a18CRap"><option value="normal">Normal</option><option value="rapide">Rapide</option><option value="lent">Lent</option></select></div>
+              <div class="field"><label for="a18CAmp">C — Amplitude</label><select id="a18CAmp"><option value="normal">Normal</option><option value="filant">Filant</option></select></div>
+              <div class="field"><label for="a18CTrc">C — TRC</label><select id="a18CTrc"><option value="<2s">&lt;2s</option><option value=">2s">&gt;2s</option></select></div>
+              <div class="field"><label for="a18CPeau">C — Peau</label><select id="a18CPeau"><option value="normale">Normale</option><option value="pâle">Pâle</option><option value="marbrée">Marbrée</option><option value="cyanosée">Cyanosée</option><option value="moite">Moite</option></select></div>
+              <div class="field"><label for="a18CTempPeau">C — Température peau</label><select id="a18CTempPeau"><option value="chaude">Chaude</option><option value="froide">Froide</option><option value="tiède">Tiède</option></select></div>
+              <div class="field"><label for="a18DOrientation">D — Orientation</label><select id="a18DOrientation"><option value="orienté T+E">Orienté T+E</option><option value="désorienté">Désorienté</option><option value="inconscient">Inconscient</option></select></div>
+              <div class="field"><label for="a18DPupilles">D — Pupilles</label><select id="a18DPupilles"><option value="iso-réactives">Iso-réactives</option><option value="anisocorie">Anisocorie</option><option value="mydriase">Mydriase</option><option value="myosis">Myosis</option></select></div>
+              <div class="field"><label for="a18DMotricite">D — Motricité 4 membres</label><select id="a18DMotricite"><option value="normale">Normale</option><option value="déficit unilatéral">Déficit unilatéral</option><option value="déficit bilatéral">Déficit bilatéral</option><option value="absent">Absent</option></select></div>
+              <div class="field"><label for="a18EVDA">D — EVDA</label><select id="a18EVDA"><option value="Éveillé">Éveillé</option><option value="Verbal">Verbal</option><option value="Douleur">Douleur</option><option value="Aucune réaction">Aucune réaction</option></select></div>
             </div>
           </div>
-        </div>
-      </details>
+        </details>
 
-      <details class="appel18-collapse">
-        <summary>D — Disability</summary>
-        <div class="appel18-collapse-body">
-          <div class="appel18-grid">
-            <div class="field"><label for="a18DGcs">GCS (3–15)</label><input type="number" id="a18DGcs" min="3" max="15"></div>
-            <div class="field"><label for="a18DGcsHint">Hint E+V+M</label><input type="text" id="a18DGcsHint" placeholder="Ex: E4 V5 M6" readonly></div>
-            <div class="field"><label for="a18DGlycemie">Glycémie</label><input type="number" id="a18DGlycemie" step="0.01" min="0"></div>
-            <div class="field">
-              <label for="a18DGlyUnit">Unité glycémie</label>
-              <select id="a18DGlyUnit">
-                <option value="mmol/L" selected>mmol/L</option>
-                <option value="g/L">g/L</option>
-              </select>
+        <details class="appel18-collapse">
+          <summary>Mesurer (xABCDE)</summary>
+          <div class="appel18-collapse-body">
+            <div class="appel18-grid">
+              <div class="field"><label for="a18XPerte">X — Estimation perte</label><select id="a18XPerte"><option value="<500ml">&lt;500ml</option><option value="500-1000ml">500-1000ml</option><option value=">1000ml">&gt;1000ml</option></select></div>
+              <div class="field"><label for="a18BFr">B — FR /min</label><input type="number" id="a18BFr" min="0"></div>
+              <div class="field"><label for="a18BSpO2">B — SpO2 %</label><input type="number" id="a18BSpO2" min="0" max="100"></div>
+              <label class="appel18-checkline"><input type="checkbox" id="a18BO2"> B — O2 mis en place</label>
+              <div class="field"><label for="a18BO2L">B — Litrage O2</label><input type="number" id="a18BO2L" min="0"></div>
+              <div class="field"><label for="a18CFC">C — FC /min</label><input type="number" id="a18CFC" min="0"></div>
+              <div class="field"><label for="a18CPASys">C — PA sys</label><input type="number" id="a18CPASys" min="0"></div>
+              <div class="field"><label for="a18CPADia">C — PA dia</label><input type="number" id="a18CPADia" min="0"></div>
+              <label class="appel18-checkline"><input type="checkbox" id="a18CEcg"> C — ECG</label>
+              <label class="appel18-checkline"><input type="checkbox" id="a18CSuspHemo"> C — Suspicion hémorragie interne</label>
+              <div class="field full"><label for="a18CRegions">C — Régions suspectes (thorax, abdomen, fémurs, bassin...)</label><input type="text" id="a18CRegions"></div>
+              <div class="field"><label for="a18DGcsY">D — Glasgow Y /4</label><input type="number" id="a18DGcsY" min="1" max="4"></div>
+              <div class="field"><label for="a18DGcsV">D — Glasgow V /5</label><input type="number" id="a18DGcsV" min="1" max="5"></div>
+              <div class="field"><label for="a18DGcsM">D — Glasgow M /6</label><input type="number" id="a18DGcsM" min="1" max="6"></div>
+              <div class="field"><label for="a18DGcs">D — Glasgow total</label><input type="number" id="a18DGcs" min="3" max="15" readonly></div>
+              <div class="field"><label for="a18DGlycemie">D — Glycémie</label><input type="number" id="a18DGlycemie" min="0" step="0.1"></div>
+              <div class="field"><label for="a18DGlyUnit">D — Unité</label><select id="a18DGlyUnit"><option value="mg/dL">mg/dL</option><option value="mmol/L">mmol/L</option></select></div>
+              <div class="field"><label for="a18ETemp">E — Température °C</label><input type="number" id="a18ETemp" step="0.1"></div>
+              <div class="field"><label for="a18EWallace">E — Score Wallace %</label><input type="number" id="a18EWallace" min="0" max="100"></div>
             </div>
-            <div class="field full">
-              <label for="a18DPupilles">Pupilles</label>
-              <select id="a18DPupilles">
-                <option value="iso-réactives" selected>iso-réactives</option>
-                <option value="anisocorie">anisocorie</option>
-                <option value="mydriase">mydriase</option>
-                <option value="myosis">myosis</option>
-              </select>
+            <div class="alert" style="margin:0;">Bloodbox: Côtes 125ml · Radius-Cubitus 250-500ml · Humérus 500-750ml · Tibia 500-1000ml · Fémur 1000-2000ml · Bassin 500-5000ml</div>
+          </div>
+        </details>
+
+        <details class="appel18-collapse">
+          <summary>Examiner / SAMPLER / secondaire</summary>
+          <div class="appel18-collapse-body">
+            <div class="appel18-grid">
+              <div class="field full"><label for="a18SamplerP">PQRST — Provoqué par</label><input type="text" id="a18SamplerP"></div>
+              <div class="field"><label for="a18SamplerQ">PQRST — Qualité</label><input type="text" id="a18SamplerQ"></div>
+              <div class="field"><label for="a18SamplerR">PQRST — Région</label><input type="text" id="a18SamplerR"></div>
+              <div class="field"><label for="a18SamplerS">PQRST — Sévérité EN</label><input type="range" id="a18SamplerS" min="0" max="10" value="0"></div>
+              <div class="field"><label for="a18SamplerT">PQRST — Temps</label><input type="text" id="a18SamplerT"></div>
+              <div class="field"><label for="a18Allergies">A — Allergies</label><input type="text" id="a18Allergies"></div>
+              <div class="field"><label for="a18Medicaments">M — Médicaments</label><input type="text" id="a18Medicaments"></div>
+              <div class="field"><label for="a18Passe">P — Passé médico-chirurgical</label><input type="text" id="a18Passe"></div>
+              <div class="field"><label for="a18LastMeal">L — Last meal</label><input type="text" id="a18LastMeal"></div>
+              <div class="field"><label for="a18LastMealTime">L — Heure</label><input type="time" id="a18LastMealTime"></div>
+              <div class="field full"><label for="a18Evenement">E — Événement déclenchant</label><input type="text" id="a18Evenement"></div>
+              <div class="field"><label for="a18SecFr">Secondaire FR /min</label><input type="number" id="a18SecFr" min="0"></div>
+              <div class="field"><label for="a18SecFc">Secondaire FC /min</label><input type="number" id="a18SecFc" min="0"></div>
+              <div class="field"><label for="a18SecTemp">Secondaire température °C</label><input type="number" id="a18SecTemp" step="0.1"></div>
+              <div class="field"><label for="a18SecGly">Secondaire glycémie mg/dL</label><input type="number" id="a18SecGly" step="0.1"></div>
+              <label class="appel18-checkline"><input type="checkbox" id="a18Palpation"> Palpation tête-pieds effectuée</label>
+              <div class="field full"><label for="a18PalpationNotes">Palpation — constat</label><textarea id="a18PalpationNotes" rows="2"></textarea></div>
             </div>
           </div>
-        </div>
-      </details>
+        </details>
 
-      <details class="appel18-collapse">
-        <summary>E — Exposure</summary>
-        <div class="appel18-collapse-body">
+        <div class="appel18-block">
+          <div class="section-title">Gestes réalisés</div>
           <div class="appel18-grid">
-            <div class="field"><label for="a18ETemp">Température (°C)</label><input type="number" id="a18ETemp" step="0.1"></div>
-            <div class="field full"><label for="a18ELesions">Lésions</label><textarea id="a18ELesions" rows="2"></textarea></div>
-          </div>
-        </div>
-      </details>
-
-      <div class="appel18-block">
-        <div class="section-title">Gestes réalisés</div>
-        <div class="appel18-gestes">
-          <div class="appel18-geste-row" data-geste-row>
             <label class="appel18-checkline"><input type="checkbox" id="a18GesteO2"> O2</label>
-            <input class="appel18-geste-detail" id="a18GesteO2Detail" type="text" placeholder="Litrage">
-          </div>
-          <div class="appel18-geste-row" data-geste-row>
+            <div class="field"><label for="a18GesteO2Detail">Litrage L/min</label><input type="number" id="a18GesteO2Detail" min="0"></div>
             <label class="appel18-checkline"><input type="checkbox" id="a18GesteVvp"> VVP</label>
-            <input class="appel18-geste-detail" id="a18GesteVvpDetail" type="text" placeholder="Site">
-          </div>
-          <div class="appel18-geste-row" data-geste-row>
+            <div class="field"><label for="a18GesteVvpDetail">Site</label><input type="text" id="a18GesteVvpDetail"></div>
             <label class="appel18-checkline"><input type="checkbox" id="a18GesteImmo"> Immobilisation</label>
-            <input class="appel18-geste-detail" id="a18GesteImmoDetail" type="text" placeholder="Type">
-          </div>
-          <div class="appel18-geste-row" data-geste-row>
+            <div class="field"><label for="a18GesteImmoDetail">Type</label><select id="a18GesteImmoDetail"><option value="">-</option><option value="collier cervical">Collier cervical</option><option value="attelle">Attelle</option><option value="matelas coquille">Matelas coquille</option></select></div>
             <label class="appel18-checkline"><input type="checkbox" id="a18GesteGarrot"> Garrot</label>
-            <input class="appel18-geste-detail" id="a18GesteGarrotDetail" type="text" placeholder="Membre + heure">
-          </div>
-          <div class="appel18-geste-row" data-geste-row>
+            <div class="field"><label for="a18GesteGarrotDetail">Membre</label><input type="text" id="a18GesteGarrotDetail"></div>
+            <div class="field"><label for="a18GesteGarrotHeure">Heure garrot</label><input type="time" id="a18GesteGarrotHeure"></div>
             <label class="appel18-checkline"><input type="checkbox" id="a18GestePansement"> Pansement compressif</label>
-            <input class="appel18-geste-detail" id="a18GestePansementDetail" type="text" placeholder="Détail (optionnel)">
-          </div>
-          <div class="appel18-geste-row" data-geste-row>
+            <div class="field"><label for="a18GestePansementDetail">Localisation</label><input type="text" id="a18GestePansementDetail"></div>
             <label class="appel18-checkline"><input type="checkbox" id="a18GestePosition"> Position d'attente</label>
-            <select class="appel18-geste-detail" id="a18GestePositionDetail">
-              <option value="">Choisir</option>
-              <option value="PLS">PLS</option>
-              <option value="Décubitus dorsal">Décubitus dorsal</option>
-              <option value="Décubitus latéral">Décubitus latéral</option>
-              <option value="Semi-assise">Semi-assise</option>
-              <option value="Assise">Assise</option>
-            </select>
-          </div>
-          <div class="appel18-geste-row" data-geste-row>
+            <div class="field"><label for="a18GestePositionDetail">Type</label><select id="a18GestePositionDetail"><option value="">-</option><option value="PLS">PLS</option><option value="demi-assis">Demi-assis</option><option value="allongé">Allongé</option><option value="Trendelenburg">Trendelenburg</option></select></div>
             <label class="appel18-checkline"><input type="checkbox" id="a18GesteAutre"> Autre</label>
-            <input class="appel18-geste-detail" id="a18GesteAutreDetail" type="text" placeholder="Texte libre">
+            <div class="field"><label for="a18GesteAutreDetail">Détail</label><input type="text" id="a18GesteAutreDetail"></div>
           </div>
         </div>
       </div>
 
-      <div class="appel18-block appel18-preview">
-        <div class="section-title">Aperçu bilan radio</div>
-        <textarea id="a18BilanPreview"></textarea>
-        <div style="display:flex;justify-content:flex-end;gap:8px;">
-          <button type="button" id="a18RegeneratePreview" class="btn-secondary">↺ Régénérer</button>
-          <button type="button" id="a18CopyPreview" class="btn-main">📋 Copier</button>
+      <div id="a18Step2TabPreview" class="appel18-tab-panel" style="display:none;">
+        <div class="appel18-block appel18-preview">
+          <div class="section-title">Aperçu bilan radio</div>
+          <textarea id="a18BilanPreview"></textarea>
+          <div style="display:flex;justify-content:flex-end;gap:8px;">
+            <button type="button" id="a18RegeneratePreview" class="btn-secondary">↺ Régénérer</button>
+            <button type="button" id="a18CopyPreview" class="btn-main">📋 Copier</button>
+          </div>
         </div>
       </div>
 
       <div class="appel18-actions">
-        <button type="button" id="a18Back2" class="btn-secondary">← Retour</button>
-        <button type="button" id="a18Next2" class="btn-main">Suivant →</button>
+        <span></span>
+        <button type="button" id="a18SaveStep2" class="btn-main">✅ Valider étape 2 — Enregistrer bilan</button>
       </div>
     </section>
 
     <section id="appel18Step3" class="appel18-section" data-step="3">
-      <p class="appel18-subtitle">Formalisez la décision du médecin régulateur.</p>
+      <p class="appel18-subtitle">Étape 3 — Régulation médicale</p>
       <div id="appel18ErrorStep3" class="appel18-inline-error"></div>
       <div class="appel18-grid">
-        <div class="field">
-          <label for="a18RegMedecin">Médecin régulateur</label>
-          <input type="text" id="a18RegMedecin" placeholder="Nom / pseudo">
-        </div>
-        <div class="field">
-          <label for="a18RegHeure">Heure de décision</label>
-          <input type="time" id="a18RegHeure">
-        </div>
+        <div class="field"><label for="a18RegMedecin">Médecin régulateur</label><input type="text" id="a18RegMedecin"></div>
+        <div class="field"><label for="a18RegHeure">Heure de régulation</label><input type="time" id="a18RegHeure"></div>
       </div>
-
       <div class="appel18-decision-grid" id="a18DecisionGroup">
-        <label class="appel18-radio-card" data-decision-card>
-          <input type="radio" name="a18Decision" value="LSP">
-          <span>🟢 LSP (Laissé Sur Place)</span>
-        </label>
-        <label class="appel18-radio-card" data-decision-card>
-          <input type="radio" name="a18Decision" value="Transport">
-          <span>🔵 Transport VSAV (sans SMUR)</span>
-        </label>
-        <label class="appel18-radio-card" data-decision-card>
-          <input type="radio" name="a18Decision" value="SMUR">
-          <span>🔴 Engagement SMUR</span>
-        </label>
-        <label class="appel18-radio-card" data-decision-card>
-          <input type="radio" name="a18Decision" value="Refus">
-          <span>⚫ Refus de soins patient</span>
-        </label>
+        <label class="appel18-radio-card" data-decision-card><input type="radio" name="a18Decision" value="LSP"><span>🟢 LSP — Laissé Sur Place</span></label>
+        <label class="appel18-radio-card" data-decision-card><input type="radio" name="a18Decision" value="Transport VSAV"><span>🔵 Transport VSAV (sans SMUR)</span></label>
+        <label class="appel18-radio-card" data-decision-card><input type="radio" name="a18Decision" value="SMUR"><span>🔴 Engagement SMUR → Étape 4</span></label>
+        <label class="appel18-radio-card" data-decision-card><input type="radio" name="a18Decision" value="Refus"><span>⚫ Refus de soins patient</span></label>
       </div>
-
       <div id="a18DestinationWrap" class="appel18-destination-wrap">
-        <div class="field">
-          <label for="a18RegDestination">Destination</label>
-          <input type="text" id="a18RegDestination" placeholder="Nom de l'hôpital">
-        </div>
+        <div class="field"><label for="a18RegDestination">Destination</label><input type="text" id="a18RegDestination"></div>
       </div>
-
-      <div class="field">
-        <label for="a18RegJustif">Justification courte</label>
-        <textarea id="a18RegJustif" rows="2" placeholder="Optionnel"></textarea>
-      </div>
-
-      <div id="a18SmurBanner" class="appel18-banner">→ Une intervention SMUR sera créée à l'étape suivante avec les données pré-remplies.</div>
-
+      <div class="field"><label for="a18RegJustif">Justification courte</label><textarea id="a18RegJustif" rows="2"></textarea></div>
+      <div class="field"><label for="a18RegConseils">Conseils donnés (LSP/Refus)</label><textarea id="a18RegConseils" rows="2"></textarea></div>
+      <div id="a18SmurBanner" class="appel18-banner">→ Étape 4 : création intervention SMUR</div>
       <div class="appel18-actions">
-        <button type="button" id="a18Back3" class="btn-secondary">← Retour</button>
-        <button type="button" id="a18Next3" class="btn-main">Suivant →</button>
+        <span></span>
+        <button type="button" id="a18SaveStep3" class="btn-main">✅ Valider étape 3 — Enregistrer régulation</button>
       </div>
     </section>
 
     <section id="appel18Step4" class="appel18-section" data-step="4">
-      <p id="a18Step4Subtitle" class="appel18-subtitle">Création intervention SMUR.</p>
+      <p id="a18Step4Subtitle" class="appel18-subtitle">Étape 4 — Intervention SMUR</p>
       <div id="appel18ErrorStep4" class="appel18-inline-error"></div>
-
-      <div id="a18SmurWrap" class="appel18-smur-wrap">
+      <div id="a18SmurWrap" class="appel18-smur-wrap show">
         <div class="appel18-grid">
-          <div class="field">
-            <label for="a18SmurNumero">Numéro dossier</label>
-            <input type="text" id="a18SmurNumero">
-          </div>
-          <div class="field">
-            <label for="a18SmurLieu">Lieu intervention</label>
-            <input type="text" id="a18SmurLieu">
-          </div>
-          <div class="field">
-            <label for="a18SmurVecteur">Vecteur</label>
-            <select id="a18SmurVecteur">
-              <option value="SMUR">SMUR</option>
-              <option value="VSAV + SMUR">VSAV + SMUR</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="a18SmurHeure">Heure engagement SMUR</label>
-            <input type="time" id="a18SmurHeure">
-          </div>
-          <div class="field">
-            <label for="a18SmurMedecin">Médecin SMUR</label>
-            <input type="text" id="a18SmurMedecin">
-          </div>
-          <div class="field">
-            <label for="a18SmurInfirmier">Infirmier SMUR / IADE</label>
-            <input type="text" id="a18SmurInfirmier">
-          </div>
-          <div class="field full">
-            <label for="a18SmurStatut">Statut initial</label>
-            <select id="a18SmurStatut">
-              <option value="En route" selected>En route</option>
-              <option value="Sur place">Sur place</option>
-              <option value="Retour hôpital">Retour hôpital</option>
-              <option value="Clôturé">Clôturé</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label for="a18SmurNotes">Notes complémentaires SMUR</label>
-            <textarea id="a18SmurNotes" rows="3"></textarea>
-          </div>
+          <div class="field"><label for="a18SmurNumero">Numéro dossier</label><input type="text" id="a18SmurNumero" readonly></div>
+          <div class="field"><label for="a18SmurLieu">Lieu</label><input type="text" id="a18SmurLieu"></div>
+          <div class="field"><label for="a18SmurVecteur">Vecteur</label><select id="a18SmurVecteur"><option value="SMUR">SMUR</option><option value="VSAV + SMUR">VSAV + SMUR</option></select></div>
+          <div class="field"><label for="a18SmurHeure">Heure engagement SMUR</label><input type="time" id="a18SmurHeure"></div>
+          <div class="field"><label for="a18SmurMedecin">Médecin SMUR</label><input type="text" id="a18SmurMedecin"></div>
+          <div class="field"><label for="a18SmurInfirmier">Infirmier / IADE</label><input type="text" id="a18SmurInfirmier"></div>
+          <div class="field"><label for="a18SmurStatut">Statut initial</label><select id="a18SmurStatut"><option>En route</option><option>Sur place</option><option>Retour hôpital</option><option>Clôturé</option></select></div>
+          <div class="field full"><label for="a18SmurNotes">Notes complémentaires</label><textarea id="a18SmurNotes" rows="3"></textarea></div>
         </div>
       </div>
-
       <div id="a18SummaryWrap" class="appel18-summary-wrap">
         <div class="alert" style="margin:0;">Dossier clôturé — <strong id="a18SummaryDecision">Décision</strong>.</div>
       </div>
-
       <div class="appel18-actions">
-        <button type="button" id="a18Back4" class="btn-secondary">← Retour</button>
-        <button type="button" id="a18Save" class="btn-main">✅ Enregistrer le dossier complet</button>
+        <span></span>
+        <button type="button" id="a18SaveStep4" class="btn-main">✅ Enregistrer intervention SMUR</button>
       </div>
     </section>
   </div>
@@ -1827,6 +1803,8 @@
     getFirestore,
     collection,
     addDoc,
+    setDoc,
+    getDoc,
     getDocs,
     onSnapshot,
     doc,
@@ -1834,6 +1812,7 @@
     query,
     where,
     orderBy,
+    limit,
     serverTimestamp,
     arrayUnion
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -1887,7 +1866,13 @@
       step: 1,
       previewManual: false,
       smurEnabled: false,
-      loadingNumero: false
+      loadingNumero: false,
+      dossierId: "",
+      completed: {},
+      status: "ouvert",
+      viewReadOnly: false,
+      list: [],
+      step2Tab: "form"
     }
   };
 
@@ -1940,6 +1925,7 @@
     topbarStatus: document.querySelector(".topbar-status"),
     editEquipageDrawerBtn: document.getElementById("editEquipageDrawerBtn"),
     openAppel18Btn: document.getElementById("openAppel18Btn"),
+    appels18TableBody: document.getElementById("appels18TableBody"),
     appel18Backdrop: document.getElementById("appel18Backdrop"),
     appel18Drawer: document.getElementById("appel18Drawer"),
     closeAppel18Btn: document.getElementById("closeAppel18Btn"),
@@ -1955,7 +1941,11 @@
     a18CodisAdresse: document.getElementById("a18CodisAdresse"),
     a18CodisVecteur: document.getElementById("a18CodisVecteur"),
     a18CodisNumero: document.getElementById("a18CodisNumero"),
+    a18CodisVictimes: document.getElementById("a18CodisVictimes"),
     a18CodisPrecisions: document.getElementById("a18CodisPrecisions"),
+    a18Step2Tabs: document.getElementById("a18Step2Tabs"),
+    a18Step2TabForm: document.getElementById("a18Step2TabForm"),
+    a18Step2TabPreview: document.getElementById("a18Step2TabPreview"),
     a18VictimeNom: document.getElementById("a18VictimeNom"),
     a18VictimeAge: document.getElementById("a18VictimeAge"),
     a18VictimeSexe: document.getElementById("a18VictimeSexe"),
@@ -1988,6 +1978,7 @@
     a18DecisionGroup: document.getElementById("a18DecisionGroup"),
     a18RegDestination: document.getElementById("a18RegDestination"),
     a18RegJustif: document.getElementById("a18RegJustif"),
+    a18RegConseils: document.getElementById("a18RegConseils"),
     a18DestinationWrap: document.getElementById("a18DestinationWrap"),
     a18SmurBanner: document.getElementById("a18SmurBanner"),
     a18SmurWrap: document.getElementById("a18SmurWrap"),
@@ -2002,7 +1993,10 @@
     a18SmurInfirmier: document.getElementById("a18SmurInfirmier"),
     a18SmurStatut: document.getElementById("a18SmurStatut"),
     a18SmurNotes: document.getElementById("a18SmurNotes"),
-    a18Save: document.getElementById("a18Save")
+    a18SaveStep1: document.getElementById("a18SaveStep1"),
+    a18SaveStep2: document.getElementById("a18SaveStep2"),
+    a18SaveStep3: document.getElementById("a18SaveStep3"),
+    a18SaveStep4: document.getElementById("a18SaveStep4")
   };
 
   const APPEL18_STEP_TITLES = {
@@ -3189,15 +3183,21 @@
     return `${date.getFullYear()}${pad2(date.getMonth() + 1)}${pad2(date.getDate())}`;
   }
 
-  function getImmediateAppel18Numero() {
-    const today = getDateKey(new Date());
-    const storedDate = localStorage.getItem(STORAGE_KEYS.a18NumeroDate) || "";
-    const rawSeq = Number(localStorage.getItem(STORAGE_KEYS.a18NumeroSeq) || "0");
-    const baseSeq = Number.isFinite(rawSeq) && rawSeq > 0 ? rawSeq : 0;
-    const nextSeq = storedDate === today ? baseSeq + 1 : 1;
-    localStorage.setItem(STORAGE_KEYS.a18NumeroDate, today);
-    localStorage.setItem(STORAGE_KEYS.a18NumeroSeq, String(nextSeq));
-    return `CRAA-${today}-${String(nextSeq).padStart(3, "0")}`;
+  function getA18Value(id) {
+    const el = document.getElementById(id);
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function getA18Checked(id) {
+    const el = document.getElementById(id);
+    return !!(el && el.checked);
+  }
+
+  function parseA18Number(id) {
+    const raw = getA18Value(id);
+    if (!raw) return null;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : null;
   }
 
   function clearAppel18Errors() {
@@ -3209,13 +3209,12 @@
   }
 
   function showAppel18Error(step, message) {
-    const map = {
+    const target = {
       1: refs.appel18ErrorStep1,
       2: refs.appel18ErrorStep2,
       3: refs.appel18ErrorStep3,
       4: refs.appel18ErrorStep4
-    };
-    const target = map[step];
+    }[step];
     if (!target) return;
     target.textContent = message;
     target.classList.add("show");
@@ -3226,419 +3225,86 @@
     return selected ? selected.value : "";
   }
 
-  function isDestinationRequired(decision) {
-    return decision === "Transport" || decision === "SMUR";
+  function getAppel18NextStepFromDoc(data = {}) {
+    const statut = data.statut || "ouvert";
+    const decision = data?.regulation?.decision || "";
+    if (statut === "clôturé") return 4;
+    if (statut === "régulé") return decision === "SMUR" ? 4 : 4;
+    if (statut === "bilan_reçu") return 3;
+    if (statut === "ouvert") return 2;
+    return 1;
+  }
+
+  function normalizeA18StatusClass(status = "") {
+    const map = {
+      ouvert: "ouvert",
+      bilan_reçu: "bilan_recu",
+      régulé: "regule",
+      clôturé: "cloture"
+    };
+    return map[status] || "ouvert";
   }
 
   function updateDecisionCards() {
-    const selected = getAppel18Decision();
-    refs.appel18DecisionGroup.querySelectorAll("[data-decision-card]").forEach((card) => {
-      const input = card.querySelector("input[type='radio']");
-      card.classList.toggle("active", !!input && input.value === selected);
+    const decision = getAppel18Decision();
+    refs.a18DecisionGroup.querySelectorAll("[data-decision-card]").forEach((card) => {
+      const radio = card.querySelector("input[type='radio']");
+      card.classList.toggle("active", !!radio && radio.value === decision);
     });
-
-    const needDestination = isDestinationRequired(selected);
-    refs.a18DestinationWrap.classList.toggle("show", needDestination);
-    refs.a18SmurBanner.classList.toggle("show", selected === "SMUR");
-    state.appel18.smurEnabled = selected === "SMUR";
+    const destinationRequired = decision === "SMUR" || decision === "Transport VSAV";
+    refs.a18DestinationWrap.classList.toggle("show", destinationRequired);
+    refs.a18SmurBanner.classList.toggle("show", decision === "SMUR");
+    state.appel18.smurEnabled = decision === "SMUR";
     updateAppel18Step4Mode();
     renderAppel18Progress();
+    updateAppel18ActionButtons();
   }
 
-  function updateGesteRows() {
-    refs.appel18Drawer.querySelectorAll("[data-geste-row]").forEach((row) => {
-      const checkbox = row.querySelector('input[type="checkbox"]');
-      row.classList.toggle("active", !!checkbox && checkbox.checked);
+  function syncGlasgowTotal() {
+    const y = parseA18Number("a18DGcsY") || 0;
+    const v = parseA18Number("a18DGcsV") || 0;
+    const m = parseA18Number("a18DGcsM") || 0;
+    const total = y + v + m;
+    refs.a18DGcs.value = total > 0 ? String(total) : "";
+  }
+
+  function formatA18Timestamp(value) {
+    const d = asDate(value);
+    if (!d) return "";
+    return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  }
+
+  function renderAppels18List() {
+    const list = [...(state.appel18.list || [])].sort((a, b) => {
+      const ta = asDate(a?.timestamps?.codis)?.getTime() || 0;
+      const tb = asDate(b?.timestamps?.codis)?.getTime() || 0;
+      return tb - ta;
     });
-  }
 
-  function updateGcsHint() {
-    const gcs = Number(refs.a18DGcs.value);
-    if (!gcs || gcs < 3 || gcs > 15) {
-      refs.a18DGcsHint.value = "";
+    if (!list.length) {
+      refs.appels18TableBody.innerHTML = '<tr><td colspan="7" class="text-dim">Aucun dossier Appel 18.</td></tr>';
       return;
     }
-    refs.a18DGcsHint.value = `GCS total ${gcs} (E+V+M à préciser)`;
-  }
 
-  function buildBilanPreview() {
-    const victime = refs.a18VictimeNom.value.trim() || "victime non identifiée";
-    const age = refs.a18VictimeAge.value ? `${refs.a18VictimeAge.value} ans` : "âge non précisé";
-    const sexe = refs.a18VictimeSexe.value || "Inconnu";
-    const motif = refs.a18MotifConfirme.value.trim() || refs.a18CodisMotif.value || "motif non précisé";
-
-    const xLine = refs.a18XPresent.checked
-      ? `X: Hémorragie externe présente (${refs.a18XZone.value.trim() || "zone non précisée"}) ${refs.a18XDesc.value.trim()}`.trim()
-      : "X: pas d'hémorragie externe visible";
-
-    const aLine = `A: ${refs.a18AEtat.value || "non précisé"}${refs.a18ANotes.value.trim() ? `, ${refs.a18ANotes.value.trim()}` : ""}`;
-    const bLine = `B: FR ${refs.a18BFr.value || "-"}/min, SpO2 ${refs.a18BSpO2.value || "-"}%, ${refs.a18BPattern.value || "pattern non précisé"}`;
-    const cLine = `C: FC ${refs.a18CFc.value || "-"} bpm, PA ${refs.a18CPaSys.value || "-"}/${refs.a18CPaDia.value || "-"} mmHg, TRC ${refs.a18Ctrc.value || "-"}, peau ${refs.a18CPeau.value || "-"}`;
-    const dLine = `D: GCS ${refs.a18DGcs.value || "-"}, glycémie ${refs.a18DGlycemie.value || "-"} ${refs.a18DGlyUnit.value || ""}, pupilles ${refs.a18DPupilles.value || "-"}`;
-    const eLine = `E: température ${refs.a18ETemp.value || "-"}°C, lésions ${refs.a18ELesions.value.trim() || "non décrites"}`;
-
-    const gestes = [];
-    const addGeste = (checkedId, label, detailId) => {
-      const checked = document.getElementById(checkedId)?.checked;
-      if (!checked) return;
-      const detail = document.getElementById(detailId)?.value?.trim() || "";
-      gestes.push(detail ? `${label} (${detail})` : label);
-    };
-    addGeste("a18GesteO2", "O2", "a18GesteO2Detail");
-    addGeste("a18GesteVvp", "VVP", "a18GesteVvpDetail");
-    addGeste("a18GesteImmo", "Immobilisation", "a18GesteImmoDetail");
-    addGeste("a18GesteGarrot", "Garrot", "a18GesteGarrotDetail");
-    addGeste("a18GestePansement", "Pansement compressif", "a18GestePansementDetail");
-    addGeste("a18GestePosition", "Position d'attente", "a18GestePositionDetail");
-    addGeste("a18GesteAutre", "Autre", "a18GesteAutreDetail");
-
-    return [
-      `Bilan VSAV — ${motif} pour ${victime}, ${age}, sexe ${sexe}.`,
-      `xABCDE :`,
-      xLine,
-      aLine,
-      bLine,
-      cLine,
-      dLine,
-      eLine,
-      `Gestes réalisés : ${gestes.length ? gestes.join(" ; ") : "aucun geste particulier"}.`
-    ].join("\n");
-  }
-
-  function refreshBilanPreview(force = false) {
-    if (!force && state.appel18.previewManual) return;
-    refs.a18BilanPreview.value = buildBilanPreview();
-  }
-
-  function renderAppel18Progress() {
-    const smurEnabled = state.appel18.smurEnabled;
-    const current = state.appel18.step;
-    const steps = [
-      { id: 1, label: "CODIS" },
-      { id: 2, label: "Bilan" },
-      { id: 3, label: "Régulation" },
-      { id: 4, label: "SMUR" }
-    ];
-
-    refs.appel18Progress.innerHTML = steps.map((step) => {
-      const isDisabled = step.id === 4 && !smurEnabled;
-      const isDone = !isDisabled && step.id < current;
-      const isActive = !isDisabled && step.id === current;
-      const dot = isDone ? "✓" : String(step.id);
+    refs.appels18TableBody.innerHTML = list.map((item) => {
+      const status = item.statut || "ouvert";
+      const canResume = status !== "clôturé";
       return `
-        <div class="appel18-step ${isDisabled ? "disabled" : ""} ${isDone ? "done" : ""} ${isActive ? "active" : ""}">
-          <span class="appel18-step-dot">${dot}</span>
-          <span class="appel18-step-label">${step.label}${isDisabled ? '<span class="appel18-na">N/A</span>' : ""}</span>
-        </div>
+        <tr>
+          <td class="mono">${escapeHtml(item.numero || "-")}</td>
+          <td>${escapeHtml(item?.codis?.motif || "-")}</td>
+          <td>${escapeHtml(item?.codis?.adresse || "-")}</td>
+          <td>${escapeHtml(item?.codis?.vecteur || "-")}</td>
+          <td><span class="appel18-status ${normalizeA18StatusClass(status)}">${escapeHtml(status)}</span></td>
+          <td class="mono">${formatDateTime(item?.timestamps?.codis || null)}</td>
+          <td>
+            ${canResume
+              ? `<button type="button" class="btn-inline" data-a18-open="${escapeHtml(item.id)}">Reprendre</button>`
+              : `<button type="button" class="btn-inline" data-a18-view="${escapeHtml(item.id)}">Voir</button>`}
+          </td>
+        </tr>
       `;
     }).join("");
-  }
-
-  function renderAppel18Step() {
-    refs.appel18Sections.forEach((section) => {
-      const step = Number(section.dataset.step);
-      section.classList.toggle("active", step === state.appel18.step);
-    });
-    refs.appel18StepTitle.textContent = APPEL18_STEP_TITLES[state.appel18.step] || "Appel 18";
-    renderAppel18Progress();
-  }
-
-  function updateAppel18Step4Mode() {
-    const decision = getAppel18Decision();
-    const smur = decision === "SMUR";
-    refs.a18SmurWrap.classList.toggle("show", smur);
-    refs.a18SummaryWrap.classList.toggle("show", !smur);
-    refs.a18Step4Subtitle.textContent = smur
-      ? "Création intervention SMUR."
-      : "Dossier clôturé sans création d'intervention SMUR.";
-    refs.a18SummaryDecision.textContent = decision || "Décision non renseignée";
-    refs.a18SmurVecteur.value = refs.a18CodisVecteur.value === "VSAV + SMUR" ? "VSAV + SMUR" : "SMUR";
-    refs.a18SmurNumero.value = refs.a18CodisNumero.value;
-    refs.a18SmurLieu.value = refs.a18CodisAdresse.value;
-  }
-
-  function validateStep1() {
-    if (!refs.a18CodisHeure.value) return "L'heure de réception est obligatoire.";
-    if (!refs.a18CodisMotif.value) return "Le motif CODIS est obligatoire.";
-    if (!refs.a18CodisAdresse.value.trim()) return "L'adresse / lieu est obligatoire.";
-    if (!refs.a18CodisVecteur.value) return "Le vecteur engagé est obligatoire.";
-    if (!refs.a18CodisNumero.value.trim()) return "Le numéro de dossier est obligatoire.";
-    return "";
-  }
-
-  function validateStep2() {
-    if (!refs.a18MotifConfirme.value.trim()) return "Le motif principal confirmé est obligatoire.";
-    if (!refs.a18BilanPreview.value.trim()) return "Le texte de bilan ne peut pas être vide.";
-    return "";
-  }
-
-  function validateStep3() {
-    const decision = getAppel18Decision();
-    if (!refs.a18RegMedecin.value.trim()) return "Le médecin régulateur est obligatoire.";
-    if (!refs.a18RegHeure.value) return "L'heure de décision est obligatoire.";
-    if (!decision) return "Sélectionnez une décision de régulation.";
-    if (isDestinationRequired(decision) && !refs.a18RegDestination.value.trim()) {
-      return "La destination est obligatoire pour cette décision.";
-    }
-    return "";
-  }
-
-  function validateStep4() {
-    const decision = getAppel18Decision();
-    if (decision !== "SMUR") return "";
-    if (!refs.a18SmurHeure.value) return "L'heure d'engagement SMUR est obligatoire.";
-    if (!refs.a18SmurMedecin.value.trim()) return "Le médecin SMUR est obligatoire.";
-    if (!refs.a18SmurInfirmier.value.trim()) return "L'infirmier SMUR / IADE est obligatoire.";
-    if (!refs.a18SmurStatut.value) return "Le statut initial est obligatoire.";
-    return "";
-  }
-
-  async function generateAppel18Numero() {
-    const now = new Date();
-    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
-    const q = query(
-      collection(db, "appels18"),
-      where("timestamp", ">=", Timestamp.fromDate(start)),
-      where("timestamp", "<=", Timestamp.fromDate(end))
-    );
-    const snap = await getDocs(q);
-    const seq = String(snap.size + 1).padStart(3, "0");
-    return `CRAA-${getDateKey(now)}-${seq}`;
-  }
-
-  function resetAppel18Form() {
-    const immediateNumero = getImmediateAppel18Numero();
-
-    refs.a18CodisHeure.value = getCurrentTimeValue();
-    refs.a18CodisMotif.value = "";
-    refs.a18CodisAdresse.value = "";
-    refs.a18CodisVecteur.value = "";
-    refs.a18CodisNumero.value = immediateNumero;
-    refs.a18CodisPrecisions.value = "";
-
-    refs.a18VictimeNom.value = "";
-    refs.a18VictimeAge.value = "";
-    refs.a18VictimeSexe.value = "Inconnu";
-    refs.a18MotifConfirme.value = "";
-
-    refs.a18XPresent.checked = false;
-    refs.a18XZone.value = "";
-    refs.a18XDesc.value = "";
-    refs.a18AEtat.value = "libre";
-    refs.a18ANotes.value = "";
-    refs.a18BFr.value = "";
-    refs.a18BSpO2.value = "";
-    refs.a18BPattern.value = "normal";
-    refs.a18CFc.value = "";
-    refs.a18CPaSys.value = "";
-    refs.a18CPaDia.value = "";
-    refs.a18Ctrc.value = "<2s";
-    refs.a18CPeau.value = "normale";
-    refs.a18DGcs.value = "";
-    refs.a18DGcsHint.value = "";
-    refs.a18DGlycemie.value = "";
-    refs.a18DGlyUnit.value = "mmol/L";
-    refs.a18DPupilles.value = "iso-réactives";
-    refs.a18ETemp.value = "";
-    refs.a18ELesions.value = "";
-
-    [
-      ["a18GesteO2", "a18GesteO2Detail"],
-      ["a18GesteVvp", "a18GesteVvpDetail"],
-      ["a18GesteImmo", "a18GesteImmoDetail"],
-      ["a18GesteGarrot", "a18GesteGarrotDetail"],
-      ["a18GestePansement", "a18GestePansementDetail"],
-      ["a18GestePosition", "a18GestePositionDetail"],
-      ["a18GesteAutre", "a18GesteAutreDetail"]
-    ].forEach(([checkId, detailId]) => {
-      const check = document.getElementById(checkId);
-      const detail = document.getElementById(detailId);
-      if (check) check.checked = false;
-      if (detail) detail.value = "";
-    });
-
-    refs.a18RegMedecin.value = "";
-    refs.a18RegHeure.value = getCurrentTimeValue();
-    refs.appel18Drawer.querySelectorAll('input[name="a18Decision"]').forEach((input) => {
-      input.checked = false;
-    });
-    refs.a18RegDestination.value = "";
-    refs.a18RegJustif.value = "";
-
-    refs.a18SmurNumero.value = immediateNumero;
-    refs.a18SmurLieu.value = "";
-    refs.a18SmurVecteur.value = "SMUR";
-    refs.a18SmurHeure.value = getCurrentTimeValue();
-    refs.a18SmurMedecin.value = "";
-    refs.a18SmurInfirmier.value = "";
-    refs.a18SmurStatut.value = "En route";
-    refs.a18SmurNotes.value = "";
-
-    state.appel18.step = 1;
-    state.appel18.previewManual = false;
-    state.appel18.smurEnabled = false;
-    state.appel18.dirty = false;
-    clearAppel18Errors();
-    updateDecisionCards();
-    updateGesteRows();
-    refreshBilanPreview(true);
-    renderAppel18Step();
-  }
-
-  async function openAppel18Drawer() {
-    try {
-      refs.appel18Backdrop.classList.add("open");
-      refs.appel18Drawer.classList.add("open");
-      refs.appel18Drawer.setAttribute("aria-hidden", "false");
-      state.appel18.open = true;
-
-      resetAppel18Form();
-      const numeroAuChargement = refs.a18CodisNumero.value;
-      state.appel18.loadingNumero = true;
-
-      try {
-        const numero = await generateAppel18Numero();
-        const canOverwrite = !refs.a18CodisNumero.value || refs.a18CodisNumero.value === numeroAuChargement;
-        if (canOverwrite) {
-          refs.a18CodisNumero.value = numero;
-          refs.a18SmurNumero.value = numero;
-        }
-      } catch (err) {
-        if (!refs.a18CodisNumero.value) {
-          refs.a18CodisNumero.value = `CRAA-${getDateKey(new Date())}-001`;
-          refs.a18SmurNumero.value = refs.a18CodisNumero.value;
-        }
-      } finally {
-        state.appel18.loadingNumero = false;
-        refreshBilanPreview(true);
-      }
-    } catch (err) {
-      console.error("Ouverture Appel 18 impossible:", err);
-      showToast("Impossible d'ouvrir Appel 18 (voir console)");
-    }
-  }
-
-  function closeAppel18Drawer(force = false) {
-    if (!state.appel18.open) return;
-    if (!force && state.appel18.dirty) {
-      const ok = window.confirm("Des données non enregistrées seront perdues. Fermer le dossier Appel 18 ?");
-      if (!ok) return;
-    }
-    refs.appel18Drawer.classList.remove("open");
-    refs.appel18Backdrop.classList.remove("open");
-    refs.appel18Drawer.setAttribute("aria-hidden", "true");
-    state.appel18.open = false;
-  }
-
-  function goToAppel18Step(step) {
-    const clamped = Math.min(4, Math.max(1, step));
-    if (clamped === 4 && !state.appel18.smurEnabled) {
-      state.appel18.step = 4;
-    } else {
-      state.appel18.step = clamped;
-    }
-    renderAppel18Step();
-  }
-
-  function collectGestes() {
-    const config = [
-      ["a18GesteO2", "O2", "a18GesteO2Detail"],
-      ["a18GesteVvp", "VVP", "a18GesteVvpDetail"],
-      ["a18GesteImmo", "Immobilisation", "a18GesteImmoDetail"],
-      ["a18GesteGarrot", "Garrot", "a18GesteGarrotDetail"],
-      ["a18GestePansement", "Pansement compressif", "a18GestePansementDetail"],
-      ["a18GestePosition", "Position d'attente", "a18GestePositionDetail"],
-      ["a18GesteAutre", "Autre", "a18GesteAutreDetail"]
-    ];
-    return config.reduce((acc, [checkId, label, detailId]) => {
-      const checked = document.getElementById(checkId)?.checked;
-      if (!checked) return acc;
-      const detail = document.getElementById(detailId)?.value?.trim() || "";
-      acc.push({ label, detail });
-      return acc;
-    }, []);
-  }
-
-  function buildAppel18Payload() {
-    const decision = getAppel18Decision();
-    const smurEnabled = decision === "SMUR";
-    const statut = decision || "LSP";
-    return {
-      id: refs.a18CodisNumero.value.trim(),
-      timestamp: serverTimestamp(),
-      codis: {
-        heure: refs.a18CodisHeure.value,
-        motif: refs.a18CodisMotif.value,
-        adresse: refs.a18CodisAdresse.value.trim(),
-        vecteur: refs.a18CodisVecteur.value,
-        numero: refs.a18CodisNumero.value.trim(),
-        precisions: refs.a18CodisPrecisions.value.trim()
-      },
-      bilan: {
-        victime: {
-          nom: refs.a18VictimeNom.value.trim(),
-          age: refs.a18VictimeAge.value ? Number(refs.a18VictimeAge.value) : null,
-          sexe: refs.a18VictimeSexe.value
-        },
-        xabcde: {
-          x: {
-            presente: refs.a18XPresent.checked,
-            zone: refs.a18XZone.value.trim(),
-            description: refs.a18XDesc.value.trim()
-          },
-          a: {
-            etat: refs.a18AEtat.value,
-            notes: refs.a18ANotes.value.trim()
-          },
-          b: {
-            fr: refs.a18BFr.value ? Number(refs.a18BFr.value) : null,
-            spo2: refs.a18BSpO2.value ? Number(refs.a18BSpO2.value) : null,
-            pattern: refs.a18BPattern.value
-          },
-          c: {
-            fc: refs.a18CFc.value ? Number(refs.a18CFc.value) : null,
-            paSys: refs.a18CPaSys.value ? Number(refs.a18CPaSys.value) : null,
-            paDia: refs.a18CPaDia.value ? Number(refs.a18CPaDia.value) : null,
-            trc: refs.a18Ctrc.value,
-            peau: refs.a18CPeau.value
-          },
-          d: {
-            gcs: refs.a18DGcs.value ? Number(refs.a18DGcs.value) : null,
-            glycemie: refs.a18DGlycemie.value ? Number(refs.a18DGlycemie.value) : null,
-            glycemieUnite: refs.a18DGlyUnit.value,
-            pupilles: refs.a18DPupilles.value
-          },
-          e: {
-            temperature: refs.a18ETemp.value ? Number(refs.a18ETemp.value) : null,
-            lesions: refs.a18ELesions.value.trim()
-          }
-        },
-        gestes: collectGestes(),
-        bilanTexte: refs.a18BilanPreview.value.trim(),
-        motifConfirme: refs.a18MotifConfirme.value.trim()
-      },
-      regulation: {
-        medecin: refs.a18RegMedecin.value.trim(),
-        heure: refs.a18RegHeure.value,
-        decision,
-        destination: refs.a18RegDestination.value.trim(),
-        justification: refs.a18RegJustif.value.trim()
-      },
-      smur: smurEnabled
-        ? {
-            medecin: refs.a18SmurMedecin.value.trim(),
-            infirmier: refs.a18SmurInfirmier.value.trim(),
-            heureEngagement: refs.a18SmurHeure.value,
-            statut: refs.a18SmurStatut.value,
-            notes: refs.a18SmurNotes.value.trim(),
-            lieu: refs.a18SmurLieu.value.trim(),
-            vecteur: refs.a18SmurVecteur.value,
-            numero: refs.a18SmurNumero.value.trim()
-          }
-        : null,
-      statut
-    };
   }
 
   function showAppel18SuccessToast(message) {
@@ -3655,50 +3321,655 @@
     }, 4000);
   }
 
-  async function saveAppel18() {
+  async function generateAppel18Numero() {
+    const today = getDateKey(new Date());
+    const qRecent = query(collection(db, "appels18"), orderBy("timestamps.codis", "desc"), limit(120));
+    const snap = await getDocs(qRecent);
+    let maxSeq = 0;
+    snap.docs.forEach((d) => {
+      const numero = String(d.data()?.numero || "");
+      const m = numero.match(/^CRAA-(\d{8})-(\d{3})$/);
+      if (m && m[1] === today) {
+        maxSeq = Math.max(maxSeq, Number(m[2]));
+      }
+    });
+    return `CRAA-${today}-${String(maxSeq + 1).padStart(3, "0")}`;
+  }
+
+  function collectGestes() {
+    const gestes = [];
+    const pushIfChecked = (checkId, label, detailId, extraId) => {
+      if (!getA18Checked(checkId)) return;
+      const detail = getA18Value(detailId);
+      const extra = extraId ? getA18Value(extraId) : "";
+      const merged = [detail, extra].filter(Boolean).join(" ").trim();
+      gestes.push(merged ? `${label} (${merged})` : label);
+    };
+    pushIfChecked("a18GesteO2", "O2", "a18GesteO2Detail");
+    pushIfChecked("a18GesteVvp", "VVP", "a18GesteVvpDetail");
+    pushIfChecked("a18GesteImmo", "Immobilisation", "a18GesteImmoDetail");
+    pushIfChecked("a18GesteGarrot", "Garrot", "a18GesteGarrotDetail", "a18GesteGarrotHeure");
+    pushIfChecked("a18GestePansement", "Pansement compressif", "a18GestePansementDetail");
+    pushIfChecked("a18GestePosition", "Position d'attente", "a18GestePositionDetail");
+    pushIfChecked("a18GesteAutre", "Autre", "a18GesteAutreDetail");
+    return gestes;
+  }
+
+  function buildBilanPreview() {
+    const nom = getA18Value("a18VictimeNom") || "victime";
+    const age = getA18Value("a18VictimeAge") || "?";
+    const sexe = getA18Value("a18VictimeSexe") || "Inconnu";
+    const motif = getA18Value("a18MotifConfirme") || getA18Value("a18CodisMotif") || "motif";
+    const scene = getA18Value("a18SScene") || "non précisée";
+    const securite = getA18Value("a18SSecurite") || "non précisée";
+    const situation = getA18Value("a18SSituation") || "non précisée";
+    const fr = getA18Value("a18BFr") || "-";
+    const spo2 = getA18Value("a18BSpO2") || "-";
+    const pouls = getA18Value("a18CPoulsRadial") || "-";
+    const fc = getA18Value("a18CFC") || "-";
+    const paSys = getA18Value("a18CPASys") || "-";
+    const paDia = getA18Value("a18CPADia") || "-";
+    const trc = getA18Value("a18CTrc") || "-";
+    const gcs = getA18Value("a18DGcs") || "-";
+    const gy = getA18Value("a18DGcsY") || "-";
+    const gv = getA18Value("a18DGcsV") || "-";
+    const gm = getA18Value("a18DGcsM") || "-";
+    const orientation = getA18Value("a18DOrientation") || "-";
+    const pupilles = getA18Value("a18DPupilles") || "-";
+    const gly = getA18Value("a18DGlycemie") || "-";
+    const glyUnit = getA18Value("a18DGlyUnit") || "mg/dL";
+    const temp = getA18Value("a18ETemp") || "-";
+    const lesions = getA18Value("a18ELesions") || "non précisées";
+    const gestes = collectGestes();
+    const sampler = [
+      `A:${getA18Value("a18Allergies") || "-"}`,
+      `M:${getA18Value("a18Medicaments") || "-"}`,
+      `P:${getA18Value("a18Passe") || "-"}`,
+      `L:${getA18Value("a18LastMeal") || "-"}`,
+      `E:${getA18Value("a18Evenement") || "-"}`
+    ].join(" | ");
+
+    return [
+      `Bilan VSAV — ${motif} pour ${nom}, ${age} ans (${sexe}).`,
+      `3S : Scène ${scene}. Sécurité ${securite}. Situation ${situation}.`,
+      `X : ${getA18Value("a18XVisible") === "oui" ? "hémorragie visible" : "pas d'hémorragie visible"}. A : ${getA18Value("a18AEtat") || "-"}.`,
+      `B : FR ${fr}/min, SpO2 ${spo2}%, ${getA18Value("a18BReg") || "pattern non renseigné"}.`,
+      `C : Pouls ${pouls}, FC ${fc}/min, PA ${paSys}/${paDia} mmHg, TRC ${trc}.`,
+      `D : Glasgow ${gcs}/15 (Y${gy}+V${gv}+M${gm}), ${orientation}, pupilles ${pupilles}, glycémie ${gly} ${glyUnit}.`,
+      `E : Température ${temp}°C. Lésions : ${lesions}.`,
+      `Gestes : ${gestes.length ? gestes.join(", ") : "aucun"}. SAMPLER : ${sampler}.`
+    ].join("\n");
+  }
+
+  function refreshBilanPreview(force = false) {
+    if (!force && state.appel18.previewManual) return;
+    refs.a18BilanPreview.value = buildBilanPreview();
+  }
+
+  function updateAppel18Step2Tab() {
+    const form = state.appel18.step2Tab === "form";
+    refs.a18Step2TabForm.style.display = form ? "block" : "none";
+    refs.a18Step2TabPreview.style.display = form ? "none" : "block";
+    refs.a18Step2Tabs.querySelectorAll("button[data-a18-tab]").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.a18Tab === state.appel18.step2Tab);
+    });
+  }
+
+  function updateAppel18Step4Mode() {
+    const decision = getAppel18Decision();
+    const smur = decision === "SMUR";
+    refs.a18SmurWrap.classList.toggle("show", smur);
+    refs.a18SummaryWrap.classList.toggle("show", !smur);
+    refs.a18SummaryDecision.textContent = decision || "Décision non renseignée";
+    refs.a18Step4Subtitle.textContent = smur
+      ? "Étape 4 — Intervention SMUR"
+      : "Dossier clôturé";
+    refs.a18SmurNumero.value = refs.a18CodisNumero.value;
+    refs.a18SmurLieu.value = refs.a18CodisAdresse.value;
+    refs.a18SmurVecteur.value = refs.a18CodisVecteur.value === "VSAV + SMUR" ? "VSAV + SMUR" : "SMUR";
+  }
+
+  function validateStep1() {
+    if (!getA18Value("a18CodisNumero")) return "Le numéro dossier est obligatoire.";
+    if (!getA18Value("a18CodisHeure")) return "L'heure de réception est obligatoire.";
+    if (!getA18Value("a18CodisMotif")) return "Le motif CODIS est obligatoire.";
+    if (!getA18Value("a18CodisAdresse")) return "L'adresse est obligatoire.";
+    if (!getA18Value("a18CodisVecteur")) return "Le vecteur est obligatoire.";
+    return "";
+  }
+
+  function validateStep2() {
+    if (!getA18Value("a18MotifConfirme")) return "Le motif confirmé est obligatoire.";
+    if (!getA18Value("a18BilanPreview")) return "Le texte du bilan est obligatoire.";
+    return "";
+  }
+
+  function validateStep3() {
+    const decision = getAppel18Decision();
+    if (!getA18Value("a18RegMedecin")) return "Le médecin régulateur est obligatoire.";
+    if (!getA18Value("a18RegHeure")) return "L'heure de régulation est obligatoire.";
+    if (!decision) return "La décision est obligatoire.";
+    if ((decision === "SMUR" || decision === "Transport VSAV") && !getA18Value("a18RegDestination")) {
+      return "La destination est obligatoire pour cette décision.";
+    }
+    return "";
+  }
+
+  function validateStep4() {
+    if (getAppel18Decision() !== "SMUR") return "";
+    if (!getA18Value("a18SmurHeure")) return "L'heure d'engagement SMUR est obligatoire.";
+    if (!getA18Value("a18SmurMedecin")) return "Le médecin SMUR est obligatoire.";
+    if (!getA18Value("a18SmurInfirmier")) return "L'infirmier/IADE est obligatoire.";
+    return "";
+  }
+
+  function updateAppel18ActionButtons() {
+    refs.a18SaveStep1.disabled = !!validateStep1();
+    refs.a18SaveStep2.disabled = !!validateStep2();
+    refs.a18SaveStep3.disabled = !!validateStep3();
+    refs.a18SaveStep4.disabled = !!validateStep4();
+  }
+
+  function setAppel18SectionReadOnly(step, readOnly) {
+    const section = refs.appel18Drawer.querySelector(`.appel18-section[data-step="${step}"]`);
+    if (!section) return;
+    section.querySelectorAll("input, select, textarea, button").forEach((el) => {
+      if (el.id === "closeAppel18Btn") return;
+      if (el.matches("[data-a18-tab]")) return;
+      if (el.classList.contains("btn-inline")) return;
+      if (el.id && /a18SaveStep\d/.test(el.id)) {
+        el.disabled = readOnly;
+        return;
+      }
+      if (el.tagName === "BUTTON") return;
+      el.disabled = readOnly;
+    });
+  }
+
+  function getLatestCompletedStep() {
+    const done = state.appel18.completed || {};
+    if (done.smur || done.cloture) return 4;
+    if (done.regulation) return 3;
+    if (done.bilan) return 2;
+    if (done.codis) return 1;
+    return 0;
+  }
+
+  function renderAppel18Progress() {
+    const latest = getLatestCompletedStep();
+    const current = state.appel18.step;
+    refs.appel18Progress.innerHTML = [
+      { id: 1, key: "codis", label: "CODIS" },
+      { id: 2, key: "bilan", label: "Bilan" },
+      { id: 3, key: "regulation", label: "Régulation" },
+      { id: 4, key: "smur", label: "SMUR" }
+    ].map((item) => {
+      const isStep4NA = item.id === 4 && !state.appel18.smurEnabled;
+      const doneDate = state.appel18.completed[item.key] || (item.key === "smur" ? state.appel18.completed.cloture : null);
+      const done = !!doneDate || (isStep4NA && !!state.appel18.completed.regulation);
+      const active = current === item.id;
+      const disabled = isStep4NA;
+      return `
+        <div class="appel18-step ${done ? "done" : ""} ${active ? "active" : ""} ${disabled ? "disabled" : ""}" data-a18-step-go="${item.id}">
+          <span class="appel18-step-dot">${done ? "✓" : item.id}</span>
+          <span class="appel18-step-label">${item.label}${disabled ? '<span class="appel18-na">N/A</span>' : ""}${doneDate ? `<span class="appel18-step-time">✓ ${formatA18Timestamp(doneDate)}</span>` : ""}</span>
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderAppel18Step() {
+    refs.appel18Sections.forEach((section) => {
+      const step = Number(section.dataset.step);
+      section.classList.toggle("active", step === state.appel18.step);
+    });
+    refs.appel18StepTitle.textContent = APPEL18_STEP_TITLES[state.appel18.step] || "Appel 18";
+    renderAppel18Progress();
+    updateAppel18Step2Tab();
+  }
+
+  function computeAutoStep() {
+    const latest = getLatestCompletedStep();
+    if (latest === 0) return 1;
+    if (latest === 1) return 2;
+    if (latest === 2) return 3;
+    if (latest === 3) return state.appel18.smurEnabled ? 4 : 4;
+    return 4;
+  }
+
+  function goToAppel18Step(step) {
+    const latest = getLatestCompletedStep();
+    const requested = Math.min(4, Math.max(1, Number(step) || 1));
+    const maxAccessible = Math.max(1, computeAutoStep());
+    if (requested > maxAccessible) return;
+    if (requested <= latest) {
+      setAppel18SectionReadOnly(requested, true);
+    } else {
+      setAppel18SectionReadOnly(requested, state.appel18.viewReadOnly);
+    }
+    state.appel18.step = requested;
+    renderAppel18Step();
+  }
+
+  function resetAppel18Form() {
+    refs.appel18Drawer.querySelectorAll("input, select, textarea").forEach((el) => {
+      if (el.type === "checkbox" || el.type === "radio") {
+        el.checked = false;
+      } else if (el.tagName === "SELECT") {
+        el.selectedIndex = 0;
+      } else {
+        el.value = "";
+      }
+      el.disabled = false;
+    });
+    refs.a18CodisHeure.value = getCurrentTimeValue();
+    refs.a18RegHeure.value = getCurrentTimeValue();
+    refs.a18SmurHeure.value = getCurrentTimeValue();
+    refs.a18CodisVictimes.value = "1";
+    refs.a18VictimeSexe.value = "Inconnu";
+    refs.a18SmurStatut.value = "En route";
+    refs.a18DGlyUnit.value = "mg/dL";
+    state.appel18.step = 1;
+    state.appel18.previewManual = false;
+    state.appel18.smurEnabled = false;
+    state.appel18.dossierId = "";
+    state.appel18.completed = {};
+    state.appel18.status = "ouvert";
+    state.appel18.dirty = false;
+    state.appel18.viewReadOnly = false;
+    state.appel18.step2Tab = "form";
     clearAppel18Errors();
-    const e1 = validateStep1();
-    if (e1) {
-      goToAppel18Step(1);
-      showAppel18Error(1, e1);
-      return;
+    syncGlasgowTotal();
+    updateDecisionCards();
+    refreshBilanPreview(true);
+    updateAppel18ActionButtons();
+    renderAppel18Step();
+  }
+
+  function hydrateAppel18FromDoc(data = {}, readOnly = false) {
+    refs.a18CodisNumero.value = data.numero || "";
+    refs.a18CodisHeure.value = data?.codis?.heure || getCurrentTimeValue();
+    refs.a18CodisMotif.value = data?.codis?.motif || "";
+    refs.a18CodisAdresse.value = data?.codis?.adresse || "";
+    refs.a18CodisVecteur.value = data?.codis?.vecteur || "";
+    refs.a18CodisVictimes.value = String(data?.codis?.nbVictimes || 1);
+    refs.a18CodisPrecisions.value = data?.codis?.precisions || "";
+
+    refs.a18VictimeNom.value = data?.bilan?.victime?.nom || "";
+    refs.a18VictimeAge.value = data?.bilan?.victime?.age ?? "";
+    refs.a18VictimeSexe.value = data?.bilan?.victime?.sexe || "Inconnu";
+    refs.a18MotifConfirme.value = data?.bilan?.motifConfirme || "";
+    refs.a18BilanPreview.value = data?.bilan?.bilanTexte || "";
+
+    refs.a18RegMedecin.value = data?.regulation?.medecin || "";
+    refs.a18RegHeure.value = data?.regulation?.heure || getCurrentTimeValue();
+    refs.a18RegDestination.value = data?.regulation?.destination || "";
+    refs.a18RegJustif.value = data?.regulation?.justification || "";
+    refs.a18RegConseils.value = data?.regulation?.conseils || "";
+
+    refs.a18SmurNumero.value = data?.numero || "";
+    refs.a18SmurLieu.value = data?.smur?.lieu || data?.codis?.adresse || "";
+    refs.a18SmurVecteur.value = data?.smur?.vecteur || (data?.codis?.vecteur === "VSAV + SMUR" ? "VSAV + SMUR" : "SMUR");
+    refs.a18SmurHeure.value = data?.smur?.heureEngagement || getCurrentTimeValue();
+    refs.a18SmurMedecin.value = data?.smur?.medecin || "";
+    refs.a18SmurInfirmier.value = data?.smur?.infirmier || "";
+    refs.a18SmurStatut.value = data?.smur?.statut || "En route";
+    refs.a18SmurNotes.value = data?.smur?.notes || "";
+
+    if (data?.regulation?.decision) {
+      refs.appel18Drawer.querySelectorAll('input[name="a18Decision"]').forEach((input) => {
+        input.checked = input.value === data.regulation.decision;
+      });
     }
-    const e2 = validateStep2();
-    if (e2) {
-      goToAppel18Step(2);
-      showAppel18Error(2, e2);
-      return;
-    }
-    const e3 = validateStep3();
-    if (e3) {
-      goToAppel18Step(3);
-      showAppel18Error(3, e3);
-      return;
-    }
-    const e4 = validateStep4();
-    if (e4) {
-      goToAppel18Step(4);
-      showAppel18Error(4, e4);
+
+    state.appel18.completed = {
+      codis: asDate(data?.timestamps?.codis),
+      bilan: asDate(data?.timestamps?.bilan),
+      regulation: asDate(data?.timestamps?.regulation),
+      smur: asDate(data?.timestamps?.smur),
+      cloture: asDate(data?.timestamps?.cloture)
+    };
+    state.appel18.smurEnabled = data?.regulation?.decision === "SMUR";
+    state.appel18.status = data?.statut || "ouvert";
+    state.appel18.viewReadOnly = readOnly;
+    updateDecisionCards();
+    updateAppel18Step4Mode();
+    if (!refs.a18BilanPreview.value) refreshBilanPreview(true);
+
+    const autoStep = getAppel18NextStepFromDoc(data);
+    state.appel18.step = autoStep;
+    renderAppel18Step();
+    [1, 2, 3, 4].forEach((step) => {
+      const editable = !readOnly && step === autoStep;
+      setAppel18SectionReadOnly(step, !editable);
+    });
+    updateAppel18ActionButtons();
+  }
+
+  async function openAppel18Drawer(mode = "new", dossierId = "") {
+    refs.appel18Backdrop.classList.add("open");
+    refs.appel18Drawer.classList.add("open");
+    refs.appel18Drawer.setAttribute("aria-hidden", "false");
+    state.appel18.open = true;
+
+    if (mode === "new") {
+      resetAppel18Form();
+      try {
+        refs.a18CodisNumero.value = await generateAppel18Numero();
+      } catch (err) {
+        refs.a18CodisNumero.value = `CRAA-${getDateKey(new Date())}-001`;
+      }
+      refs.a18SmurNumero.value = refs.a18CodisNumero.value;
+      updateAppel18ActionButtons();
       return;
     }
 
-    const payload = buildAppel18Payload();
-    refs.a18Save.disabled = true;
-    try {
-      await addDoc(collection(db, "appels18"), payload);
-      state.appel18.dirty = false;
+    if (!dossierId) return;
+    const snap = await getDoc(doc(db, "appels18", dossierId));
+    if (!snap.exists()) {
+      showToast("Dossier introuvable.");
       closeAppel18Drawer(true);
-      showAppel18SuccessToast("Dossier Appel 18 enregistré avec succès.");
-      renderInterventions();
-    } catch (err) {
-      showAppel18Error(4, `Enregistrement impossible: ${err.message}`);
+      return;
+    }
+    resetAppel18Form();
+    state.appel18.dossierId = dossierId;
+    hydrateAppel18FromDoc(snap.data(), mode === "view");
+  }
+
+  function closeAppel18Drawer(force = false) {
+    if (!state.appel18.open) return;
+    if (!force && state.appel18.dirty) {
+      const ok = window.confirm("Quitter sans enregistrer ?");
+      if (!ok) return;
+    }
+    refs.appel18Drawer.classList.remove("open");
+    refs.appel18Backdrop.classList.remove("open");
+    refs.appel18Drawer.setAttribute("aria-hidden", "true");
+    state.appel18.open = false;
+  }
+
+  function buildStep2Payload() {
+    return {
+      victime: {
+        nom: getA18Value("a18VictimeNom"),
+        age: parseA18Number("a18VictimeAge"),
+        sexe: getA18Value("a18VictimeSexe") || "Inconnu"
+      },
+      motifConfirme: getA18Value("a18MotifConfirme"),
+      circonstanciel3S: {
+        scene: getA18Value("a18SScene"),
+        securite: getA18Value("a18SSecurite"),
+        situation: getA18Value("a18SSituation")
+      },
+      primaire: {
+        X: {
+          rechercher: {
+            hemorragieVisible: getA18Value("a18XVisible"),
+            localisation: getA18Value("a18XLocalisation"),
+            geste: getA18Value("a18XGeste")
+          },
+          apprecier: { evolution: getA18Value("a18XEvolution") },
+          mesurer: { estimationPerte: getA18Value("a18XPerte") }
+        },
+        A: {
+          rechercher: {
+            vasLibres: getA18Value("a18AFree"),
+            cause: getA18Value("a18ACause"),
+            gesteLVA: getA18Value("a18AGeste"),
+            maintienTeteTrauma: getA18Checked("a18ATrauma")
+          },
+          apprecier: { etatActuel: getA18Value("a18AEtat") },
+          mesurer: { etatActuel: getA18Value("a18AEtat") }
+        },
+        B: {
+          rechercher: { respirationPresente: getA18Value("a18BResp") },
+          apprecier: {
+            rapidite: getA18Value("a18BRap"),
+            amplitude: getA18Value("a18BAmp"),
+            regularite: getA18Value("a18BReg"),
+            peauMuqueuses: getA18Value("a18BPeau")
+          },
+          mesurer: {
+            FR: parseA18Number("a18BFr"),
+            SpO2: parseA18Number("a18BSpO2"),
+            oxygene: getA18Checked("a18BO2"),
+            litrage: parseA18Number("a18BO2L")
+          }
+        },
+        C: {
+          rechercher: {
+            poulsRadial: getA18Value("a18CPoulsRadial"),
+            poulsCarotidien: getA18Value("a18CPoulsCarotidien")
+          },
+          apprecier: {
+            rapidite: getA18Value("a18CRap"),
+            amplitude: getA18Value("a18CAmp"),
+            TRC: getA18Value("a18CTrc"),
+            peau: getA18Value("a18CPeau"),
+            temperaturePeau: getA18Value("a18CTempPeau")
+          },
+          mesurer: {
+            FC: parseA18Number("a18CFC"),
+            PASys: parseA18Number("a18CPASys"),
+            PADia: parseA18Number("a18CPADia"),
+            ECG: getA18Checked("a18CEcg")
+          },
+          suspicionHemo: getA18Checked("a18CSuspHemo"),
+          regionsHemo: getA18Value("a18CRegions")
+        },
+        D: {
+          rechercher: { conscient: getA18Value("a18DConscient") },
+          apprecier: {
+            orientation: getA18Value("a18DOrientation"),
+            pupilles: getA18Value("a18DPupilles"),
+            motricite: getA18Value("a18DMotricite"),
+            EVDA: getA18Value("a18EVDA")
+          },
+          mesurer: {
+            glasgow: parseA18Number("a18DGcs"),
+            Y: parseA18Number("a18DGcsY"),
+            V: parseA18Number("a18DGcsV"),
+            M: parseA18Number("a18DGcsM"),
+            glycemie: parseA18Number("a18DGlycemie"),
+            glycemieUnite: getA18Value("a18DGlyUnit")
+          }
+        },
+        E: {
+          examiner: {
+            lesionsObservees: getA18Value("a18ELesions"),
+            wallace: parseA18Number("a18EWallace"),
+            temperature: parseA18Number("a18ETemp")
+          },
+          sampler: {
+            allergies: getA18Value("a18Allergies"),
+            medicaments: getA18Value("a18Medicaments"),
+            passe: getA18Value("a18Passe"),
+            lastMeal: getA18Value("a18LastMeal"),
+            lastMealTime: getA18Value("a18LastMealTime"),
+            evenementDeclenchant: getA18Value("a18Evenement")
+          },
+          pqrst: {
+            provoque: getA18Value("a18SamplerP"),
+            qualite: getA18Value("a18SamplerQ"),
+            region: getA18Value("a18SamplerR"),
+            severite: parseA18Number("a18SamplerS"),
+            temps: getA18Value("a18SamplerT")
+          }
+        }
+      },
+      secondaire: {
+        FR: { value: parseA18Number("a18SecFr") },
+        FC: { value: parseA18Number("a18SecFc") },
+        PA: { sys: parseA18Number("a18CPASys"), dia: parseA18Number("a18CPADia") },
+        temperature: parseA18Number("a18SecTemp"),
+        glycemie: parseA18Number("a18SecGly"),
+        palpation: {
+          effectuee: getA18Checked("a18Palpation"),
+          constat: getA18Value("a18PalpationNotes")
+        }
+      },
+      gestes: collectGestes(),
+      bilanTexte: getA18Value("a18BilanPreview")
+    };
+  }
+
+  async function saveStep1() {
+    clearAppel18Errors();
+    const err = validateStep1();
+    if (err) return showAppel18Error(1, err);
+    const payload = {
+      numero: getA18Value("a18CodisNumero"),
+      statut: "ouvert",
+      timestamps: { codis: serverTimestamp() },
+      codis: {
+        heure: getA18Value("a18CodisHeure"),
+        motif: getA18Value("a18CodisMotif"),
+        adresse: getA18Value("a18CodisAdresse"),
+        vecteur: getA18Value("a18CodisVecteur"),
+        nbVictimes: parseA18Number("a18CodisVictimes") || 1,
+        precisions: getA18Value("a18CodisPrecisions")
+      }
+    };
+
+    refs.a18SaveStep1.disabled = true;
+    try {
+      if (!state.appel18.dossierId) {
+        const refDoc = await addDoc(collection(db, "appels18"), payload);
+        state.appel18.dossierId = refDoc.id;
+      } else {
+        await setDoc(doc(db, "appels18", state.appel18.dossierId), payload, { merge: true });
+      }
+      state.appel18.completed.codis = new Date();
+      state.appel18.status = "ouvert";
+      state.appel18.dirty = false;
+      if (!refs.a18MotifConfirme.value) refs.a18MotifConfirme.value = refs.a18CodisMotif.value;
+      refs.a18SmurNumero.value = refs.a18CodisNumero.value;
+      refs.a18SmurLieu.value = refs.a18CodisAdresse.value;
+      goToAppel18Step(2);
+      showAppel18SuccessToast(`Info CODIS enregistrée — ${refs.a18CodisNumero.value}`);
+    } catch (e) {
+      showAppel18Error(1, `Enregistrement impossible: ${e.message}`);
     } finally {
-      refs.a18Save.disabled = false;
+      updateAppel18ActionButtons();
+    }
+  }
+
+  async function saveStep2() {
+    clearAppel18Errors();
+    const err = validateStep2();
+    if (err) return showAppel18Error(2, err);
+    if (!state.appel18.dossierId) return showAppel18Error(2, "Veuillez enregistrer l'étape 1 d'abord.");
+
+    const payload = {
+      statut: "bilan_reçu",
+      timestamps: { bilan: serverTimestamp() },
+      bilan: buildStep2Payload()
+    };
+
+    refs.a18SaveStep2.disabled = true;
+    try {
+      await setDoc(doc(db, "appels18", state.appel18.dossierId), payload, { merge: true });
+      state.appel18.completed.bilan = new Date();
+      state.appel18.status = "bilan_reçu";
+      state.appel18.dirty = false;
+      goToAppel18Step(3);
+      showAppel18SuccessToast(`Étape 2 enregistrée — ${formatA18Timestamp(new Date())}`);
+    } catch (e) {
+      showAppel18Error(2, `Enregistrement impossible: ${e.message}`);
+    } finally {
+      updateAppel18ActionButtons();
+    }
+  }
+
+  async function saveStep3() {
+    clearAppel18Errors();
+    const err = validateStep3();
+    if (err) return showAppel18Error(3, err);
+    if (!state.appel18.dossierId) return showAppel18Error(3, "Veuillez enregistrer l'étape 1 d'abord.");
+
+    const decision = getAppel18Decision();
+    const closeNow = decision !== "SMUR";
+    const payload = {
+      statut: closeNow ? "clôturé" : "régulé",
+      timestamps: {
+        regulation: serverTimestamp(),
+        ...(closeNow ? { cloture: serverTimestamp() } : {})
+      },
+      regulation: {
+        medecin: getA18Value("a18RegMedecin"),
+        heure: getA18Value("a18RegHeure"),
+        decision,
+        destination: getA18Value("a18RegDestination"),
+        justification: getA18Value("a18RegJustif"),
+        conseils: getA18Value("a18RegConseils")
+      },
+      smur: closeNow ? null : undefined
+    };
+
+    refs.a18SaveStep3.disabled = true;
+    try {
+      await setDoc(doc(db, "appels18", state.appel18.dossierId), payload, { merge: true });
+      state.appel18.completed.regulation = new Date();
+      state.appel18.status = closeNow ? "clôturé" : "régulé";
+      state.appel18.smurEnabled = decision === "SMUR";
+      state.appel18.dirty = false;
+
+      if (closeNow) {
+        state.appel18.completed.cloture = new Date();
+        renderAppel18Step();
+        closeAppel18Drawer(true);
+      } else {
+        goToAppel18Step(4);
+      }
+      showAppel18SuccessToast(`Étape 3 enregistrée — ${formatA18Timestamp(new Date())}`);
+    } catch (e) {
+      showAppel18Error(3, `Enregistrement impossible: ${e.message}`);
+    } finally {
+      updateAppel18ActionButtons();
+    }
+  }
+
+  async function saveStep4() {
+    clearAppel18Errors();
+    const err = validateStep4();
+    if (err) return showAppel18Error(4, err);
+    if (!state.appel18.dossierId) return showAppel18Error(4, "Dossier introuvable.");
+
+    const payload = {
+      statut: "clôturé",
+      timestamps: {
+        smur: serverTimestamp(),
+        cloture: serverTimestamp()
+      },
+      smur: {
+        medecin: getA18Value("a18SmurMedecin"),
+        infirmier: getA18Value("a18SmurInfirmier"),
+        heureEngagement: getA18Value("a18SmurHeure"),
+        statut: getA18Value("a18SmurStatut"),
+        notes: getA18Value("a18SmurNotes"),
+        lieu: getA18Value("a18SmurLieu"),
+        vecteur: getA18Value("a18SmurVecteur")
+      }
+    };
+
+    refs.a18SaveStep4.disabled = true;
+    try {
+      await setDoc(doc(db, "appels18", state.appel18.dossierId), payload, { merge: true });
+      state.appel18.completed.smur = new Date();
+      state.appel18.completed.cloture = new Date();
+      state.appel18.status = "clôturé";
+      state.appel18.dirty = false;
+      showAppel18SuccessToast(`Étape 4 enregistrée — ${formatA18Timestamp(new Date())}`);
+      closeAppel18Drawer(true);
+    } catch (e) {
+      showAppel18Error(4, `Enregistrement impossible: ${e.message}`);
+    } finally {
+      updateAppel18ActionButtons();
     }
   }
 
   function bindEvents() {
-    refs.openAppel18Btn.addEventListener("click", openAppel18Drawer);
+    refs.openAppel18Btn.addEventListener("click", () => openAppel18Drawer("new"));
     refs.closeAppel18Btn.addEventListener("click", () => closeAppel18Drawer(false));
     refs.appel18Backdrop.addEventListener("click", () => closeAppel18Drawer(false));
 
@@ -3706,47 +3977,20 @@
       const openBtn = event.target.closest("#openAppel18Btn");
       if (!openBtn) return;
       event.preventDefault();
-      openAppel18Drawer();
+      openAppel18Drawer("new");
     });
 
-    document.getElementById("a18Next1").addEventListener("click", () => {
-      clearAppel18Errors();
-      const error = validateStep1();
-      if (error) {
-        showAppel18Error(1, error);
-        return;
-      }
-      if (!refs.a18MotifConfirme.value.trim()) refs.a18MotifConfirme.value = refs.a18CodisMotif.value;
-      refreshBilanPreview(true);
-      goToAppel18Step(2);
-    });
+    refs.a18SaveStep1.addEventListener("click", saveStep1);
+    refs.a18SaveStep2.addEventListener("click", saveStep2);
+    refs.a18SaveStep3.addEventListener("click", saveStep3);
+    refs.a18SaveStep4.addEventListener("click", saveStep4);
 
-    document.getElementById("a18Back2").addEventListener("click", () => goToAppel18Step(1));
-    document.getElementById("a18Next2").addEventListener("click", () => {
-      clearAppel18Errors();
-      const error = validateStep2();
-      if (error) {
-        showAppel18Error(2, error);
-        return;
-      }
-      goToAppel18Step(3);
+    refs.a18Step2Tabs.addEventListener("click", (event) => {
+      const btn = event.target.closest("button[data-a18-tab]");
+      if (!btn) return;
+      state.appel18.step2Tab = btn.dataset.a18Tab;
+      updateAppel18Step2Tab();
     });
-
-    document.getElementById("a18Back3").addEventListener("click", () => goToAppel18Step(2));
-    document.getElementById("a18Next3").addEventListener("click", () => {
-      clearAppel18Errors();
-      const error = validateStep3();
-      if (error) {
-        showAppel18Error(3, error);
-        return;
-      }
-      if (!refs.a18SmurHeure.value) refs.a18SmurHeure.value = getCurrentTimeValue();
-      updateAppel18Step4Mode();
-      goToAppel18Step(4);
-    });
-
-    document.getElementById("a18Back4").addEventListener("click", () => goToAppel18Step(3));
-    refs.a18Save.addEventListener("click", saveAppel18);
 
     refs.a18RegeneratePreview.addEventListener("click", () => {
       state.appel18.previewManual = false;
@@ -3769,6 +4013,7 @@
       state.appel18.dirty = true;
 
       const target = event.target;
+      if (target.matches("[data-a18-step-go]")) return;
       if (target.matches('input[name="a18Decision"]')) {
         updateDecisionCards();
       }
@@ -3780,16 +4025,12 @@
       if (target.id === "a18CodisNumero") refs.a18SmurNumero.value = refs.a18CodisNumero.value;
       if (target.id === "a18CodisAdresse") refs.a18SmurLieu.value = refs.a18CodisAdresse.value;
       if (target.id === "a18CodisVecteur") updateAppel18Step4Mode();
-
-      if (target.matches('[id^="a18Geste"]')) {
-        updateGesteRows();
-      }
-
-      if (target.id === "a18DGcs") updateGcsHint();
+      if (["a18DGcsY", "a18DGcsV", "a18DGcsM"].includes(target.id)) syncGlasgowTotal();
 
       if (!state.appel18.previewManual || target.id !== "a18BilanPreview") {
         refreshBilanPreview();
       }
+      updateAppel18ActionButtons();
     });
 
     refs.appel18Drawer.addEventListener("input", (event) => {
@@ -3801,8 +4042,27 @@
         return;
       }
 
-      if (event.target.id === "a18DGcs") updateGcsHint();
+      if (["a18DGcsY", "a18DGcsV", "a18DGcsM"].includes(event.target.id)) syncGlasgowTotal();
       refreshBilanPreview();
+      updateAppel18ActionButtons();
+    });
+
+    refs.appel18Progress.addEventListener("click", (event) => {
+      const stepEl = event.target.closest("[data-a18-step-go]");
+      if (!stepEl) return;
+      goToAppel18Step(Number(stepEl.dataset.a18StepGo));
+    });
+
+    refs.appels18TableBody.addEventListener("click", (event) => {
+      const resumeBtn = event.target.closest("[data-a18-open]");
+      if (resumeBtn) {
+        openAppel18Drawer("resume", resumeBtn.dataset.a18Open);
+        return;
+      }
+      const viewBtn = event.target.closest("[data-a18-view]");
+      if (viewBtn) {
+        openAppel18Drawer("view", viewBtn.dataset.a18View);
+      }
     });
 
     refs.filterRoot.addEventListener("click", (event) => {
@@ -4044,6 +4304,7 @@
     const membresRef = collection(db, "intranet_membres");
     const vehiculesRef = collection(db, "intranet_vehicules");
     const qInter = query(collection(db, "interventions"), orderBy("createdAt", "desc"));
+    const qAppels18 = query(collection(db, "appels18"), orderBy("timestamps.codis", "desc"));
 
     const applyPersonnelSnapshot = (snap) => {
       state.personnel = snap.docs.map((d) => ({ ...d.data(), id: normalizeId(d.id) }));
@@ -4070,6 +4331,11 @@
       renderInterventions();
       if (isModalOpen() && !state.modalTouched) renderEquipagesEditor();
       updateLiveTimers();
+    };
+
+    const applyAppels18Snapshot = (snap) => {
+      state.appel18.list = snap.docs.map((d) => ({ ...d.data(), id: normalizeId(d.id) }));
+      renderAppels18List();
     };
 
     onSnapshot(membresRef, applyPersonnelSnapshot, async (err) => {
@@ -4106,6 +4372,16 @@
       }
     });
 
+    onSnapshot(qAppels18, applyAppels18Snapshot, async (err) => {
+      console.error("Realtime appels18 indisponible:", err);
+      try {
+        const fallbackSnap = await getDocs(qAppels18);
+        applyAppels18Snapshot(fallbackSnap);
+      } catch (fallbackErr) {
+        console.error("Fallback appels18 impossible:", fallbackErr);
+      }
+    });
+
     // Démarrer le chronomètre live global
     if (state.tickInterval) clearInterval(state.tickInterval);
     state.tickInterval = setInterval(updateLiveTimers, 1000);
@@ -4114,6 +4390,7 @@
   bindEvents();
   ensureModalStructure();
   renderInterventions();
+  renderAppels18List();
   startRealtime();
 </script>
 </body>
