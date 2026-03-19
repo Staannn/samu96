@@ -538,6 +538,9 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
 
     .jalon-row {
@@ -808,7 +811,7 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.2s ease;
-      z-index: 340;
+      z-index: 980;
     }
 
     .appel18-backdrop.open {
@@ -822,7 +825,7 @@
       right: 0;
       width: min(480px, 100%);
       height: 100vh;
-      z-index: 350;
+      z-index: 990;
       background: #f8fbff;
       border-left: 1px solid rgba(0, 48, 135, 0.2);
       box-shadow: -10px 0 30px rgba(0, 48, 135, 0.28);
@@ -3469,21 +3472,29 @@
   }
 
   async function openAppel18Drawer() {
-    resetAppel18Form();
-    refs.appel18Backdrop.classList.add("open");
-    refs.appel18Drawer.classList.add("open");
-    refs.appel18Drawer.setAttribute("aria-hidden", "false");
-    state.appel18.open = true;
-    state.appel18.loadingNumero = true;
     try {
-      const numero = await generateAppel18Numero();
-      refs.a18CodisNumero.value = numero;
-      refs.a18SmurNumero.value = numero;
+      refs.appel18Backdrop.classList.add("open");
+      refs.appel18Drawer.classList.add("open");
+      refs.appel18Drawer.setAttribute("aria-hidden", "false");
+      state.appel18.open = true;
+
+      resetAppel18Form();
+      state.appel18.loadingNumero = true;
+
+      try {
+        const numero = await generateAppel18Numero();
+        refs.a18CodisNumero.value = numero;
+        refs.a18SmurNumero.value = numero;
+      } catch (err) {
+        refs.a18CodisNumero.value = `CRAA-${getDateKey(new Date())}-001`;
+        refs.a18SmurNumero.value = refs.a18CodisNumero.value;
+      } finally {
+        state.appel18.loadingNumero = false;
+        refreshBilanPreview(true);
+      }
     } catch (err) {
-      refs.a18CodisNumero.value = `CRAA-${getDateKey(new Date())}-001`;
-    } finally {
-      state.appel18.loadingNumero = false;
-      refreshBilanPreview(true);
+      console.error("Ouverture Appel 18 impossible:", err);
+      showToast("Impossible d'ouvrir Appel 18 (voir console)");
     }
   }
 
@@ -3669,6 +3680,13 @@
     refs.openAppel18Btn.addEventListener("click", openAppel18Drawer);
     refs.closeAppel18Btn.addEventListener("click", () => closeAppel18Drawer(false));
     refs.appel18Backdrop.addEventListener("click", () => closeAppel18Drawer(false));
+
+    document.body.addEventListener("click", (event) => {
+      const openBtn = event.target.closest("#openAppel18Btn");
+      if (!openBtn) return;
+      event.preventDefault();
+      openAppel18Drawer();
+    });
 
     document.getElementById("a18Next1").addEventListener("click", () => {
       clearAppel18Errors();
