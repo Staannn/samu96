@@ -545,8 +545,11 @@
       margin: 0;
       padding: 0;
       border-left: 2px solid rgba(0, 48, 135, 0.2);
+      flex: 1 1 auto;
+      min-height: 180px;
       max-height: none;
-      overflow: visible;
+      overflow-y: auto;
+      overflow-x: hidden;
       padding-bottom: 6px;
       padding-right: 4px;
     }
@@ -593,6 +596,12 @@
       grid-template-columns: 220px 1fr auto;
       gap: 8px;
       align-items: end;
+      position: sticky;
+      bottom: 0;
+      z-index: 1;
+      background: #fff;
+      padding-top: 8px;
+      border-top: 1px solid rgba(0, 48, 135, 0.14);
     }
 
     .mc-inputs textarea {
@@ -605,10 +614,20 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
-      max-height: none;
-      overflow: visible;
+      max-height: 34dvh;
+      overflow-y: auto;
+      overflow-x: hidden;
       padding-bottom: 4px;
       padding-right: 4px;
+    }
+
+    .mc-panel-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 300px;
+      max-height: 58dvh;
+      padding-bottom: 10px;
     }
 
     .jalon-row {
@@ -1766,7 +1785,7 @@
 
     <section class="panel" style="margin:0;">
       <div class="panel-header">Main courante</div>
-      <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;">
+      <div class="panel-body mc-panel-body">
         <ul id="mcList" class="mc-list"></ul>
         <div class="mc-inputs">
           <div class="field" style="margin:0;">
