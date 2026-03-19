@@ -1237,12 +1237,176 @@
       background: rgba(22, 163, 74, 0.16);
     }
 
+    /* xABCDE — letter-based layout */
+    .xabcde-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .xabcde-letter {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .xabcde-letter > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-size: 11px;
+    }
+
+    .xabcde-letter > summary::-webkit-details-marker { display: none; }
+
+    .xabcde-summary-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .xabcde-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+
+    .xabcde-title {
+      color: #0f172a;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .xabcde-letter > summary::after {
+      content: "▶";
+      color: #475569;
+      font-size: 11px;
+      flex: 0 0 auto;
+    }
+
+    .xabcde-letter[open] > summary::after { content: "▼"; }
+
+    .letter-x > summary { background: #fef2f2; }
+    .letter-a > summary { background: #fff7ed; }
+    .letter-b > summary { background: #eff6ff; }
+    .letter-c > summary { background: #faf5ff; }
+    .letter-d > summary { background: #eef2ff; }
+    .letter-e > summary { background: #f0fdfa; }
+
+    .letter-x .xabcde-badge { background: #dc2626; }
+    .letter-a .xabcde-badge { background: #ea580c; }
+    .letter-b .xabcde-badge { background: #2563eb; }
+    .letter-c .xabcde-badge { background: #9333ea; }
+    .letter-d .xabcde-badge { background: #4f46e5; }
+    .letter-e .xabcde-badge { background: #0d9488; }
+
+    .xabcde-body {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .xabcde-sub {
+      border-radius: 10px;
+      border-left: 3px solid;
+      padding: 10px;
+    }
+
+    .xabcde-sub h5 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: #0f172a;
+      font-family: var(--mono);
+      letter-spacing: 0.3px;
+    }
+
+    .xabcde-sub.search {
+      background: #f8f9fb;
+      border-left-color: #6b7280;
+    }
+
+    .xabcde-sub.assess {
+      background: #f0f4ff;
+      border-left-color: #3b82f6;
+    }
+
+    .xabcde-sub.measure {
+      background: #f0fdf4;
+      border-left-color: #22c55e;
+    }
+
+    .xabcde-note {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #475569;
+    }
+
+    .xabcde-flag {
+      margin-top: 8px;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 12px;
+      border: 1px solid transparent;
+    }
+
+    .xabcde-flag.red {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #b91c1c;
+    }
+
+    .xabcde-flag.orange {
+      background: rgba(249, 115, 22, 0.1);
+      border-color: rgba(249, 115, 22, 0.35);
+      color: #c2410c;
+    }
+
+    .xabcde-flag.green {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: #15803d;
+    }
+
+    .xabcde-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .xabcde-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
     @media (max-width: 980px) {
       .member-row { grid-template-columns: 1fr; }
       .mc-inputs { grid-template-columns: 1fr; }
       .recap-grid { grid-template-columns: 1fr; }
       .jalon-row { grid-template-columns: 1fr; }
       .appel18-grid { grid-template-columns: 1fr; }
+      .xabcde-grid-3,
+      .xabcde-grid-2 { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 860px) {
@@ -1618,101 +1782,502 @@
           </div>
         </div>
 
-        <details class="appel18-collapse" open>
-          <summary>Rechercher (xABCDE)</summary>
-          <div class="appel18-collapse-body">
-            <div class="appel18-grid">
-              <div class="field"><label for="a18XVisible">X — Hémorragie visible</label><select id="a18XVisible"><option value="non">Non</option><option value="oui">Oui</option></select></div>
-              <div class="field"><label for="a18XLocalisation">X — Localisation</label><input type="text" id="a18XLocalisation"></div>
-              <div class="field"><label for="a18XGeste">X — Geste réalisé</label><select id="a18XGeste"><option value="">-</option><option value="garrot">Garrot</option><option value="packing">Packing</option><option value="compression">Compression</option></select></div>
-              <div class="field"><label for="a18AFree">A — VAS libres</label><select id="a18AFree"><option value="oui">Oui</option><option value="non">Non</option></select></div>
-              <div class="field"><label for="a18ACause">A — Cause si non</label><input type="text" id="a18ACause"></div>
-              <div class="field"><label for="a18AGeste">A — Geste LVA</label><select id="a18AGeste"><option value="">-</option><option value="LVA classique">LVA classique</option><option value="élévation menton">Élévation menton</option><option value="désobstruction">Désobstruction</option></select></div>
-              <label class="appel18-checkline"><input type="checkbox" id="a18ATrauma"> A — Maintien tête si trauma</label>
-              <div class="field"><label for="a18BResp">B — Respiration présente</label><select id="a18BResp"><option value="oui">Oui</option><option value="non">Non</option></select></div>
-              <div class="field"><label for="a18CPoulsRadial">C — Pouls radial</label><select id="a18CPoulsRadial"><option value="présent">Présent</option><option value="filant">Filant</option><option value="absent">Absent</option></select></div>
-              <div class="field"><label for="a18CPoulsCarotidien">C — Pouls carotidien</label><select id="a18CPoulsCarotidien"><option value="présent">Présent</option><option value="absent">Absent</option></select></div>
-              <div class="field"><label for="a18DConscient">D — Conscient</label><select id="a18DConscient"><option value="oui">Oui</option><option value="non">Non</option><option value="agité">Agité</option><option value="somnolent">Somnolent</option></select></div>
-              <div class="field full"><label for="a18ELesions">E — Lésions observées</label><textarea id="a18ELesions" rows="2"></textarea></div>
-            </div>
-          </div>
-        </details>
+        <!-- START XABCDE BLOCK -->
+        <div class="xabcde-stack">
+          <details class="xabcde-letter letter-x" open>
+            <summary>
+              <span class="xabcde-summary-left">
+                <span class="xabcde-badge">X</span>
+                <span class="xabcde-title">eXsanguination</span>
+              </span>
+            </summary>
+            <div class="xabcde-body">
+              <div class="xabcde-sub search">
+                <h5>🔍 Rechercher</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18XVisible">Hémorragie externe visible ?</label>
+                    <select id="a18XVisible">
+                      <option value="non">Non</option>
+                      <option value="oui">Oui</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18XLocalisation">Localisation</label>
+                    <input type="text" id="a18XLocalisation">
+                  </div>
+                  <div class="field">
+                    <label for="a18XGeste">Geste réalisé</label>
+                    <select id="a18XGeste">
+                      <option value="">-</option>
+                      <option value="compression">Compression directe</option>
+                      <option value="garrot">Garrot CAT</option>
+                      <option value="pansement hémostatique">Pansement hémostatique</option>
+                      <option value="packing">Packing</option>
+                      <option value="autre">Autre</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
-        <details class="appel18-collapse">
-          <summary>Apprécier (xABCDE)</summary>
-          <div class="appel18-collapse-body">
-            <div class="appel18-grid">
-              <div class="field"><label for="a18XEvolution">X — Évolution</label><select id="a18XEvolution"><option value="contrôlée">Contrôlée</option><option value="active">Active</option><option value="suintante">Suintante</option></select></div>
-              <div class="field"><label for="a18AEtat">A — État actuel</label><select id="a18AEtat"><option value="libre">Libre</option><option value="maintenue manuellement">Maintenue manuellement</option><option value="canule OPA">Canule OPA</option><option value="canule NPA">Canule NPA</option><option value="intubé">Intubé</option></select></div>
-              <div class="field"><label for="a18BRap">B — Rapidité</label><select id="a18BRap"><option value="normale">Normale</option><option value="rapide">Rapide</option><option value="lente">Lente</option><option value="pause">Pause</option></select></div>
-              <div class="field"><label for="a18BAmp">B — Amplitude</label><select id="a18BAmp"><option value="normale">Normale</option><option value="superficielle">Superficielle</option><option value="profonde">Profonde</option></select></div>
-              <div class="field"><label for="a18BReg">B — Régularité</label><select id="a18BReg"><option value="régulière">Régulière</option><option value="irrégulière">Irrégulière</option></select></div>
-              <div class="field"><label for="a18BPeau">B — Peau/muqueuses</label><select id="a18BPeau"><option value="normale">Normale</option><option value="pâle">Pâle</option><option value="cyanosée">Cyanosée</option><option value="marbrée">Marbrée</option></select></div>
-              <div class="field"><label for="a18CRap">C — Rapidité</label><select id="a18CRap"><option value="normal">Normal</option><option value="rapide">Rapide</option><option value="lent">Lent</option></select></div>
-              <div class="field"><label for="a18CAmp">C — Amplitude</label><select id="a18CAmp"><option value="normal">Normal</option><option value="filant">Filant</option></select></div>
-              <div class="field"><label for="a18CTrc">C — TRC</label><select id="a18CTrc"><option value="<2s">&lt;2s</option><option value=">2s">&gt;2s</option></select></div>
-              <div class="field"><label for="a18CPeau">C — Peau</label><select id="a18CPeau"><option value="normale">Normale</option><option value="pâle">Pâle</option><option value="marbrée">Marbrée</option><option value="cyanosée">Cyanosée</option><option value="moite">Moite</option></select></div>
-              <div class="field"><label for="a18CTempPeau">C — Température peau</label><select id="a18CTempPeau"><option value="chaude">Chaude</option><option value="froide">Froide</option><option value="tiède">Tiède</option></select></div>
-              <div class="field"><label for="a18DOrientation">D — Orientation</label><select id="a18DOrientation"><option value="orienté T+E">Orienté T+E</option><option value="désorienté">Désorienté</option><option value="inconscient">Inconscient</option></select></div>
-              <div class="field"><label for="a18DPupilles">D — Pupilles</label><select id="a18DPupilles"><option value="iso-réactives">Iso-réactives</option><option value="anisocorie">Anisocorie</option><option value="mydriase">Mydriase</option><option value="myosis">Myosis</option></select></div>
-              <div class="field"><label for="a18DMotricite">D — Motricité 4 membres</label><select id="a18DMotricite"><option value="normale">Normale</option><option value="déficit unilatéral">Déficit unilatéral</option><option value="déficit bilatéral">Déficit bilatéral</option><option value="absent">Absent</option></select></div>
-              <div class="field"><label for="a18EVDA">D — EVDA</label><select id="a18EVDA"><option value="Éveillé">Éveillé</option><option value="Verbal">Verbal</option><option value="Douleur">Douleur</option><option value="Aucune réaction">Aucune réaction</option></select></div>
-            </div>
-          </div>
-        </details>
+              <div class="xabcde-sub assess">
+                <h5>👁 Apprécier (≈15 sec)</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18XEvolution">Évolution du saignement</label>
+                    <select id="a18XEvolution">
+                      <option value="contrôlée">Contrôlée</option>
+                      <option value="active">Active</option>
+                      <option value="suintante">Suintante</option>
+                      <option value="non applicable">Non applicable</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
-        <details class="appel18-collapse">
-          <summary>Mesurer (xABCDE)</summary>
-          <div class="appel18-collapse-body">
-            <div class="appel18-grid">
-              <div class="field"><label for="a18XPerte">X — Estimation perte</label><select id="a18XPerte"><option value="<500ml">&lt;500ml</option><option value="500-1000ml">500-1000ml</option><option value=">1000ml">&gt;1000ml</option></select></div>
-              <div class="field"><label for="a18BFr">B — FR /min</label><input type="number" id="a18BFr" min="0"></div>
-              <div class="field"><label for="a18BSpO2">B — SpO2 %</label><input type="number" id="a18BSpO2" min="0" max="100"></div>
-              <label class="appel18-checkline"><input type="checkbox" id="a18BO2"> B — O2 mis en place</label>
-              <div class="field"><label for="a18BO2L">B — Litrage O2</label><input type="number" id="a18BO2L" min="0"></div>
-              <div class="field"><label for="a18CFC">C — FC /min</label><input type="number" id="a18CFC" min="0"></div>
-              <div class="field"><label for="a18CPASys">C — PA sys</label><input type="number" id="a18CPASys" min="0"></div>
-              <div class="field"><label for="a18CPADia">C — PA dia</label><input type="number" id="a18CPADia" min="0"></div>
-              <label class="appel18-checkline"><input type="checkbox" id="a18CEcg"> C — ECG</label>
-              <label class="appel18-checkline"><input type="checkbox" id="a18CSuspHemo"> C — Suspicion hémorragie interne</label>
-              <div class="field full"><label for="a18CRegions">C — Régions suspectes (thorax, abdomen, fémurs, bassin...)</label><input type="text" id="a18CRegions"></div>
-              <div class="field"><label for="a18DGcsY">D — Glasgow Y /4</label><input type="number" id="a18DGcsY" min="1" max="4"></div>
-              <div class="field"><label for="a18DGcsV">D — Glasgow V /5</label><input type="number" id="a18DGcsV" min="1" max="5"></div>
-              <div class="field"><label for="a18DGcsM">D — Glasgow M /6</label><input type="number" id="a18DGcsM" min="1" max="6"></div>
-              <div class="field"><label for="a18DGcs">D — Glasgow total</label><input type="number" id="a18DGcs" min="3" max="15" readonly></div>
-              <div class="field"><label for="a18DGlycemie">D — Glycémie</label><input type="number" id="a18DGlycemie" min="0" step="0.1"></div>
-              <div class="field"><label for="a18DGlyUnit">D — Unité</label><select id="a18DGlyUnit"><option value="mg/dL">mg/dL</option><option value="mmol/L">mmol/L</option></select></div>
-              <div class="field"><label for="a18ETemp">E — Température °C</label><input type="number" id="a18ETemp" step="0.1"></div>
-              <div class="field"><label for="a18EWallace">E — Score Wallace %</label><input type="number" id="a18EWallace" min="0" max="100"></div>
+              <div class="xabcde-sub measure">
+                <h5>📏 Mesurer (≈1 min)</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18XPerte">Estimation perte sanguine</label>
+                    <select id="a18XPerte">
+                      <option value="<500ml">&lt; 500 ml</option>
+                      <option value="500-1000ml">500 – 1000 ml</option>
+                      <option value=">1000ml">&gt; 1000 ml</option>
+                      <option value="non évaluable">Non évaluable</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="xabcde-note">ℹ Pertes estimées par os fracturé : Côtes 125 ml · Radius/Cubitus 250–500 ml · Humérus 500–750 ml · Tibia 500–1000 ml · Fémur 1000–2000 ml · Bassin 500–5000 ml · ⚠ Hypothermie : -1°C = -10% coagulation</div>
+              </div>
             </div>
-            <div class="alert" style="margin:0;">Bloodbox: Côtes 125ml · Radius-Cubitus 250-500ml · Humérus 500-750ml · Tibia 500-1000ml · Fémur 1000-2000ml · Bassin 500-5000ml</div>
-          </div>
-        </details>
+          </details>
 
-        <details class="appel18-collapse">
-          <summary>Examiner / SAMPLER / secondaire</summary>
-          <div class="appel18-collapse-body">
-            <div class="appel18-grid">
-              <div class="field full"><label for="a18SamplerP">PQRST — Provoqué par</label><input type="text" id="a18SamplerP"></div>
-              <div class="field"><label for="a18SamplerQ">PQRST — Qualité</label><input type="text" id="a18SamplerQ"></div>
-              <div class="field"><label for="a18SamplerR">PQRST — Région</label><input type="text" id="a18SamplerR"></div>
-              <div class="field"><label for="a18SamplerS">PQRST — Sévérité EN</label><input type="range" id="a18SamplerS" min="0" max="10" value="0"></div>
-              <div class="field"><label for="a18SamplerT">PQRST — Temps</label><input type="text" id="a18SamplerT"></div>
-              <div class="field"><label for="a18Allergies">A — Allergies</label><input type="text" id="a18Allergies"></div>
-              <div class="field"><label for="a18Medicaments">M — Médicaments</label><input type="text" id="a18Medicaments"></div>
-              <div class="field"><label for="a18Passe">P — Passé médico-chirurgical</label><input type="text" id="a18Passe"></div>
-              <div class="field"><label for="a18LastMeal">L — Last meal</label><input type="text" id="a18LastMeal"></div>
-              <div class="field"><label for="a18LastMealTime">L — Heure</label><input type="time" id="a18LastMealTime"></div>
-              <div class="field full"><label for="a18Evenement">E — Événement déclenchant</label><input type="text" id="a18Evenement"></div>
-              <div class="field"><label for="a18SecFr">Secondaire FR /min</label><input type="number" id="a18SecFr" min="0"></div>
-              <div class="field"><label for="a18SecFc">Secondaire FC /min</label><input type="number" id="a18SecFc" min="0"></div>
-              <div class="field"><label for="a18SecTemp">Secondaire température °C</label><input type="number" id="a18SecTemp" step="0.1"></div>
-              <div class="field"><label for="a18SecGly">Secondaire glycémie mg/dL</label><input type="number" id="a18SecGly" step="0.1"></div>
-              <label class="appel18-checkline"><input type="checkbox" id="a18Palpation"> Palpation tête-pieds effectuée</label>
-              <div class="field full"><label for="a18PalpationNotes">Palpation — constat</label><textarea id="a18PalpationNotes" rows="2"></textarea></div>
+          <details class="xabcde-letter letter-a">
+            <summary>
+              <span class="xabcde-summary-left">
+                <span class="xabcde-badge">A</span>
+                <span class="xabcde-title">Airway</span>
+              </span>
+            </summary>
+            <div class="xabcde-body">
+              <div class="xabcde-sub search">
+                <h5>🔍 Rechercher</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18AFree">Voies aériennes libres ?</label>
+                    <select id="a18AFree">
+                      <option value="oui">Libres</option>
+                      <option value="non">Obstruées</option>
+                      <option value="non évaluable">Non évaluable</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18ACause">Cause suspectée</label>
+                    <input type="text" id="a18ACause" placeholder="Corps étranger, langue, sécrétions...">
+                  </div>
+                  <label class="appel18-checkline"><input type="checkbox" id="a18ATrauma"> Maintien tête effectué (trauma rachidien)</label>
+                </div>
+              </div>
+
+              <div class="xabcde-sub assess">
+                <h5>👁 Apprécier</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18AGeste">Technique de liberté des VAS</label>
+                    <select id="a18AGeste">
+                      <option value="">Aucune nécessaire</option>
+                      <option value="LVA classique">LVA classique</option>
+                      <option value="élévation menton">Élévation du menton seul (trauma)</option>
+                      <option value="désobstruction">Désobstruction aspiration</option>
+                      <option value="canule OPA">Canule OPA (Guédel)</option>
+                      <option value="canule NPA">Canule NPA (nasopharyngée)</option>
+                      <option value="intubation">Intubation oro-trachéale</option>
+                      <option value="cricothyrotomie">Cricothyrotomie</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="xabcde-sub measure">
+                <h5>📏 Mesurer</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18AEtat">État actuel des VAS</label>
+                    <select id="a18AEtat">
+                      <option value="libre">Libres et maintenues</option>
+                      <option value="maintenue manuellement">Maintenues manuellement</option>
+                      <option value="canule OPA">Canule OPA en place</option>
+                      <option value="canule NPA">Canule NPA en place</option>
+                      <option value="intubé">Intubé (IOT)</option>
+                      <option value="cricothyrotomie">Cricothyrotomie</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </details>
+          </details>
+
+          <details class="xabcde-letter letter-b">
+            <summary>
+              <span class="xabcde-summary-left">
+                <span class="xabcde-badge">B</span>
+                <span class="xabcde-title">Breathing</span>
+              </span>
+            </summary>
+            <div class="xabcde-body">
+              <div class="xabcde-sub search">
+                <h5>🔍 Rechercher</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18BResp">Respiration présente ?</label>
+                    <select id="a18BResp">
+                      <option value="oui">Présente</option>
+                      <option value="non">Absente</option>
+                      <option value="gasps">Gasps uniquement</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="xabcde-sub assess">
+                <h5>👁 Apprécier (≈15 sec)</h5>
+                <div class="xabcde-grid-3">
+                  <div class="field">
+                    <label for="a18BRap">Rapidité</label>
+                    <select id="a18BRap">
+                      <option value="normale">Normale</option>
+                      <option value="rapide">Rapide (polypnée)</option>
+                      <option value="lente">Lente (bradypnée)</option>
+                      <option value="pause">Pause apnée</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18BAmp">Amplitude</label>
+                    <select id="a18BAmp">
+                      <option value="normale">Normale</option>
+                      <option value="superficielle">Superficielle</option>
+                      <option value="profonde">Profonde</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18BReg">Régularité</label>
+                    <select id="a18BReg">
+                      <option value="régulière">Régulière</option>
+                      <option value="irrégulière">Irrégulière</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18BPeau">Peau / Muqueuses</label>
+                    <select id="a18BPeau">
+                      <option value="normale">Normale</option>
+                      <option value="pâle">Pâle</option>
+                      <option value="cyanosée">Cyanosée</option>
+                      <option value="marbrée">Marbrée</option>
+                      <option value="sueurs">Sueurs</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="xabcde-sub measure">
+                <h5>📏 Mesurer (≈1 min)</h5>
+                <div class="xabcde-grid-3">
+                  <div class="field">
+                    <label for="a18BFr">FR /min</label>
+                    <input type="number" id="a18BFr" min="0" max="60" placeholder="ex: 18">
+                  </div>
+                  <div class="field">
+                    <label for="a18BSpO2">SpO2 %</label>
+                    <input type="number" id="a18BSpO2" min="50" max="100" placeholder="ex: 98">
+                  </div>
+                  <div class="field">
+                    <label for="a18BO2L">Débit L/min</label>
+                    <input type="number" id="a18BO2L" min="0" max="15" placeholder="ex: 9">
+                  </div>
+                  <label class="appel18-checkline"><input type="checkbox" id="a18BO2"> O2 en cours</label>
+                </div>
+                <div class="xabcde-flag red">⚠ Hypoxémie — O2 requis si SpO2 &lt; 90%</div>
+              </div>
+            </div>
+          </details>
+
+          <details class="xabcde-letter letter-c">
+            <summary>
+              <span class="xabcde-summary-left">
+                <span class="xabcde-badge">C</span>
+                <span class="xabcde-title">Circulation</span>
+              </span>
+            </summary>
+            <div class="xabcde-body">
+              <div class="xabcde-sub search">
+                <h5>🔍 Rechercher</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18CPoulsRadial">Pouls radial</label>
+                    <select id="a18CPoulsRadial">
+                      <option value="présent">Présent</option>
+                      <option value="filant">Filant</option>
+                      <option value="absent">Absent</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18CPoulsCarotidien">Pouls central (carotidien/fémoral)</label>
+                    <select id="a18CPoulsCarotidien">
+                      <option value="présent">Présent</option>
+                      <option value="filant">Filant</option>
+                      <option value="absent">Absent</option>
+                    </select>
+                  </div>
+                  <label class="appel18-checkline"><input type="checkbox" id="a18CSuspHemo"> Suspicion hémorragie interne ?</label>
+                  <div class="field full">
+                    <label for="a18CRegions">Boîtes à sang / observations</label>
+                    <input type="text" id="a18CRegions" placeholder="Thorax, abdomen, fémurs, bassin...">
+                  </div>
+                </div>
+                <div class="xabcde-note">Pouls radial absent → PAS probablement &lt; 80 mmHg</div>
+              </div>
+
+              <div class="xabcde-sub assess">
+                <h5>👁 Apprécier (≈15 sec)</h5>
+                <div class="xabcde-grid-3">
+                  <div class="field">
+                    <label for="a18CRap">Rapidité</label>
+                    <select id="a18CRap">
+                      <option value="normal">Normal</option>
+                      <option value="rapide">Rapide (tachycardie)</option>
+                      <option value="lent">Lent (bradycardie)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18CAmp">Amplitude</label>
+                    <select id="a18CAmp">
+                      <option value="normal">Normal</option>
+                      <option value="filant">Filant</option>
+                      <option value="bondissant">Bondissant</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18CTrc">TRC</label>
+                    <select id="a18CTrc">
+                      <option value="<2s">&lt; 2 secondes</option>
+                      <option value=">2s">&gt; 2 secondes</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18CPeau">Couleur peau</label>
+                    <select id="a18CPeau">
+                      <option value="normale">Normale</option>
+                      <option value="pâle">Pâle</option>
+                      <option value="marbrée">Marbrée</option>
+                      <option value="cyanosée">Cyanosée</option>
+                      <option value="érythémateuse">Érythémateuse</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18CTempPeau">Température peau</label>
+                    <select id="a18CTempPeau">
+                      <option value="chaude">Chaude</option>
+                      <option value="tiède">Tiède</option>
+                      <option value="froide">Froide</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="xabcde-sub measure">
+                <h5>📏 Mesurer (≈1 min)</h5>
+                <div class="xabcde-grid-3">
+                  <div class="field">
+                    <label for="a18CFC">FC /min</label>
+                    <input type="number" id="a18CFC" min="0" max="300" placeholder="ex: 72">
+                  </div>
+                  <div class="field">
+                    <label for="a18CPASys">PAS mmHg</label>
+                    <input type="number" id="a18CPASys" min="0" placeholder="ex: 120">
+                  </div>
+                  <div class="field">
+                    <label for="a18CPADia">PAD mmHg</label>
+                    <input type="number" id="a18CPADia" min="0" placeholder="ex: 80">
+                  </div>
+                  <label class="appel18-checkline"><input type="checkbox" id="a18CEcg"> ECG réalisé</label>
+                </div>
+                <div class="xabcde-flag red">⚠ Hypotension — suspicion choc si PAS &lt; 90</div>
+                <div class="xabcde-flag orange">⚠ HTA sévère si PAS &gt; 180</div>
+              </div>
+            </div>
+          </details>
+
+          <details class="xabcde-letter letter-d">
+            <summary>
+              <span class="xabcde-summary-left">
+                <span class="xabcde-badge">D</span>
+                <span class="xabcde-title">Disability</span>
+              </span>
+            </summary>
+            <div class="xabcde-body">
+              <div class="xabcde-sub search">
+                <h5>🔍 Rechercher</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18DConscient">État de conscience</label>
+                    <select id="a18DConscient">
+                      <option value="oui">Conscient et orienté</option>
+                      <option value="agité">Conscient désorienté / agité</option>
+                      <option value="somnolent">Somnolent</option>
+                      <option value="non">Inconscient</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="xabcde-sub assess">
+                <h5>👁 Apprécier</h5>
+                <div class="xabcde-grid-2">
+                  <div class="field">
+                    <label for="a18DOrientation">Orientation</label>
+                    <select id="a18DOrientation">
+                      <option value="orienté T+E">Orienté temps et espace</option>
+                      <option value="désorienté temps">Désorienté temps</option>
+                      <option value="désorienté espace">Désorienté espace</option>
+                      <option value="désorienté">Complètement désorienté</option>
+                      <option value="inconscient">Inconscient</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18DPupilles">Pupilles</label>
+                    <select id="a18DPupilles">
+                      <option value="iso-réactives">Iso-réactives (normal)</option>
+                      <option value="anisocorie">Anisocorie</option>
+                      <option value="mydriase">Mydriase bilatérale</option>
+                      <option value="myosis">Myosis bilatéral</option>
+                      <option value="non évaluable">Non évaluable</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18DMotricite">Motricité 4 membres</label>
+                    <select id="a18DMotricite">
+                      <option value="normale">Normale</option>
+                      <option value="déficit membre supérieur">Déficit membre supérieur</option>
+                      <option value="déficit membre inférieur">Déficit membre inférieur</option>
+                      <option value="déficit unilatéral">Déficit hémicorps</option>
+                      <option value="déficit bilatéral">Tétraplégie</option>
+                      <option value="non évaluable">Non évaluable</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="a18EVDA">EVDA</label>
+                    <select id="a18EVDA">
+                      <option value="Éveillé">Éveillé</option>
+                      <option value="Verbal">Verbal</option>
+                      <option value="Douleur">Douleur</option>
+                      <option value="Aucune réaction">Aucune réaction</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="xabcde-sub measure">
+                <h5>📏 Mesurer</h5>
+                <div class="field full" style="margin-bottom:8px;">
+                  <label for="a18DGcs">Score de Glasgow (total /15)</label>
+                </div>
+                <div class="xabcde-grid-3">
+                  <div class="field">
+                    <label for="a18DGcsY">Y — Yeux /4</label>
+                    <input type="number" id="a18DGcsY" min="1" max="4">
+                  </div>
+                  <div class="field">
+                    <label for="a18DGcsV">V — Verbal /5</label>
+                    <input type="number" id="a18DGcsV" min="1" max="5">
+                  </div>
+                  <div class="field">
+                    <label for="a18DGcsM">M — Moteur /6</label>
+                    <input type="number" id="a18DGcsM" min="1" max="6">
+                  </div>
+                  <div class="field">
+                    <label for="a18DGcs">Total</label>
+                    <input type="number" id="a18DGcs" min="3" max="15" readonly>
+                  </div>
+                  <div class="field full">
+                    <div id="a18DGcsHint" class="xabcde-note">Total = Y + V + M / 15</div>
+                  </div>
+                  <div class="field">
+                    <label for="a18DGlycemie">Glycémie</label>
+                    <input type="number" id="a18DGlycemie" min="0" step="0.1" placeholder="ex: 95">
+                  </div>
+                  <div class="field">
+                    <label for="a18DGlyUnit">Unité</label>
+                    <select id="a18DGlyUnit">
+                      <option value="mg/dL">mg/dL</option>
+                      <option value="mmol/L">mmol/L</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="xabcde-letter letter-e">
+            <summary>
+              <span class="xabcde-summary-left">
+                <span class="xabcde-badge">E</span>
+                <span class="xabcde-title">Exposure</span>
+              </span>
+            </summary>
+            <div class="xabcde-body">
+              <div class="xabcde-sub search">
+                <h5>🔍 Rechercher / Examiner (tête → pieds)</h5>
+                <div class="appel18-grid">
+                  <div class="field full">
+                    <label for="a18ELesions">Lésions observées</label>
+                    <textarea id="a18ELesions" rows="3" placeholder="Contusions, plaies, déformations, brûlures... (tête → pieds)"></textarea>
+                  </div>
+                  <div class="field">
+                    <label for="a18EWallace">Score de Wallace %</label>
+                    <input type="number" id="a18EWallace" min="0" max="100">
+                  </div>
+                </div>
+              </div>
+
+              <div class="xabcde-sub assess">
+                <h5>👁 Apprécier — Hypothermie</h5>
+                <div class="appel18-grid">
+                  <div class="field">
+                    <label for="a18ETemp">Température corporelle °C</label>
+                    <input type="number" id="a18ETemp" step="0.1" placeholder="ex: 37.0">
+                  </div>
+                </div>
+                <div class="xabcde-note">Rappel : -1°C = -10% capacité de coagulation</div>
+              </div>
+
+              <div class="xabcde-sub measure">
+                <h5>📏 Mesurer / Interroger — SAMPLER</h5>
+                <div class="appel18-grid">
+                  <div class="field full"><label for="a18SamplerP">P — Provoqué par / Calmé par</label><input type="text" id="a18SamplerP"></div>
+                  <div class="field"><label for="a18SamplerQ">Q — Qualité</label><input type="text" id="a18SamplerQ"></div>
+                  <div class="field"><label for="a18SamplerR">R — Région / Irradiation</label><input type="text" id="a18SamplerR"></div>
+                  <div class="field"><label for="a18SamplerS">S — Sévérité EN</label><input type="range" id="a18SamplerS" min="0" max="10" value="0"></div>
+                  <div class="field"><label for="a18SamplerT">T — Temps</label><input type="text" id="a18SamplerT"></div>
+                  <div class="field"><label for="a18Allergies">A — Allergies</label><input type="text" id="a18Allergies" placeholder="NKDA si aucune"></div>
+                  <div class="field full"><label for="a18Medicaments">M — Médicaments en cours</label><textarea id="a18Medicaments" rows="2" placeholder="Traitements habituels, automédication..."></textarea></div>
+                  <div class="field"><label for="a18Passe">P — Passé médico-chirurgical</label><input type="text" id="a18Passe"></div>
+                  <div class="field"><label for="a18LastMeal">L — Dernier repas / boisson</label><input type="text" id="a18LastMeal" placeholder="ex: ce matin à 8h"></div>
+                  <div class="field"><label for="a18LastMealTime">L — Heure</label><input type="time" id="a18LastMealTime"></div>
+                  <div class="field full"><label for="a18Evenement">E — Événement déclenchant</label><textarea id="a18Evenement" rows="2" placeholder="Ce qui s'est passé avant l'appel..."></textarea></div>
+
+                  <div class="field"><label for="a18SecFr">Secondaire FR /min</label><input type="number" id="a18SecFr" min="0"></div>
+                  <div class="field"><label for="a18SecFc">Secondaire FC /min</label><input type="number" id="a18SecFc" min="0"></div>
+                  <div class="field"><label for="a18SecTemp">Secondaire température °C</label><input type="number" id="a18SecTemp" step="0.1"></div>
+                  <div class="field"><label for="a18SecGly">Secondaire glycémie mg/dL</label><input type="number" id="a18SecGly" step="0.1"></div>
+                  <label class="appel18-checkline"><input type="checkbox" id="a18Palpation"> Palpation tête-pieds effectuée</label>
+                  <div class="field full"><label for="a18PalpationNotes">Palpation — constat</label><textarea id="a18PalpationNotes" rows="2"></textarea></div>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+        <!-- END XABCDE BLOCK -->
 
         <div class="appel18-block">
           <div class="section-title">Gestes réalisés</div>
