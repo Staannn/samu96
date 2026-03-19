@@ -197,6 +197,36 @@
       box-shadow: 0 14px 28px rgba(0, 48, 135, 0.38);
     }
 
+    .quick-action-stack {
+      position: fixed;
+      top: 72px;
+      right: 18px;
+      z-index: 140;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quick-action-btn {
+      border: 1px solid #00215e;
+      background: linear-gradient(140deg, #003087, #1e4ea5);
+      color: #fff;
+      border-radius: 999px;
+      min-height: 38px;
+      padding: 0 15px;
+      font-family: var(--head);
+      font-size: 14px;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0, 48, 135, 0.28);
+      white-space: nowrap;
+    }
+
+    .quick-action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(0, 48, 135, 0.34);
+    }
+
     .fab-appel18 {
       bottom: 146px;
     }
@@ -1051,6 +1081,36 @@
       display: block;
     }
 
+    .a18-required-error {
+      border-radius: 8px;
+      padding: 6px;
+      background: rgba(239, 68, 68, 0.07);
+      border: 1px solid rgba(239, 68, 68, 0.34);
+    }
+
+    .a18-required-error input,
+    .a18-required-error select,
+    .a18-required-error textarea {
+      border-color: rgba(220, 38, 38, 0.8) !important;
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.14);
+    }
+
+    .a18-required-error-group {
+      border-radius: 8px;
+      padding: 8px;
+      background: rgba(239, 68, 68, 0.07);
+      border: 1px solid rgba(239, 68, 68, 0.34);
+    }
+
+    .a18-required-hint {
+      margin-top: 4px;
+      color: #b91c1c;
+      font-size: 11px;
+      font-family: var(--mono);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
     .appel18-tab-panel {
       display: block;
     }
@@ -1439,6 +1499,8 @@
       .cards-mobile { display: flex; }
       .fab { right: 14px; bottom: 76px; }
       .fab-appel18 { bottom: 132px; }
+      .quick-action-stack { right: 12px; top: 66px; }
+      .quick-action-btn { min-height: 34px; font-size: 12px; padding: 0 12px; }
       .modal { width: calc(100% - 14px); max-height: calc(100vh - 22px); }
       .form-grid { grid-template-columns: 1fr; }
     }
@@ -1476,6 +1538,11 @@
     <button class="hamburger">☰</button>
   </div>
 </header>
+
+<div class="quick-action-stack">
+  <button id="openAppel18Btn" class="quick-action-btn" type="button">+ Appel 18</button>
+  <button id="newInterFab" class="quick-action-btn" type="button">+ Nouvelle inter</button>
+</div>
 
 <div class="layout">
   <aside class="sidebar">
@@ -1524,7 +1591,6 @@
       <div class="panel-header">CAD OPÉRATIONNEL</div>
       <div class="panel-body">
         <div class="toolbar">
-          <button type="button" id="openAppel18Btn" class="fab-inline">+ Appel 18</button>
           <div class="segmented" id="statusFilter">
             <button type="button" data-filter="toutes" class="active">Toutes</button>
             <button type="button" data-filter="en_cours">En cours</button>
@@ -2395,9 +2461,6 @@
   </div>
 </aside>
 
-<button id="openAppel18BtnFloating" class="fab fab-appel18" type="button">+ Appel 18</button>
-<button id="newInterFab" class="fab" type="button">+ Nouvelle inter</button>
-
 <script src="nav.js"></script>
 <script src="main.js"></script>
 <script>
@@ -2649,6 +2712,24 @@
     const d = asDate(value);
     if (!d) return "-";
     return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+  }
+
+  function refreshTopbarClock() {
+    const now = new Date();
+    const text = now.toLocaleTimeString("fr-FR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    });
+    document.querySelectorAll(".topbar-clock").forEach((el) => {
+      el.textContent = text;
+    });
+  }
+
+  function startTopbarClock() {
+    refreshTopbarClock();
+    setInterval(refreshTopbarClock, 1000);
   }
 
   function roleLabel(role) {
@@ -3906,6 +3987,123 @@
     });
   }
 
+  function clearAppel18RequiredMarkers(step = null) {
+    const root = step
+      ? refs.appel18Drawer.querySelector(`.appel18-section[data-step="${step}"]`)
+      : refs.appel18Drawer;
+    if (!root) return;
+    root.querySelectorAll(".a18-required-error").forEach((el) => el.classList.remove("a18-required-error"));
+    root.querySelectorAll(".a18-required-error-group").forEach((el) => el.classList.remove("a18-required-error-group"));
+    root.querySelectorAll(".a18-required-hint").forEach((el) => el.remove());
+  }
+
+  function markAppel18RequiredField(fieldId) {
+    const input = document.getElementById(fieldId);
+    if (!input) return;
+    const field = input.closest(".field");
+    if (!field) return;
+    field.classList.add("a18-required-error");
+    if (!field.querySelector(".a18-required-hint")) {
+      const hint = document.createElement("div");
+      hint.className = "a18-required-hint";
+      hint.textContent = "Information obligatoire";
+      field.appendChild(hint);
+    }
+  }
+
+  function markAppel18RequiredGroup(groupId) {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.classList.add("a18-required-error-group");
+    if (!group.querySelector(".a18-required-hint")) {
+      const hint = document.createElement("div");
+      hint.className = "a18-required-hint";
+      hint.textContent = "Information obligatoire";
+      group.appendChild(hint);
+    }
+  }
+
+  function applyAppel18ValidationMarkers(step, validation) {
+    clearAppel18RequiredMarkers(step);
+    (validation?.fieldIds || []).forEach(markAppel18RequiredField);
+    (validation?.groupIds || []).forEach(markAppel18RequiredGroup);
+  }
+
+  function clearRequiredMarkerForInput(target) {
+    if (!target) return;
+    const field = target.closest(".field");
+    if (!field) return;
+    field.classList.remove("a18-required-error");
+    field.querySelectorAll(".a18-required-hint").forEach((el) => el.remove());
+  }
+
+  function clearRequiredMarkerForDecision() {
+    if (!refs.a18DecisionGroup) return;
+    refs.a18DecisionGroup.classList.remove("a18-required-error-group");
+    refs.a18DecisionGroup.querySelectorAll(".a18-required-hint").forEach((el) => el.remove());
+  }
+
+  function getStep1Validation() {
+    const fieldIds = [];
+    if (!getA18Value("a18CodisNumero")) fieldIds.push("a18CodisNumero");
+    if (!getA18Value("a18CodisHeure")) fieldIds.push("a18CodisHeure");
+    if (!getA18Value("a18CodisMotif")) fieldIds.push("a18CodisMotif");
+    if (!getA18Value("a18CodisAdresse")) fieldIds.push("a18CodisAdresse");
+    if (!getA18Value("a18CodisVecteur")) fieldIds.push("a18CodisVecteur");
+    return {
+      valid: fieldIds.length === 0,
+      message: fieldIds.length ? "Information obligatoire" : "",
+      fieldIds,
+      groupIds: []
+    };
+  }
+
+  function getStep2Validation() {
+    const fieldIds = [];
+    if (!getA18Value("a18MotifConfirme")) fieldIds.push("a18MotifConfirme");
+    if (!getA18Value("a18BilanPreview")) fieldIds.push("a18BilanPreview");
+    return {
+      valid: fieldIds.length === 0,
+      message: fieldIds.length ? "Information obligatoire" : "",
+      fieldIds,
+      groupIds: []
+    };
+  }
+
+  function getStep3Validation() {
+    const fieldIds = [];
+    const groupIds = [];
+    const decision = getAppel18Decision();
+    if (!getA18Value("a18RegMedecin")) fieldIds.push("a18RegMedecin");
+    if (!getA18Value("a18RegHeure")) fieldIds.push("a18RegHeure");
+    if (!decision) groupIds.push("a18DecisionGroup");
+    if ((decision === "SMUR" || decision === "Transport VSAV") && !getA18Value("a18RegDestination")) {
+      fieldIds.push("a18RegDestination");
+    }
+    return {
+      valid: fieldIds.length === 0 && groupIds.length === 0,
+      message: fieldIds.length || groupIds.length ? "Information obligatoire" : "",
+      fieldIds,
+      groupIds
+    };
+  }
+
+  function getStep4Validation() {
+    if (getAppel18Decision() !== "SMUR") {
+      return { valid: true, message: "", fieldIds: [], groupIds: [] };
+    }
+    const fieldIds = [];
+    if (!getA18Value("a18SmurHeure")) fieldIds.push("a18SmurHeure");
+    if (!getA18Value("a18SmurMedecin")) fieldIds.push("a18SmurMedecin");
+    if (!getA18Value("a18SmurInfirmier")) fieldIds.push("a18SmurInfirmier");
+    return {
+      valid: fieldIds.length === 0,
+      message: fieldIds.length ? "Information obligatoire" : "",
+      fieldIds,
+      groupIds: []
+    };
+  }
+
   function showAppel18Error(step, message) {
     const target = {
       1: refs.appel18ErrorStep1,
@@ -4128,37 +4326,19 @@
   }
 
   function validateStep1() {
-    if (!getA18Value("a18CodisNumero")) return "Le numéro dossier est obligatoire.";
-    if (!getA18Value("a18CodisHeure")) return "L'heure de réception est obligatoire.";
-    if (!getA18Value("a18CodisMotif")) return "Le motif CODIS est obligatoire.";
-    if (!getA18Value("a18CodisAdresse")) return "L'adresse est obligatoire.";
-    if (!getA18Value("a18CodisVecteur")) return "Le vecteur est obligatoire.";
-    return "";
+    return getStep1Validation().message;
   }
 
   function validateStep2() {
-    if (!getA18Value("a18MotifConfirme")) return "Le motif confirmé est obligatoire.";
-    if (!getA18Value("a18BilanPreview")) return "Le texte du bilan est obligatoire.";
-    return "";
+    return getStep2Validation().message;
   }
 
   function validateStep3() {
-    const decision = getAppel18Decision();
-    if (!getA18Value("a18RegMedecin")) return "Le médecin régulateur est obligatoire.";
-    if (!getA18Value("a18RegHeure")) return "L'heure de régulation est obligatoire.";
-    if (!decision) return "La décision est obligatoire.";
-    if ((decision === "SMUR" || decision === "Transport VSAV") && !getA18Value("a18RegDestination")) {
-      return "La destination est obligatoire pour cette décision.";
-    }
-    return "";
+    return getStep3Validation().message;
   }
 
   function validateStep4() {
-    if (getAppel18Decision() !== "SMUR") return "";
-    if (!getA18Value("a18SmurHeure")) return "L'heure d'engagement SMUR est obligatoire.";
-    if (!getA18Value("a18SmurMedecin")) return "Le médecin SMUR est obligatoire.";
-    if (!getA18Value("a18SmurInfirmier")) return "L'infirmier/IADE est obligatoire.";
-    return "";
+    return getStep4Validation().message;
   }
 
   function updateAppel18ActionButtons() {
@@ -4277,6 +4457,7 @@
     state.appel18.viewReadOnly = false;
     state.appel18.step2Tab = "form";
     clearAppel18Errors();
+    clearAppel18RequiredMarkers();
     syncGlasgowTotal();
     updateDecisionCards();
     refreshBilanPreview(true);
@@ -4285,6 +4466,7 @@
   }
 
   function hydrateAppel18FromDoc(data = {}, readOnly = false) {
+    clearAppel18RequiredMarkers();
     refs.a18CodisNumero.value = data.numero || "";
     refs.a18CodisHeure.value = data?.codis?.heure || getCurrentTimeValue();
     refs.a18CodisMotif.value = data?.codis?.motif || "";
@@ -4513,8 +4695,12 @@
 
   async function saveStep1() {
     clearAppel18Errors();
-    const err = validateStep1();
-    if (err) return showAppel18Error(1, err);
+    const validation = getStep1Validation();
+    if (!validation.valid) {
+      applyAppel18ValidationMarkers(1, validation);
+      return showAppel18Error(1, validation.message || "Information obligatoire");
+    }
+    clearAppel18RequiredMarkers(1);
     const payload = {
       numero: getA18Value("a18CodisNumero"),
       statut: "ouvert",
@@ -4554,8 +4740,12 @@
 
   async function saveStep2() {
     clearAppel18Errors();
-    const err = validateStep2();
-    if (err) return showAppel18Error(2, err);
+    const validation = getStep2Validation();
+    if (!validation.valid) {
+      applyAppel18ValidationMarkers(2, validation);
+      return showAppel18Error(2, validation.message || "Information obligatoire");
+    }
+    clearAppel18RequiredMarkers(2);
     if (!state.appel18.dossierId) return showAppel18Error(2, "Veuillez enregistrer l'étape 1 d'abord.");
 
     const payload = {
@@ -4581,8 +4771,12 @@
 
   async function saveStep3() {
     clearAppel18Errors();
-    const err = validateStep3();
-    if (err) return showAppel18Error(3, err);
+    const validation = getStep3Validation();
+    if (!validation.valid) {
+      applyAppel18ValidationMarkers(3, validation);
+      return showAppel18Error(3, validation.message || "Information obligatoire");
+    }
+    clearAppel18RequiredMarkers(3);
     if (!state.appel18.dossierId) return showAppel18Error(3, "Veuillez enregistrer l'étape 1 d'abord.");
 
     const decision = getAppel18Decision();
@@ -4629,8 +4823,12 @@
 
   async function saveStep4() {
     clearAppel18Errors();
-    const err = validateStep4();
-    if (err) return showAppel18Error(4, err);
+    const validation = getStep4Validation();
+    if (!validation.valid) {
+      applyAppel18ValidationMarkers(4, validation);
+      return showAppel18Error(4, validation.message || "Information obligatoire");
+    }
+    clearAppel18RequiredMarkers(4);
     if (!state.appel18.dossierId) return showAppel18Error(4, "Dossier introuvable.");
 
     const payload = {
@@ -4672,7 +4870,7 @@
     refs.appel18Backdrop.addEventListener("click", () => closeAppel18Drawer(false));
 
     document.body.addEventListener("click", (event) => {
-      const openBtn = event.target.closest("#openAppel18Btn, #openAppel18BtnFloating");
+      const openBtn = event.target.closest("#openAppel18Btn");
       if (!openBtn) return;
       event.preventDefault();
       openAppel18Drawer("new");
@@ -4710,9 +4908,12 @@
       if (!state.appel18.open) return;
       state.appel18.dirty = true;
 
+      clearRequiredMarkerForInput(event.target);
+
       const target = event.target;
       if (target.matches("[data-a18-step-go]")) return;
       if (target.matches('input[name="a18Decision"]')) {
+        clearRequiredMarkerForDecision();
         updateDecisionCards();
       }
 
@@ -4734,6 +4935,9 @@
     refs.appel18Drawer.addEventListener("input", (event) => {
       if (!state.appel18.open) return;
       state.appel18.dirty = true;
+
+      clearRequiredMarkerForInput(event.target);
+      if (event.target.matches('input[name="a18Decision"]')) clearRequiredMarkerForDecision();
 
       if (event.target.id === "a18BilanPreview") {
         state.appel18.previewManual = true;
@@ -5085,6 +5289,7 @@
     state.tickInterval = setInterval(updateLiveTimers, 1000);
   }
 
+  startTopbarClock();
   bindEvents();
   ensureModalStructure();
   renderInterventions();
