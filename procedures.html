@@ -93,6 +93,8 @@
     <div class="procedures-main-tabs" role="tablist" aria-label="Onglets procédures">
       <button class="main-tab-btn active" data-main-tab-target="medical" role="tab" aria-selected="true">PROCÉDURES MÉDICALES</button>
       <button class="main-tab-btn" data-main-tab-target="dispatch" role="tab" aria-selected="false">RÉGULATION &amp; DISPATCH</button>
+      <button class="main-tab-btn" data-main-tab-target="affectation" role="tab" aria-selected="false">CH AFFECTATION</button>
+      <button class="main-tab-btn" data-main-tab-target="degrade" role="tab" aria-selected="false">PROCÉDURES DÉGRADÉES</button>
     </div>
 
     <section id="tab-medical" class="main-tab-panel active" role="tabpanel">
@@ -1515,7 +1517,175 @@
 
     </section>
 
-  </main>
+    <!-- ═══════════════════════════════════════
+         ONGLET 3 — CH AFFECTATION
+    ═══════════════════════════════════════ -->
+    <section id="tab-affectation" class="main-tab-panel" role="tabpanel">
+
+      <div class="alert" style="border-color:rgba(14,165,233,0.4);background:rgba(14,165,233,0.06);color:#0369a1;">
+        <strong>Aide à l'orientation hospitalière :</strong> Sélectionne le plateau technique requis pour orienter
+        automatiquement vers le bon établissement. En cas de doute, contacter la régulation médicale (CRRA 15).
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+
+        <!-- COLONNE 1 : CHU SAINT-PIERRE -->
+        <div class="panel">
+          <div class="panel-header" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.35);color:#b91c1c;">
+            🏥 CHU Saint-Pierre — Plateaux techniques disponibles
+          </div>
+          <div class="panel-body">
+            <table class="data-table">
+              <thead>
+                <tr><th>Plateau / Unité</th><th>Indication principale</th><th>Priorité</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>SALLE DE DÉCHOCAGE</td><td>Polytrauma, ACR récupéré, choc hémodynamique</td><td><span class="badge" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.4);color:#b91c1c;">P0/P1</span></td></tr>
+                <tr><td>BLOC NEUROCHIRURGIE</td><td>TC grave, HED/HSD, AVC hémorragique avec indication chirurgicale</td><td><span class="badge" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.4);color:#b91c1c;">P0/P1</span></td></tr>
+                <tr><td>SALLE DE CATHÉTÉRISME (CATH LAB)</td><td>SCA ST+ (IDM), choc cardiogénique</td><td><span class="badge" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.4);color:#b91c1c;">P0/P1</span></td></tr>
+                <tr><td>UNITÉ NEURO-VASCULAIRE (UNV)</td><td>AVC ischémique (thrombolyse / thrombectomie)</td><td><span class="badge" style="background:rgba(234,88,12,0.15);border-color:rgba(234,88,12,0.4);color:#c2410c;">P1</span></td></tr>
+                <tr><td>RÉANIMATION CHIRURGICALE</td><td>Post-op urgence, choc septique opéré, trauma thoraco-abdominal</td><td><span class="badge" style="background:rgba(234,88,12,0.15);border-color:rgba(234,88,12,0.4);color:#c2410c;">P1</span></td></tr>
+                <tr><td>RÉANIMATION MÉDICALE</td><td>Détresse respiratoire sévère, intox grave, défaillance multi-organes</td><td><span class="badge" style="background:rgba(234,88,12,0.15);border-color:rgba(234,88,12,0.4);color:#c2410c;">P1</span></td></tr>
+                <tr><td>UNITÉ ECMO</td><td>ACR réfractaire, choc cardiogénique réfractaire</td><td><span class="badge" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.4);color:#b91c1c;">P0</span></td></tr>
+                <tr><td>MATERNITÉ NIVEAU 3</td><td>Urgences obstétricales, grand prématuré, détresse néonatale</td><td><span class="badge" style="background:rgba(234,88,12,0.15);border-color:rgba(234,88,12,0.4);color:#c2410c;">P1</span></td></tr>
+                <tr><td>SAU (SERVICE ACCUEIL URGENCES)</td><td>Toutes urgences ne nécessitant pas de plateau spécialisé immédiat</td><td><span class="badge" style="background:rgba(21,128,61,0.15);border-color:rgba(21,128,61,0.4);color:#15803d;">P2/P3</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- COLONNE 2 : CH HAUTE-SUR-MER -->
+        <div class="panel">
+          <div class="panel-header" style="background:rgba(14,165,233,0.15);border-color:rgba(14,165,233,0.35);color:#0369a1;">
+            🏥 CH Haute-sur-Mer — Plateaux techniques disponibles
+          </div>
+          <div class="panel-body">
+            <table class="data-table">
+              <thead>
+                <tr><th>Plateau / Unité</th><th>Indication principale</th><th>Priorité</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>SAU GÉNÉRAL</td><td>Urgences médicales et chirurgicales non spécialisées</td><td><span class="badge" style="background:rgba(21,128,61,0.15);border-color:rgba(21,128,61,0.4);color:#15803d;">P2/P3</span></td></tr>
+                <tr><td>CHIRURGIE GÉNÉRALE</td><td>Urgences abdominales, occlusion, appendicite, péritonite</td><td><span class="badge" style="background:rgba(234,88,12,0.15);border-color:rgba(234,88,12,0.4);color:#c2410c;">P1/P2</span></td></tr>
+                <tr><td>ORTHO-TRAUMATOLOGIE</td><td>Fractures complexes, luxations, traumatismes ostéo-articulaires</td><td><span class="badge" style="background:rgba(234,88,12,0.15);border-color:rgba(234,88,12,0.4);color:#c2410c;">P1/P2</span></td></tr>
+                <tr><td>MÉDECINE INTERNE / USC</td><td>Décompensation de pathologies chroniques, surveillance intermédiaire</td><td><span class="badge" style="background:rgba(21,128,61,0.15);border-color:rgba(21,128,61,0.4);color:#15803d;">P2</span></td></tr>
+                <tr><td>PSYCHIATRIE URGENCES</td><td>Agitation aiguë, crise suicidaire, bouffée délirante</td><td><span class="badge" style="background:rgba(234,88,12,0.15);border-color:rgba(234,88,12,0.4);color:#c2410c;">P1/P2</span></td></tr>
+                <tr><td>MATERNITÉ NIVEAU 1</td><td>Grossesses à bas risque, accouchements non compliqués</td><td><span class="badge" style="background:rgba(21,128,61,0.15);border-color:rgba(21,128,61,0.4);color:#15803d;">P2</span></td></tr>
+              </tbody>
+            </table>
+            <div class="alert" style="margin-top:1rem;border-color:rgba(234,179,8,0.4);background:rgba(234,179,8,0.06);color:#854d0e;">
+              ⚠️ <strong>Limite de compétence :</strong> Le CH Haute-sur-Mer ne dispose pas de plateau de déchocage,
+              de neurochirurgie ni d'ECMO. Tout patient P0 ou nécessitant un plateau de recours doit être orienté
+              vers le CHU Saint-Pierre, quitte à allonger le délai de transport.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Arbre décisionnel orientation rapide -->
+      <div class="panel" style="margin-top:1.5rem;">
+        <div class="panel-header">Arbre décisionnel — Orientation rapide</div>
+        <div class="panel-body regulation-layout">
+          <div class="tree-node">Patient pris en charge — Quel établissement ?</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+            <div>
+              <div class="tree-decision">P0 / Plateau spécialisé requis ?<br><small>(Déchocage, Cath Lab, Neurochirurgie, ECMO, UNV, Réa)</small></div>
+              <div class="tree-immediate" style="margin-top:0.5rem;">→ CHU SAINT-PIERRE<br><small>Prévenir le SAU en amont via CRRA 15</small></div>
+            </div>
+            <div>
+              <div class="tree-decision">P1/P2 — Urgence sans plateau de recours ?<br><small>(Trauma osseux, chir. générale, psy, médecine)</small></div>
+              <div class="tree-advice" style="margin-top:0.5rem;">→ CH HAUTE-SUR-MER<br><small>Sauf si instabilité hémodynamique → Saint-Pierre</small></div>
+            </div>
+          </div>
+          <div class="tree-action" style="margin-top:1rem;">
+            En cas de doute ou de saturation connue d'un établissement : contacter le CRRA 15 avant transport.
+            Ne jamais se présenter aux urgences sans annonce préalable pour tout patient P0/P1.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         ONGLET 4 — PROCÉDURES DÉGRADÉES
+    ═══════════════════════════════════════ -->
+    <section id="tab-degrade" class="main-tab-panel" role="tabpanel">
+
+      <div class="alert alert-red">
+        <strong>Mode dégradé :</strong> Ces procédures s'appliquent uniquement en l'absence du personnel de rang
+        supérieur requis. Tout acte réalisé en mode dégradé doit être tracé et signalé à la régulation dès que possible.
+      </div>
+
+      <!-- AMBULANCIER -->
+      <div class="panel">
+        <div class="panel-header" style="background:rgba(21,128,61,0.12);border-color:rgba(21,128,61,0.35);color:#15803d;">
+          🚑 Ambulancier — Compétences en mode dégradé
+        </div>
+        <div class="panel-body">
+          <ul>
+            <li>Autorisé à utiliser la <strong>trousse de secours</strong> et le <strong>bandage</strong> en l'absence de médecin.</li>
+            <li>Responsable du <strong>balisage</strong>, de la <strong>protection de l'équipage</strong> et des <strong>appels radio terrain</strong>.</li>
+            <li>Aucune administration médicamenteuse autonome autorisée.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- IDE -->
+      <div class="panel" style="margin-top:1rem;">
+        <div class="panel-header" style="background:rgba(14,165,233,0.12);border-color:rgba(14,165,233,0.35);color:#0369a1;">
+          💉 Infirmier (IDE) — Compétences en mode dégradé
+        </div>
+        <div class="panel-body">
+          <table class="data-table">
+            <thead><tr><th>Acte / Produit</th><th>Statut</th><th>Condition</th></tr></thead>
+            <tbody>
+              <tr><td>Trousse de secours</td><td><span class="badge badge-green">AUTORISÉ</span></td><td>En toutes circonstances</td></tr>
+              <tr><td>Bandage</td><td><span class="badge badge-green">AUTORISÉ</span></td><td>En toutes circonstances</td></tr>
+              <tr><td>Morphine</td><td><span class="badge badge-green">AUTORISÉ</span></td><td>Selon protocole intranet</td></tr>
+              <tr><td>Naloxone</td><td><span class="badge" style="background:rgba(234,179,8,0.15);border-color:rgba(234,179,8,0.4);color:#854d0e;">CONDITIONNEL</span></td><td>Uniquement si mauvaise tolérance à la morphine</td></tr>
+              <tr><td>Adrénaline</td><td><span class="badge" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.4);color:#b91c1c;">INTERDIT</span></td><td>Pas d'administration en autonomie</td></tr>
+            </tbody>
+          </table>
+          <div class="alert" style="margin-top:1rem;border-color:rgba(234,179,8,0.4);background:rgba(234,179,8,0.06);color:#854d0e;">
+            ⚠️ L'administration en mode dégradé doit suivre strictement les protocoles de l'intranet.
+            Aucun libre cours ne sera toléré.
+          </div>
+        </div>
+      </div>
+
+      <!-- INTERNE -->
+      <div class="panel" style="margin-top:1rem;">
+        <div class="panel-header" style="background:rgba(124,58,237,0.12);border-color:rgba(124,58,237,0.35);color:#6d28d9;">
+          🩺 Interne — Compétences en mode dégradé
+        </div>
+        <div class="panel-body">
+          <ul>
+            <li>Autorisé à <strong>prendre la main médicalement</strong> sur un patient après validation par un Sénior.</li>
+            <li><strong>Pas de régulation en autonomie.</strong> Liaison systématique avec le CODIS obligatoire.</li>
+            <li>Tout engagement médical hors présence d'un Sénior doit être signalé immédiatement à la régulation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- RÉGULATION CRRA -->
+      <div class="panel" style="margin-top:1rem;">
+        <div class="panel-header" style="background:rgba(220,38,38,0.12);border-color:rgba(220,38,38,0.35);color:#b91c1c;">
+          📡 Régulation (CRRA) — Ordre de priorité de poste
+        </div>
+        <div class="panel-body">
+          <div class="hud-steps">
+            <label class="hud-step"><input type="checkbox" disabled><span class="step-number">01</span><span class="step-text">Médecin — Priorité absolue pour la prise de poste CRRA</span><span class="badge badge-green step-done">PRIORITÉ 1</span></label>
+            <label class="hud-step"><input type="checkbox" disabled><span class="step-number">02</span><span class="step-text">Interne — En l'absence de médecin disponible</span><span class="badge" style="background:rgba(234,88,12,0.15);border-color:rgba(234,88,12,0.4);color:#c2410c;">PRIORITÉ 2</span></label>
+            <label class="hud-step"><input type="checkbox" disabled><span class="step-number">03</span><span class="step-text">Infirmier (IDE) — Uniquement si médecin et interne indisponibles</span><span class="badge" style="background:rgba(234,179,8,0.15);border-color:rgba(234,179,8,0.4);color:#854d0e;">PRIORITÉ 3</span></label>
+          </div>
+          <div class="alert" style="margin-top:1rem;border-color:rgba(220,38,38,0.4);background:rgba(220,38,38,0.06);color:#b91c1c;">
+            🚫 <strong>Les ambulanciers n'ont pas accès au poste CRRA.</strong> Cette restriction est définitive et ne souffre aucune exception.
+          </div>
+        </div>
+      </div>
+
+    </section>
 </div>
 
 <footer class="footer">
@@ -1528,21 +1698,25 @@
 <script>
   (function () {
     const mainTabButtons = Array.from(document.querySelectorAll('[data-main-tab-target]'));
-    const mainPanels = {
-      medical: document.getElementById('tab-medical'),
-      dispatch: document.getElementById('tab-dispatch')
-    };
 
     function activateMainTab(target) {
+      // Désactiver TOUS les panneaux dynamiquement via querySelectorAll
+      document.querySelectorAll('.main-tab-panel').forEach(panel => {
+        panel.classList.remove('active');
+      });
+
+      // Mettre à jour les boutons
       mainTabButtons.forEach((button) => {
         const isActive = button.dataset.mainTabTarget === target;
         button.classList.toggle('active', isActive);
         button.setAttribute('aria-selected', String(isActive));
       });
 
-      Object.keys(mainPanels).forEach((key) => {
-        mainPanels[key].classList.toggle('active', key === target);
-      });
+      // Activer le panel cible
+      const targetPanel = document.getElementById('tab-' + target);
+      if (targetPanel) {
+        targetPanel.classList.add('active');
+      }
     }
 
     mainTabButtons.forEach((button) => {

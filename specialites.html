@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spécialités — SAMU 96</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .main-tab-btn.active,
+    .shock-tab-btn.active,
+    .step-med {
+      color: #0f172a;
+      background: #b8cdef;
+      border-color: #5d79ac;
+    }
+  </style>
 </head>
 <body>
 
@@ -42,71 +51,183 @@
 
     <div class="page-header">
       <div class="breadcrumb">/ <span>SPÉCIALITÉS</span></div>
-      <h1 class="page-title">Spécialités <span>Terrain</span></h1>
-      <p class="page-subtitle">Guides médicaux adaptés au gameplay RP : lecture rapide, décision immédiate, coordination SAMU.</p>
+      <h1 class="page-title">Spécialités <span>Médicales & Opérationnelles</span></h1>
+      <p class="page-subtitle">Références cliniques, filières d'intervention et rôles support du SAMU 96.</p>
     </div>
 
-    <div class="cards-grid">
-      <a href="cardio.html" class="card" style="border-color: rgba(220, 38, 38, 0.35); box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.2), 0 8px 24px rgba(220, 38, 38, 0.12);">
-        <span class="card-icon">🫀</span>
-        <div class="card-title">Cardiologie</div>
-        <div class="card-desc">IDM • SCA • Troubles du rythme</div>
-        <div class="card-meta">
-          <span class="card-tag" style="color:#b91c1c; border-color: rgba(220, 38, 38, 0.32); background: rgba(220, 38, 38, 0.12);">CARDIO</span>
-          <span class="badge badge-green">RP ADAPTÉ</span>
-        </div>
-      </a>
-
-      <a href="neuro.html" class="card" style="border-color: rgba(124, 58, 237, 0.35); box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.2), 0 8px 24px rgba(124, 58, 237, 0.12);">
-        <span class="card-icon">🧠</span>
-        <div class="card-title">Neurologie</div>
-        <div class="card-desc">AVC ischémique • AVC hémorragique • Convulsions</div>
-        <div class="card-meta">
-          <span class="card-tag" style="color:#6d28d9; border-color: rgba(124, 58, 237, 0.32); background: rgba(124, 58, 237, 0.12);">NEURO</span>
-          <span class="badge badge-green">RP ADAPTÉ</span>
-        </div>
-      </a>
-
-      <a href="trauma.html" class="card" style="border-color: rgba(234, 88, 12, 0.35); box-shadow: 0 0 0 1px rgba(234, 88, 12, 0.2), 0 8px 24px rgba(234, 88, 12, 0.12);">
-        <span class="card-icon">🦴</span>
-        <div class="card-title">Traumatologie</div>
-        <div class="card-desc">Polytrauma • TC grave • Traumatisme thoracique</div>
-        <div class="card-meta">
-          <span class="card-tag" style="color:#c2410c; border-color: rgba(234, 88, 12, 0.32); background: rgba(234, 88, 12, 0.12);">TRAUMA</span>
-          <span class="badge badge-green">RP ADAPTÉ</span>
-        </div>
-      </a>
-
-      <a href="pneumo.html" class="card" style="border-color: rgba(14, 165, 233, 0.35); box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.2), 0 8px 24px rgba(14, 165, 233, 0.12);">
-        <span class="card-icon">🫁</span>
-        <div class="card-title">Pneumologie</div>
-        <div class="card-desc">Détresse respiratoire • OAP • Pneumothorax</div>
-        <div class="card-meta">
-          <span class="card-tag" style="color:#0369a1; border-color: rgba(14, 165, 233, 0.32); background: rgba(14, 165, 233, 0.12);">PNEUMO</span>
-          <span class="badge badge-green">RP ADAPTÉ</span>
-        </div>
-      </a>
-
-      <a href="toxico.html" class="card" style="border-color: rgba(34, 197, 94, 0.35); box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2), 0 8px 24px rgba(34, 197, 94, 0.12);">
-        <span class="card-icon">☣️</span>
-        <div class="card-title">Toxicologie</div>
-        <div class="card-desc">Overdose opioïdes • Intox CO • Organophosphorés</div>
-        <div class="card-meta">
-          <span class="card-tag" style="color:#15803d; border-color: rgba(34, 197, 94, 0.32); background: rgba(34, 197, 94, 0.12);">TOXICO</span>
-          <span class="badge badge-green">RP ADAPTÉ</span>
-        </div>
-      </a>
-
-      <a href="psychiatrie.html" class="card" style="border-color: rgba(67, 56, 202, 0.35); box-shadow: 0 0 0 1px rgba(67, 56, 202, 0.2), 0 8px 24px rgba(67, 56, 202, 0.12);">
-        <span class="card-icon">🧩</span>
-        <div class="card-title">Psychiatrie</div>
-        <div class="card-desc">Agitation aiguë • Crise suicidaire • Bouffée délirante</div>
-        <div class="card-meta">
-          <span class="card-tag" style="color:#3730a3; border-color: rgba(67, 56, 202, 0.32); background: rgba(67, 56, 202, 0.12);">PSY</span>
-          <span class="badge badge-green">RP ADAPTÉ</span>
-        </div>
-      </a>
+    <div class="specialites-main-tabs" role="tablist" aria-label="Onglets spécialités">
+      <button class="main-tab-btn active" data-main-tab-target="medic" role="tab" aria-selected="true">SPÉCIALITÉS MÉDICALES</button>
+      <button class="main-tab-btn" data-main-tab-target="opera" role="tab" aria-selected="false">FILIÈRES (OPÉRA)</button>
+      <button class="main-tab-btn" data-main-tab-target="referentiel" role="tab" aria-selected="false">RÉFÉRENTIEL SUPPORT</button>
     </div>
+
+    <!-- ═══════════════════════════════════════
+         TAB 1 — SPÉCIALITÉS MÉDICALES
+    ═══════════════════════════════════════ -->
+    <section id="tab-medic" class="main-tab-panel active" role="tabpanel">
+      <div class="section-title">Guides cliniques terrain</div>
+      <div class="cards-grid">
+        <a href="cardio.html" class="card" style="border-color: rgba(220, 38, 38, 0.35); box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.2), 0 8px 24px rgba(220, 38, 38, 0.12);">
+          <span class="card-icon">🫀</span>
+          <div class="card-title">Cardiologie</div>
+          <div class="card-desc">IDM • SCA • Troubles du rythme</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#b91c1c; border-color: rgba(220, 38, 38, 0.32); background: rgba(220, 38, 38, 0.12);">CARDIO</span>
+            <span class="badge badge-green">RP ADAPTÉ</span>
+          </div>
+        </a>
+
+        <a href="neuro.html" class="card" style="border-color: rgba(124, 58, 237, 0.35); box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.2), 0 8px 24px rgba(124, 58, 237, 0.12);">
+          <span class="card-icon">🧠</span>
+          <div class="card-title">Neurologie</div>
+          <div class="card-desc">AVC ischémique • AVC hémorragique • Convulsions</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#6d28d9; border-color: rgba(124, 58, 237, 0.32); background: rgba(124, 58, 237, 0.12);">NEURO</span>
+            <span class="badge badge-green">RP ADAPTÉ</span>
+          </div>
+        </a>
+
+        <a href="trauma.html" class="card" style="border-color: rgba(234, 88, 12, 0.35); box-shadow: 0 0 0 1px rgba(234, 88, 12, 0.2), 0 8px 24px rgba(234, 88, 12, 0.12);">
+          <span class="card-icon">🦴</span>
+          <div class="card-title">Traumatologie</div>
+          <div class="card-desc">Polytrauma • TC grave • Traumatisme thoracique</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#c2410c; border-color: rgba(234, 88, 12, 0.32); background: rgba(234, 88, 12, 0.12);">TRAUMA</span>
+            <span class="badge badge-green">RP ADAPTÉ</span>
+          </div>
+        </a>
+
+        <a href="pneumo.html" class="card" style="border-color: rgba(14, 165, 233, 0.35); box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.2), 0 8px 24px rgba(14, 165, 233, 0.12);">
+          <span class="card-icon">🫁</span>
+          <div class="card-title">Pneumologie</div>
+          <div class="card-desc">Détresse respiratoire • OAP • Pneumothorax</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#0369a1; border-color: rgba(14, 165, 233, 0.32); background: rgba(14, 165, 233, 0.12);">PNEUMO</span>
+            <span class="badge badge-green">RP ADAPTÉ</span>
+          </div>
+        </a>
+
+        <a href="toxico.html" class="card" style="border-color: rgba(34, 197, 94, 0.35); box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2), 0 8px 24px rgba(34, 197, 94, 0.12);">
+          <span class="card-icon">☣️</span>
+          <div class="card-title">Toxicologie</div>
+          <div class="card-desc">Overdose opioïdes • Intox CO • Organophosphorés</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#15803d; border-color: rgba(34, 197, 94, 0.32); background: rgba(34, 197, 94, 0.12);">TOXICO</span>
+            <span class="badge badge-green">RP ADAPTÉ</span>
+          </div>
+        </a>
+
+        <a href="psychiatrie.html" class="card" style="border-color: rgba(67, 56, 202, 0.35); box-shadow: 0 0 0 1px rgba(67, 56, 202, 0.2), 0 8px 24px rgba(67, 56, 202, 0.12);">
+          <span class="card-icon">🧩</span>
+          <div class="card-title">Psychiatrie</div>
+          <div class="card-desc">Agitation aiguë • Crise suicidaire • Bouffée délirante</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#3730a3; border-color: rgba(67, 56, 202, 0.32); background: rgba(67, 56, 202, 0.12);">PSY</span>
+            <span class="badge badge-green">RP ADAPTÉ</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         TAB 2 — FILIÈRES (OPÉRA)
+    ═══════════════════════════════════════ -->
+    <section id="tab-opera" class="main-tab-panel" role="tabpanel">
+      <div class="section-title">Filières de Spécialités (OPÉRA)</div>
+      <p style="color:#475569; margin-bottom:24px; font-size:0.95rem;">Unités d'intervention spécialisées accessibles selon le profil.</p>
+      <div class="cards-grid">
+        <div class="card" style="border-color: rgba(220, 38, 38, 0.35); box-shadow: 0 0 0 1px rgba(220, 38, 38, 0.2), 0 8px 24px rgba(220, 38, 38, 0.12);">
+          <span class="card-icon">🫀</span>
+          <div class="card-title">UNITÉ ECMO</div>
+          <div class="card-desc">Assistance circulatoire extra-corporelle, ACR réfractaires, chocs cardiogéniques.</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#b91c1c; border-color: rgba(220, 38, 38, 0.32); background: rgba(220, 38, 38, 0.12);">ECMO</span>
+            <span class="badge" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#94a3b8;font-size:0.65rem;">MÉDIC / INTERNE</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-color: rgba(67, 56, 202, 0.35); box-shadow: 0 0 0 1px rgba(67, 56, 202, 0.2), 0 8px 24px rgba(67, 56, 202, 0.12);">
+          <span class="card-icon">🧩</span>
+          <div class="card-title">UNITÉ CUMP</div>
+          <div class="card-desc">Cellule d'Urgence Médico-Psychologique. Prise en charge des victimes de chocs traumatiques collectifs.</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#3730a3; border-color: rgba(67, 56, 202, 0.32); background: rgba(67, 56, 202, 0.12);">CUMP</span>
+            <span class="badge" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#94a3b8;font-size:0.65rem;">MÉDIC / INTERNE / IADE / IDE</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-color: rgba(14, 165, 233, 0.35); box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.2), 0 8px 24px rgba(14, 165, 233, 0.12);">
+          <span class="card-icon">🚁</span>
+          <div class="card-title">UNITÉ HÉLISMUR</div>
+          <div class="card-desc">Interventions héliportées, transferts inter-hospitaliers urgents, sécurité hélisurface.</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#0369a1; border-color: rgba(14, 165, 233, 0.32); background: rgba(14, 165, 233, 0.12);">HÉLISMUR</span>
+            <span class="badge" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#94a3b8;font-size:0.65rem;">MÉDIC / INTERNE / IADE / IDE / AMBU</span>
+          </div>
+        </div>
+
+        <div class="card" style="border-color: rgba(34, 197, 94, 0.35); box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2), 0 8px 24px rgba(34, 197, 94, 0.12);">
+          <span class="card-icon">☢️</span>
+          <div class="card-title">UNITÉ NRBCE</div>
+          <div class="card-desc">Risques Nucléaires, Radiologiques, Biologiques, Chimiques et Explosifs. Travail en zone d'exclusion (EPI de classe 2/3).</div>
+          <div class="card-meta">
+            <span class="card-tag" style="color:#15803d; border-color: rgba(34, 197, 94, 0.32); background: rgba(34, 197, 94, 0.12);">NRBCE</span>
+            <span class="badge" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#94a3b8;font-size:0.65rem;">MÉDIC / INTERNE / IADE / IDE / AMBU</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         TAB 3 — RÉFÉRENTIEL SUPPORT
+    ═══════════════════════════════════════ -->
+    <section id="tab-referentiel" class="main-tab-panel" role="tabpanel">
+      <div class="section-title">Référents Thématiques — Logistique & Support</div>
+      <p style="color:#475569; margin-bottom:24px; font-size:0.95rem;">Assurer la résilience opérationnelle du service au quotidien.</p>
+      <div class="alert" style="border-color:rgba(148,163,184,0.4);background:rgba(148,163,184,0.08);color:#475569;">Ces rôles sont attribués sur désignation par la direction opérationnelle du SAMU 96.</div>
+      <div class="panel">
+        <div class="panel-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rôle</th>
+                <th>Missions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>RÉFÉRENT PHARMACIE</strong></td>
+                <td>Gestion des stocks critiques, dotation morphine/stupéfiants et réapprovisionnement des sacs d'intervention.</td>
+              </tr>
+              <tr>
+                <td><strong>RÉFÉRENT LOGISTIQUE</strong></td>
+                <td>Inventaire du petit matériel, maintenance des dispositifs biomédicaux (Scopes, Respirateurs).</td>
+              </tr>
+              <tr>
+                <td><strong>RÉFÉRENT MATÉRIEL ROULANT</strong></td>
+                <td>Suivi de la flotte VLM/AR, état mécanique, armement technique des véhicules.</td>
+              </tr>
+              <tr>
+                <td><strong>RÉFÉRENT COMMUNICATION</strong></td>
+                <td>Relations presse, gestion des fréquences radio et image publique du service.</td>
+              </tr>
+              <tr>
+                <td><strong>RÉFÉRENT FORMATION</strong></td>
+                <td>Organisation des sessions de simulation, maintien des acquis et intégration des recrues.</td>
+              </tr>
+              <tr>
+                <td><strong>RÉFÉRENT RH</strong></td>
+                <td>Gestion des plannings de garde, suivi des carrières et cohésion d'équipe.</td>
+              </tr>
+              <tr>
+                <td><strong>RÉFÉRENT HYGIÈNE / NRBCE</strong></td>
+                <td>Protocoles de décontamination et gestion du matériel de protection spécifique.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
   </main>
 </div>
@@ -118,6 +239,34 @@
 
 <script src="nav.js"></script>
 <script src="main.js"></script>
+<script>
+  (function () {
+    const mainTabButtons = Array.from(document.querySelectorAll('[data-main-tab-target]'));
+    const mainPanels = {
+      medic: document.getElementById('tab-medic'),
+      opera: document.getElementById('tab-opera'),
+      referentiel: document.getElementById('tab-referentiel')
+    };
+
+    function activateMainTab(target) {
+      mainTabButtons.forEach((button) => {
+        const isActive = button.dataset.mainTabTarget === target;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-selected', String(isActive));
+      });
+
+      Object.keys(mainPanels).forEach((key) => {
+        mainPanels[key].classList.toggle('active', key === target);
+      });
+    }
+
+    mainTabButtons.forEach((button) => {
+      button.addEventListener('click', () => activateMainTab(button.dataset.mainTabTarget));
+    });
+
+    activateMainTab('medic');
+  })();
+</script>
 <script>renderNav('specialites.html');</script>
 </body>
 </html>
