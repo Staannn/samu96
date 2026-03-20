@@ -1623,11 +1623,17 @@
           🚑 Ambulancier — Compétences en mode dégradé
         </div>
         <div class="panel-body">
-          <ul>
-            <li>Autorisé à utiliser la <strong>trousse de secours</strong> et le <strong>bandage</strong> en l'absence de médecin.</li>
-            <li>Responsable du <strong>balisage</strong>, de la <strong>protection de l'équipage</strong> et des <strong>appels radio terrain</strong>.</li>
-            <li>Aucune administration médicamenteuse autonome autorisée.</li>
-          </ul>
+          <table class="data-table">
+            <thead><tr><th>Acte / Produit</th><th>Statut</th><th>Condition</th></tr></thead>
+            <tbody>
+              <tr><td>Trousse de secours</td><td><span class="badge badge-green">AUTORISÉ</span></td><td>En l'absence de médecin</td></tr>
+              <tr><td>Bandage hémostatique</td><td><span class="badge badge-green">AUTORISÉ</span></td><td>En l'absence de médecin</td></tr>
+              <tr><td>Balisage de scène</td><td><span class="badge badge-green">AUTORISÉ</span></td><td>Responsabilité permanente</td></tr>
+              <tr><td>Protection de l'équipage</td><td><span class="badge badge-green">AUTORISÉ</span></td><td>Responsabilité permanente</td></tr>
+              <tr><td>Appels radio terrain</td><td><span class="badge badge-green">AUTORISÉ</span></td><td>Responsabilité permanente</td></tr>
+              <tr><td>Administration médicamenteuse</td><td><span class="badge" style="background:rgba(220,38,38,0.15);border-color:rgba(220,38,38,0.4);color:#b91c1c;">INTERDIT</span></td><td>Pas d'autonomie</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

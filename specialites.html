@@ -13,6 +13,226 @@
       background: #b8cdef;
       border-color: #5d79ac;
     }
+
+    /* RÉFÉRENTIEL SUPPORT — Styles */
+    .ref-access-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .ref-btn {
+      padding: 0.35rem 0.9rem;
+      border-radius: 6px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(148, 163, 184, 0.1);
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-left: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .ref-btn:hover {
+      background: rgba(148, 163, 184, 0.15);
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    .ref-btn-outline {
+      border-color: rgba(220, 38, 38, 0.4);
+      color: #f87171;
+    }
+
+    .ref-btn-outline:hover {
+      background: rgba(220, 38, 38, 0.1);
+      border-color: rgba(220, 38, 38, 0.6);
+    }
+
+    .ref-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: auto;
+    }
+
+    .ref-card-actions .ref-btn {
+      margin-left: 0;
+    }
+
+    .ref-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .ref-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .ref-card-icon {
+      font-size: 1.5rem;
+    }
+
+    .ref-card-title {
+      font-weight: 700;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+    }
+
+    .ref-card-role {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 0.15rem;
+    }
+
+    .ref-card-badge {
+      margin-left: auto;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      border: 1px solid;
+    }
+
+    .ref-badge-public {
+      background: rgba(21, 128, 61, 0.15);
+      border-color: rgba(21, 128, 61, 0.4);
+      color: #4ade80;
+    }
+
+    .ref-badge-read {
+      background: rgba(14, 165, 233, 0.15);
+      border-color: rgba(14, 165, 233, 0.4);
+      color: #60a5fa;
+    }
+
+    .ref-badge-edit {
+      background: rgba(234, 179, 8, 0.15);
+      border-color: rgba(234, 179, 8, 0.4);
+      color: #fbbf24;
+    }
+
+    .ref-card-locked {
+      color: #475569;
+      font-size: 0.85rem;
+      padding: 0.75rem;
+      background: rgba(148, 163, 184, 0.05);
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .ref-card-content {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+    }
+
+    .ref-status-select {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-bottom: 0.75rem;
+      color: #cbd5e1;
+      transition: all 0.2s ease;
+    }
+
+    .ref-status-select:hover {
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    .ref-add-btn,
+    .ref-remove-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(148, 163, 184, 0.05);
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.75rem;
+      margin-left: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .ref-add-btn:hover,
+    .ref-remove-btn:hover {
+      background: rgba(148, 163, 184, 0.15);
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    .ref-remove-btn {
+      color: #f87171;
+      border-color: rgba(220, 38, 38, 0.2);
+      background: rgba(220, 38, 38, 0.05);
+    }
+
+    .ref-remove-btn:hover {
+      background: rgba(220, 38, 38, 0.15);
+      border-color: rgba(220, 38, 38, 0.4);
+    }
+
+    .ref-list-item {
+      padding: 0.5rem;
+      background: rgba(15, 23, 42, 0.3);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ref-list-item-text {
+      flex: 1;
+      color: #e2e8f0;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #cbd5e1;
+      font-size: 0.9rem;
+    }
+
+    .data-table thead tr {
+      background: rgba(15, 23, 42, 0.4);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+    }
+
+    .data-table th {
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .data-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(148, 163, 184, 0.05);
+    }
+
+    [data-editable] {
+      outline: 1px dashed transparent;
+      cursor: default;
+      transition: outline 0.2s ease;
+    }
   </style>
 </head>
 <body>
@@ -185,46 +405,359 @@
       <div class="section-title">Référents Thématiques — Logistique & Support</div>
       <p style="color:#475569; margin-bottom:24px; font-size:0.95rem;">Assurer la résilience opérationnelle du service au quotidien.</p>
       <div class="alert" style="border-color:rgba(148,163,184,0.4);background:rgba(148,163,184,0.08);color:#475569;">Ces rôles sont attribués sur désignation par la direction opérationnelle du SAMU 96.</div>
-      <div class="panel">
-        <div class="panel-body">
-          <table class="data-table">
+
+      <!-- CARDS -->
+
+      <!-- 1. RÉFÉRENT COMMUNICATION (PUBLIC) -->
+      <div class="ref-card" data-access="public" data-ref-id="communication">
+        <div class="ref-card-header">
+          <span class="ref-card-icon">📡</span>
+          <div>
+            <div class="ref-card-title">RÉFÉRENT COMMUNICATION</div>
+            <div class="ref-card-role">Relations presse & fréquences radio</div>
+          </div>
+          <span class="ref-card-badge ref-badge-public" id="ref-badge-communication">PUBLIC</span>
+          <div class="ref-card-actions" id="ref-actions-communication"></div>
+        </div>
+        <div class="ref-card-content">
+          <div style="margin-bottom:0.75rem;">
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.25rem;">📝 Mission :</div>
+            <div data-editable style="color:#e2e8f0;">Relations presse, gestion des fréquences radio et image publique du service.</div>
+          </div>
+          <div style="margin-bottom:0.75rem;">
+            <label style="color:#94a3b8;font-size:0.8rem;">État :</label>
+            <select class="ref-status-select" onchange="this.dispatchEvent(new Event('change', {bubbles:true}))">
+              <option value="OK">OK</option>
+              <option value="EN COURS">EN COURS</option>
+              <option value="INDISPONIBLE">INDISPONIBLE</option>
+            </select>
+          </div>
+          <div>
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.25rem;">👤 Responsable actuel :</div>
+            <div data-editable style="color:#e2e8f0;">À désigner</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. RÉFÉRENT PHARMACIE (EDIT) -->
+      <div class="ref-card" data-access="edit" data-ref-id="pharmacie">
+        <div class="ref-card-header">
+          <span class="ref-card-icon">💊</span>
+          <div>
+            <div class="ref-card-title">RÉFÉRENT PHARMACIE</div>
+            <div class="ref-card-role">Gestion des stocks critiques</div>
+          </div>
+          <span class="ref-card-badge ref-badge-edit" id="ref-badge-pharmacie">ÉDITION</span>
+          <div class="ref-card-actions" id="ref-actions-pharmacie"></div>
+        </div>
+        <div class="ref-card-locked">🔒 Contenu restreint — accès édition requis.</div>
+        <div class="ref-card-content" style="display:none;">
+          <div style="margin-bottom:0.75rem;">
+            <label style="color:#94a3b8;font-size:0.8rem;">État :</label>
+            <select class="ref-status-select" onchange="this.dispatchEvent(new Event('change', {bubbles:true}))">
+              <option value="OK">OK</option>
+              <option value="CRITIQUE">CRITIQUE</option>
+              <option value="RUPTURE">RUPTURE</option>
+            </select>
+          </div>
+          <table class="data-table" style="margin-bottom:0.75rem;">
             <thead>
               <tr>
-                <th>Rôle</th>
-                <th>Missions</th>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Seuil critique</th>
+                <th>État</th>
+                <th></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="ref-pharma-table">
               <tr>
-                <td><strong>RÉFÉRENT PHARMACIE</strong></td>
-                <td>Gestion des stocks critiques, dotation morphine/stupéfiants et réapprovisionnement des sacs d'intervention.</td>
+                <td data-editable>Morphine 10mg</td>
+                <td data-editable>12</td>
+                <td data-editable>5</td>
+                <td data-editable>OK</td>
+                <td><button class="ref-remove-btn" onclick="this.closest('tr').remove()">✕</button></td>
               </tr>
               <tr>
-                <td><strong>RÉFÉRENT LOGISTIQUE</strong></td>
-                <td>Inventaire du petit matériel, maintenance des dispositifs biomédicaux (Scopes, Respirateurs).</td>
+                <td data-editable>Naloxone</td>
+                <td data-editable>8</td>
+                <td data-editable>3</td>
+                <td data-editable>OK</td>
+                <td><button class="ref-remove-btn" onclick="this.closest('tr').remove()">✕</button></td>
               </tr>
               <tr>
-                <td><strong>RÉFÉRENT MATÉRIEL ROULANT</strong></td>
-                <td>Suivi de la flotte VLM/AR, état mécanique, armement technique des véhicules.</td>
-              </tr>
-              <tr>
-                <td><strong>RÉFÉRENT COMMUNICATION</strong></td>
-                <td>Relations presse, gestion des fréquences radio et image publique du service.</td>
-              </tr>
-              <tr>
-                <td><strong>RÉFÉRENT FORMATION</strong></td>
-                <td>Organisation des sessions de simulation, maintien des acquis et intégration des recrues.</td>
-              </tr>
-              <tr>
-                <td><strong>RÉFÉRENT RH</strong></td>
-                <td>Gestion des plannings de garde, suivi des carrières et cohésion d'équipe.</td>
-              </tr>
-              <tr>
-                <td><strong>RÉFÉRENT HYGIÈNE / NRBCE</strong></td>
-                <td>Protocoles de décontamination et gestion du matériel de protection spécifique.</td>
+                <td data-editable>Adrénaline 1mg</td>
+                <td data-editable>6</td>
+                <td data-editable>4</td>
+                <td data-editable>OK</td>
+                <td><button class="ref-remove-btn" onclick="this.closest('tr').remove()">✕</button></td>
               </tr>
             </tbody>
           </table>
+          <button class="ref-add-btn" onclick="refAddTableRow(this, 'ref-pharma-table')">＋ Ajouter produit</button>
+          <div style="margin-top:0.75rem;">
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.25rem;">📝 Notes :</div>
+            <div data-editable style="color:#e2e8f0;padding:0.5rem;background:rgba(15,23,42,0.3);border-radius:4px;border:1px solid rgba(148,163,184,0.1);">Aucune note actuellement.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. RÉFÉRENT LOGISTIQUE (EDIT) -->
+      <div class="ref-card" data-access="edit" data-ref-id="logistique">
+        <div class="ref-card-header">
+          <span class="ref-card-icon">🔧</span>
+          <div>
+            <div class="ref-card-title">RÉFÉRENT LOGISTIQUE</div>
+            <div class="ref-card-role">Maintenance des équipements biomédicaux</div>
+          </div>
+          <span class="ref-card-badge ref-badge-edit" id="ref-badge-logistique">ÉDITION</span>
+          <div class="ref-card-actions" id="ref-actions-logistique"></div>
+        </div>
+        <div class="ref-card-locked">🔒 Contenu restreint — accès édition requis.</div>
+        <div class="ref-card-content" style="display:none;">
+          <div style="margin-bottom:0.75rem;">
+            <label style="color:#94a3b8;font-size:0.8rem;">État :</label>
+            <select class="ref-status-select" onchange="this.dispatchEvent(new Event('change', {bubbles:true}))">
+              <option value="OK">OK</option>
+              <option value="MAINTENANCE">MAINTENANCE</option>
+              <option value="CRITIQUE">CRITIQUE</option>
+            </select>
+          </div>
+          <div style="margin-bottom:0.75rem;">
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.5rem;">🛠️ Équipements :
+              <button class="ref-add-btn" onclick="refAddListItem(this, 'ref-logistique-list')">＋ Ajouter équipement</button>
+            </div>
+            <div id="ref-logistique-list">
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Scope ZOLL × 3</div>
+                <button class="ref-remove-btn" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Respirateur LP6 × 2</div>
+                <button class="ref-remove-btn" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Oxymètre × 5</div>
+                <button class="ref-remove-btn" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Tensiomètre × 4</div>
+                <button class="ref-remove-btn" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.25rem;">📝 Notes :</div>
+            <div data-editable style="color:#e2e8f0;padding:0.5rem;background:rgba(15,23,42,0.3);border-radius:4px;border:1px solid rgba(148,163,184,0.1);">Maintenance régulière effectuée.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. RÉFÉRENT MATÉRIEL ROULANT (EDIT) -->
+      <div class="ref-card" data-access="edit" data-ref-id="roulant">
+        <div class="ref-card-header">
+          <span class="ref-card-icon">🚗</span>
+          <div>
+            <div class="ref-card-title">RÉFÉRENT MATÉRIEL ROULANT</div>
+            <div class="ref-card-role">Suivi de la flotte</div>
+          </div>
+          <span class="ref-card-badge ref-badge-edit" id="ref-badge-roulant">ÉDITION</span>
+          <div class="ref-card-actions" id="ref-actions-roulant"></div>
+        </div>
+        <div class="ref-card-locked">🔒 Contenu restreint — accès édition requis.</div>
+        <div class="ref-card-content" style="display:none;">
+          <div style="margin-bottom:0.75rem;">
+            <label style="color:#94a3b8;font-size:0.8rem;">État :</label>
+            <select class="ref-status-select" onchange="this.dispatchEvent(new Event('change', {bubbles:true}))">
+              <option value="OPÉRATIONNEL">OPÉRATIONNEL</option>
+              <option value="DÉGRADÉ">DÉGRADÉ</option>
+              <option value="HORS SERVICE">HORS SERVICE</option>
+            </select>
+          </div>
+          <table class="data-table" style="margin-bottom:0.75rem;">
+            <thead>
+              <tr>
+                <th>Véhicule</th>
+                <th>Immat.</th>
+                <th>État mécanique</th>
+                <th>Armement technique</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="ref-vehicles-table">
+              <tr>
+                <td data-editable>VLM 01</td>
+                <td data-editable>96-001</td>
+                <td data-editable>Opérationnel</td>
+                <td data-editable>Complet</td>
+                <td><button class="ref-remove-btn" onclick="this.closest('tr').remove()">✕</button></td>
+              </tr>
+              <tr>
+                <td data-editable>AR 01</td>
+                <td data-editable>96-002</td>
+                <td data-editable>Opérationnel</td>
+                <td data-editable>Complet</td>
+                <td><button class="ref-remove-btn" onclick="this.closest('tr').remove()">✕</button></td>
+              </tr>
+              <tr>
+                <td data-editable>HELISMUR</td>
+                <td data-editable>N/A</td>
+                <td data-editable>En standby</td>
+                <td data-editable>Complet</td>
+                <td><button class="ref-remove-btn" onclick="this.closest('tr').remove()">✕</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="ref-add-btn" onclick="refAddTableRow(this, 'ref-vehicles-table')">＋ Ajouter véhicule</button>
+          <div style="margin-top:0.75rem;">
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.25rem;">📝 Notes :</div>
+            <div data-editable style="color:#e2e8f0;padding:0.5rem;background:rgba(15,23,42,0.3);border-radius:4px;border:1px solid rgba(148,163,184,0.1);">Flotte complète opérationnelle.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. RÉFÉRENT FORMATION (READ) -->
+      <div class="ref-card" data-access="read" data-ref-id="formation">
+        <div class="ref-card-header">
+          <span class="ref-card-icon">📚</span>
+          <div>
+            <div class="ref-card-title">RÉFÉRENT FORMATION</div>
+            <div class="ref-card-role">Organisation des sessions</div>
+          </div>
+          <span class="ref-card-badge ref-badge-read" id="ref-badge-formation">LECTURE</span>
+          <div class="ref-card-actions" id="ref-actions-formation"></div>
+        </div>
+        <div class="ref-card-locked">🔒 Contenu restreint — accès lecture requis.</div>
+        <div class="ref-card-content" style="display:none;">
+          <div style="margin-bottom:0.75rem;">
+            <label style="color:#94a3b8;font-size:0.8rem;">État :</label>
+            <select class="ref-status-select" onchange="this.dispatchEvent(new Event('change', {bubbles:true}))">
+              <option value="ACTIF">ACTIF</option>
+              <option value="EN PAUSE">EN PAUSE</option>
+              <option value="PLANIFICATION">PLANIFICATION</option>
+            </select>
+          </div>
+          <div style="margin-bottom:0.75rem;">
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.5rem;">📋 Sessions :
+              <button class="ref-add-btn" style="display:none;" onclick="refAddListItem(this, 'ref-formation-list')">＋ Ajouter session</button>
+            </div>
+            <div id="ref-formation-list">
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Simulation ACR avancée</div>
+                <button class="ref-remove-btn" style="display:none;" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Protocoles NRBCE</div>
+                <button class="ref-remove-btn" style="display:none;" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Intégration recrues S2</div>
+                <button class="ref-remove-btn" style="display:none;" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.25rem;">📝 Notes :</div>
+            <div data-editable style="color:#e2e8f0;padding:0.5rem;background:rgba(15,23,42,0.3);border-radius:4px;border:1px solid rgba(148,163,184,0.1);">Prochaine session : À définir</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. RÉFÉRENT RH (READ) -->
+      <div class="ref-card" data-access="read" data-ref-id="rh">
+        <div class="ref-card-header">
+          <span class="ref-card-icon">👥</span>
+          <div>
+            <div class="ref-card-title">RÉFÉRENT RH</div>
+            <div class="ref-card-role">Gestion des effectifs</div>
+          </div>
+          <span class="ref-card-badge ref-badge-read" id="ref-badge-rh">LECTURE</span>
+          <div class="ref-card-actions" id="ref-actions-rh"></div>
+        </div>
+        <div class="ref-card-locked">🔒 Contenu restreint — accès lecture requis.</div>
+        <div class="ref-card-content" style="display:none;">
+          <div style="margin-bottom:0.75rem;">
+            <label style="color:#94a3b8;font-size:0.8rem;">État :</label>
+            <select class="ref-status-select" onchange="this.dispatchEvent(new Event('change', {bubbles:true}))">
+              <option value="NOMINAL">NOMINAL</option>
+              <option value="SOUS-EFFECTIF">SOUS-EFFECTIF</option>
+              <option value="CRITIQUE">CRITIQUE</option>
+            </select>
+          </div>
+          <div style="margin-bottom:0.75rem;">
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.25rem;">👥 Effectif opérationnel :</div>
+            <div data-editable style="color:#e2e8f0;">8 / 10 membres actifs</div>
+          </div>
+          <div style="margin-bottom:0.75rem;">
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.5rem;">⏰ Gardes :
+              <button class="ref-add-btn" style="display:none;" onclick="refAddListItem(this, 'ref-rh-list')">＋ Ajouter garde</button>
+            </div>
+            <div id="ref-rh-list">
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Garde J</div>
+                <button class="ref-remove-btn" style="display:none;" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Garde N</div>
+                <button class="ref-remove-btn" style="display:none;" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Astreinte weekend</div>
+                <button class="ref-remove-btn" style="display:none;" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.25rem;">📝 Notes :</div>
+            <div data-editable style="color:#e2e8f0;padding:0.5rem;background:rgba(15,23,42,0.3);border-radius:4px;border:1px solid rgba(148,163,184,0.1);">Cohésion d'équipe stable.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. RÉFÉRENT HYGIÈNE / NRBCE (EDIT) -->
+      <div class="ref-card" data-access="edit" data-ref-id="nrbce">
+        <div class="ref-card-header">
+          <span class="ref-card-icon">☢️</span>
+          <div>
+            <div class="ref-card-title">RÉFÉRENT HYGIÈNE / NRBCE</div>
+            <div class="ref-card-role">Protocoles de décontamination</div>
+          </div>
+          <span class="ref-card-badge ref-badge-edit" id="ref-badge-nrbce">ÉDITION</span>
+          <div class="ref-card-actions" id="ref-actions-nrbce"></div>
+        </div>
+        <div class="ref-card-locked">🔒 Contenu restreint — accès édition requis.</div>
+        <div class="ref-card-content" style="display:none;">
+          <div style="margin-bottom:0.75rem;">
+            <label style="color:#94a3b8;font-size:0.8rem;">État :</label>
+            <select class="ref-status-select" onchange="this.dispatchEvent(new Event('change', {bubbles:true}))">
+              <option value="CONFORME">CONFORME</option>
+              <option value="À VÉRIFIER">À VÉRIFIER</option>
+              <option value="NON CONFORME">NON CONFORME</option>
+            </select>
+          </div>
+          <div style="margin-bottom:0.75rem;">
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.5rem;">🥼 EPI :
+              <button class="ref-add-btn" onclick="refAddListItem(this, 'ref-nrbce-list')">＋ Ajouter EPI</button>
+            </div>
+            <div id="ref-nrbce-list">
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Combinaison NRBCE Cl.3 × 4</div>
+                <button class="ref-remove-btn" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Masque ARI × 4</div>
+                <button class="ref-remove-btn" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+              <div class="ref-list-item">
+                <div class="ref-list-item-text" data-editable>Kit décontamination × 2</div>
+                <button class="ref-remove-btn" onclick="this.closest('.ref-list-item').remove()">✕</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="color:#94a3b8;font-size:0.8rem;margin-bottom:0.25rem;">📝 Notes :</div>
+            <div data-editable style="color:#e2e8f0;padding:0.5rem;background:rgba(15,23,42,0.3);border-radius:4px;border:1px solid rgba(148,163,184,0.1);">Matériel conforme et à jour.</div>
+          </div>
         </div>
       </div>
     </section>
@@ -239,6 +772,251 @@
 
 <script src="nav.js"></script>
 <script src="main.js"></script>
+
+<!-- RÉFÉRENTIEL SUPPORT — Gestion d'accès et interactions -->
+<script>
+  // ═══════════════════════════════════════════════════════════
+  // MOTS DE PASSE PAR CARD
+  // ═══════════════════════════════════════════════════════════
+  const REF_PASSWORDS = {
+    communication: { read: null,            edit: "com-edit96"    },
+    pharmacie:     { read: "pharma-read96", edit: "pharma-edit96" },
+    logistique:    { read: "log-read96",    edit: "log-edit96"    },
+    roulant:       { read: "rol-read96",    edit: "rol-edit96"    },
+    formation:     { read: "form-read96",   edit: "form-edit96"   },
+    rh:            { read: "rh-read96",     edit: "rh-edit96"     },
+    nrbce:         { read: "nrbce-read96",  edit: "nrbce-edit96"  },
+  };
+
+  // ═══════════════════════════════════════════════════════════
+  // FONCTIONS D'AUTHENTIFICATION
+  // ═══════════════════════════════════════════════════════════
+
+  /**
+   * Ouvre une modale de saisie mdp pour une card.
+   * type = "read" | "edit"
+   */
+  function refLoginCard(id, type) {
+    const pwd = REF_PASSWORDS[id][type];
+    if (!pwd) return; // card publique, rien à faire
+    const input = prompt(
+      type === 'edit'
+        ? `Mot de passe ÉDITION — ${id.toUpperCase()} :`
+        : `Mot de passe LECTURE — ${id.toUpperCase()} :`
+    );
+    if (input === pwd) {
+      sessionStorage.setItem('ref_access_' + id, type);
+      refApplyCard(id);
+    } else {
+      alert("Mot de passe incorrect.");
+    }
+  }
+
+  function refLogoutCard(id) {
+    sessionStorage.removeItem('ref_access_' + id);
+    refApplyCard(id);
+  }
+
+  /**
+   * Applique l'état visuel et les droits d'une card selon son niveau sessionStorage.
+   */
+  function refApplyCard(id) {
+    const card    = document.querySelector(`.ref-card[data-ref-id="${id}"]`);
+    if (!card) return;
+    const access  = card.dataset.access;           // "public" | "read" | "edit"
+    const level   = sessionStorage.getItem('ref_access_' + id); // null | "read" | "edit"
+    const pwds    = REF_PASSWORDS[id];
+
+    const locked  = card.querySelector('.ref-card-locked');
+    const content = card.querySelector('.ref-card-content');
+    const badge   = document.getElementById('ref-badge-' + id);
+    const actions = document.getElementById('ref-actions-' + id);
+
+    // ── Visibilité du contenu ──
+    if (access === 'public') {
+      if (locked)  locked.style.display  = 'none';
+      if (content) content.style.display = 'block';
+    } else {
+      const canRead = level === 'read' || level === 'edit';
+      if (locked)  locked.style.display  = canRead ? 'none'  : 'block';
+      if (content) content.style.display = canRead ? 'block' : 'none';
+    }
+
+    // ── Champs éditables ──
+    const canEdit = level === 'edit';
+    card.querySelectorAll('[data-editable]').forEach(el => {
+      el.contentEditable = canEdit ? 'true' : 'false';
+      el.style.outline   = canEdit ? '1px dashed rgba(148,163,184,0.3)' : 'none';
+      el.style.cursor    = canEdit ? 'text' : 'default';
+    });
+    card.querySelectorAll('.ref-add-btn, .ref-remove-btn').forEach(btn => {
+      btn.style.display = canEdit ? 'inline-flex' : 'none';
+    });
+    card.querySelectorAll('.ref-status-select').forEach(sel => {
+      sel.disabled = !canEdit;
+      updateStatusColor(sel);
+    });
+
+    // ── Badge dynamique ──
+    if (badge) {
+      if (access === 'public' || level === 'edit') {
+        badge.textContent  = level === 'edit' ? '✏️ ÉDITION' : '🌐 PUBLIC';
+        badge.className    = 'ref-card-badge ' + (level === 'edit' ? 'ref-badge-edit' : 'ref-badge-public');
+      } else if (level === 'read') {
+        badge.textContent = '👁️ LECTURE';
+        badge.className   = 'ref-card-badge ref-badge-read';
+      } else {
+        badge.textContent = access === 'read' ? '🔒 LECTURE' : '🔒 ÉDITION';
+        badge.className   = 'ref-card-badge ref-badge-' + access;
+      }
+    }
+
+    // ── Boutons d'action dans le header ──
+    if (actions) {
+      actions.innerHTML = '';
+
+      if (access === 'public') {
+        // Card publique : proposer uniquement le bouton édition si mdp edit existe
+        if (pwds.edit && level !== 'edit') {
+          actions.innerHTML += `<button class="ref-btn" onclick="refLoginCard('${id}','edit')">✏️ Éditer</button>`;
+        }
+        if (level === 'edit') {
+          actions.innerHTML += `<button class="ref-btn ref-btn-outline" onclick="refLogoutCard('${id}')">Verrouiller</button>`;
+        }
+        return;
+      }
+
+      if (!level) {
+        // Non connecté : proposer lecture et/ou édition selon mdp disponibles
+        if (pwds.read)  actions.innerHTML += `<button class="ref-btn" onclick="refLoginCard('${id}','read')">👁️ Lire</button>`;
+        if (pwds.edit)  actions.innerHTML += `<button class="ref-btn" onclick="refLoginCard('${id}','edit')">✏️ Éditer</button>`;
+      } else if (level === 'read') {
+        // En lecture : proposer montée en édition + déconnexion
+        if (pwds.edit)  actions.innerHTML += `<button class="ref-btn" onclick="refLoginCard('${id}','edit')">✏️ Éditer</button>`;
+        actions.innerHTML += `<button class="ref-btn ref-btn-outline" onclick="refLogoutCard('${id}')">🔒 Verrouiller</button>`;
+      } else {
+        // En édition : déconnexion uniquement
+        actions.innerHTML += `<button class="ref-btn ref-btn-outline" onclick="refLogoutCard('${id}')">🔒 Verrouiller</button>`;
+      }
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // HELPERS — Ajouter/Supprimer Lignes & Items
+  // ═══════════════════════════════════════════════════════════
+
+  function refAddTableRow(btn, tableBodyId) {
+    const tbody = document.getElementById(tableBodyId);
+    const card = btn.closest('.ref-card');
+    const cardId = card.dataset.refId;
+    const level = sessionStorage.getItem('ref_access_' + cardId);
+    
+    const tr = document.createElement('tr');
+    
+    // Copier le nombre de colonnes de la première ligne
+    const firstRow = tbody.querySelector('tr');
+    const colCount = firstRow ? firstRow.querySelectorAll('td').length : 4;
+    
+    for (let i = 0; i < colCount - 1; i++) {
+      const td = document.createElement('td');
+      td.setAttribute('data-editable', '');
+      td.textContent = '';
+      tr.appendChild(td);
+    }
+    
+    const tdBtn = document.createElement('td');
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'ref-remove-btn';
+    removeBtn.textContent = '✕';
+    removeBtn.onclick = function() { this.closest('tr').remove(); };
+    tdBtn.appendChild(removeBtn);
+    tr.appendChild(tdBtn);
+    
+    tbody.appendChild(tr);
+    
+    // Appliquer contentEditable et style selon le niveau d'accès
+    if (level === 'edit') {
+      tr.querySelectorAll('[data-editable]').forEach(el => {
+        el.contentEditable = 'true';
+        el.style.outline = '1px dashed rgba(148,163,184,0.3)';
+        el.style.cursor = 'text';
+      });
+    }
+  }
+
+  function refAddListItem(btn, listId) {
+    const list = document.getElementById(listId);
+    const card = btn.closest('.ref-card');
+    const cardId = card.dataset.refId;
+    const level = sessionStorage.getItem('ref_access_' + cardId);
+    
+    const item = document.createElement('div');
+    item.className = 'ref-list-item';
+    
+    const textDiv = document.createElement('div');
+    textDiv.className = 'ref-list-item-text';
+    textDiv.setAttribute('data-editable', '');
+    textDiv.textContent = 'Nouvel item';
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'ref-remove-btn';
+    removeBtn.textContent = '✕';
+    removeBtn.onclick = function() { this.closest('.ref-list-item').remove(); };
+    
+    item.appendChild(textDiv);
+    item.appendChild(removeBtn);
+    list.appendChild(item);
+    
+    // Appliquer contentEditable et style selon le niveau d'accès
+    if (level === 'edit') {
+      textDiv.contentEditable = 'true';
+      textDiv.style.outline = '1px dashed rgba(148,163,184,0.3)';
+      textDiv.style.cursor = 'text';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // STATUT SELECTS — Coloration dynamique
+  // ═══════════════════════════════════════════════════════════
+
+  function updateStatusColor(select) {
+    const v = select.value;
+    if (['OK','OPÉRATIONNEL','ACTIF','NOMINAL','CONFORME'].includes(v)) {
+      select.style.color = '#4ade80';
+      select.style.borderColor = 'rgba(21,128,61,0.5)';
+    } else if (['EN COURS','MAINTENANCE','DÉGRADÉ','EN PAUSE','SOUS-EFFECTIF','À VÉRIFIER','CRITIQUE','PLANIFICATION'].includes(v)) {
+      select.style.color = '#fbbf24';
+      select.style.borderColor = 'rgba(234,179,8,0.5)';
+    } else {
+      select.style.color = '#f87171';
+      select.style.borderColor = 'rgba(220,38,38,0.5)';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // INITIALISATION
+  // ═══════════════════════════════════════════════════════════
+
+  /**
+   * Initialisation au chargement — applique toutes les cards.
+   */
+  function refInit() {
+    Object.keys(REF_PASSWORDS).forEach(id => refApplyCard(id));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    refInit();
+
+    // Initialiser les select statut
+    document.querySelectorAll('.ref-status-select').forEach(sel => {
+      sel.addEventListener('change', function() {
+        updateStatusColor(this);
+      });
+      updateStatusColor(sel);
+    });
+  });
+</script>
+
 <script>
   (function () {
     const mainTabButtons = Array.from(document.querySelectorAll('[data-main-tab-target]'));
